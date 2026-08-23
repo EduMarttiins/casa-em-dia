@@ -1,0 +1,9 @@
+/* CasaToda V29 • sincronização familiar */
+#ctSyncChip{height:38px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;border:1px solid #e8e5f2;border-radius:13px;background:#fff;color:#77738a;font-size:9px;font-weight:900;box-shadow:0 6px 16px rgba(40,35,66,.06)}
+#ctSyncChip .dot{width:8px;height:8px;border-radius:50%;background:#b6b2c2;box-shadow:0 0 0 4px rgba(182,178,194,.13)}
+#ctSyncChip.ok{color:#16805d}#ctSyncChip.ok .dot{background:#25c58e;box-shadow:0 0 0 4px rgba(37,197,142,.14)}
+#ctSyncChip.wait{color:#926c14}#ctSyncChip.wait .dot{background:#f4bb45;box-shadow:0 0 0 4px rgba(244,187,69,.15)}
+#ctSyncChip.err{color:#b94c58}#ctSyncChip.err .dot{background:#f16a78;box-shadow:0 0 0 4px rgba(241,106,120,.14)}
+.ctSyncConnect{width:100%;min-height:48px;margin-top:12px;border:1px solid #ded7ff;border-radius:15px;background:linear-gradient(135deg,#f6f2ff,#eef3ff);color:#6840ce;font-size:11px;font-weight:900}
+.ctSyncNote{margin:9px 2px 0;text-align:center;color:#8b879a;font-size:9px;line-height:1.4;font-weight:750}
+@media(max-width:520px){#ctSyncChip{height:34px;padding:0 8px;font-size:8px}.top-actions{gap:4px!important}}
