@@ -3,9 +3,9 @@
  if(window.__CASATODA_21__)return;
  window.__CASATODA_21__=true;
  const PHOTO={
-  family:new URL('./media21/family.jpg?v=21',location.href).href,
-  bernardo:new URL('./media21/bernardo.jpg?v=21',location.href).href,
-  julia:new URL('./media21/julia.jpg?v=21',location.href).href
+  family:new URL('./media21/family.jpg?v=22',location.href).href,
+  bernardo:new URL('./media21/bernardo.jpg?v=22',location.href).href,
+  julia:new URL('./media21/julia.jpg?v=22',location.href).href
  };
  let scheduled=false,saving=false;
  function put(container,src,alt){
@@ -16,7 +16,7 @@
   if(img.src!==src)img.src=src;
   img.decoding='async';
   img.loading='eager';
-  img.onerror=()=>{setTimeout(()=>{if(img.src!==src)img.src=src;else img.src=src+'&r='+Date.now()},120)};
+  img.onerror=()=>{setTimeout(()=>{img.src=src+'&r='+Date.now()},120)};
  }
  function persist(){
   try{
@@ -30,7 +30,7 @@
     if(b&&b.photo!==PHOTO.bernardo){b.photo=PHOTO.bernardo;changed=true}
     if(j&&j.photo!==PHOTO.julia){j.photo=PHOTO.julia;changed=true}
    }
-   if(state.settings.casaTodaMediaVersion!==21){state.settings.casaTodaMediaVersion=21;changed=true}
+   if(state.settings.casaTodaMediaVersion!==22){state.settings.casaTodaMediaVersion=22;changed=true}
    if(changed&&!saving&&typeof save==='function'){saving=true;try{save()}finally{setTimeout(()=>saving=false,0)}}
   }catch(e){console.warn('CasaToda fotos persistência',e)}
  }
@@ -44,9 +44,7 @@
   put(document.querySelector('[data-v15-child="julia"] .v15-tab-avatar'),PHOTO.julia,'Júlia');
   document.querySelectorAll('#people .person').forEach(card=>{
    let id=card.dataset.person;
-   if(!id){
-    try{id=(typeof isChildSession==='function'&&isChildSession())?sessionRole:selected}catch(e){}
-   }
+   if(!id){try{id=(typeof isChildSession==='function'&&isChildSession())?sessionRole:selected}catch(e){}}
    if(id==='bernardo')put(card.querySelector('.avatar'),PHOTO.bernardo,'Bernardo');
    if(id==='julia')put(card.querySelector('.avatar'),PHOTO.julia,'Júlia');
   });
