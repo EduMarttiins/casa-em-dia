@@ -1,12 +1,1 @@
-{
-  "id": "./",
-  "name": "Casa em Dia",
-  "short_name": "Casa em Dia",
-  "description": "Gestão familiar de tempo, rotina, mérito, recompensas e cofrinho.",
-  "start_url": "./?v=12",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#f4f6fb",
-  "theme_color": "#0b1020",
-  "orientation": "portrait"
-}
+{"name":"CasaToda","short_name":"CasaToda","description":"Organização familiar em um só lugar.","start_url":"./","scope":"./","display":"standalone","background_color":"#f4f6fb","theme_color":"#7c4dff","orientation":"portrait","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
