@@ -1,0 +1,11 @@
+{
+  "name": "Casa em Dia",
+  "short_name": "Casa em Dia",
+  "description": "Gestão familiar de tempo, rotina, mérito, recompensas e cofrinho.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#0b1020",
+  "orientation": "portrait"
+}
