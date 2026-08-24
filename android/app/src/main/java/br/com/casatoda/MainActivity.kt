@@ -35,7 +35,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.1"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.2"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -69,9 +69,16 @@ class MainActivity : Activity() {
             permissionDialogVisible = true
             AlertDialog.Builder(this)
                 .setTitle("Ativar CasaToda Proteção")
-                .setMessage("Para bloquear os aplicativos no horário definido, ative o serviço CasaToda Proteção em Acessibilidade. O Android mostra esse aviso porque o serviço precisa identificar qual aplicativo está na tela para aplicar o bloqueio.")
+                .setMessage(
+                    "Para bloquear os aplicativos no horário definido, ative CasaToda Proteção em Acessibilidade.\n\n" +
+                    "Se CasaToda Proteção não aparecer ou estiver bloqueado, abra Informações do app, toque no menu de três pontos e escolha Permitir configurações restritas. Depois volte para Acessibilidade."
+                )
                 .setNegativeButton("Depois") { _, _ -> permissionDialogVisible = false }
-                .setPositiveButton("Ativar agora") { _, _ ->
+                .setNeutralButton("Informações do app") { _, _ ->
+                    permissionDialogVisible = false
+                    openAppInfo()
+                }
+                .setPositiveButton("Abrir Acessibilidade") { _, _ ->
                     permissionDialogVisible = false
                     startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
                 }
@@ -89,6 +96,13 @@ class MainActivity : Activity() {
         val component = ComponentName(this, BlockAccessibilityService::class.java).flattenToString()
         val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
         return enabled.split(':').any { it.equals(component, ignoreCase = true) }
+    }
+
+    private fun openAppInfo() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.parse("package:$packageName")
+        }
+        startActivity(intent)
     }
 
     private fun rememberDialerPackage() {
@@ -121,6 +135,11 @@ class MainActivity : Activity() {
             activity.runOnUiThread {
                 activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             }
+        }
+
+        @JavascriptInterface
+        fun openAppInfo() {
+            activity.runOnUiThread { activity.openAppInfo() }
         }
     }
 
