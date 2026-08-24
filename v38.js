@@ -3,6 +3,10 @@
 if(window.__CASATODA_38__)return;
 window.__CASATODA_38__=true;
 const KEY='casatoda_family_code';
+
+function bridge(){try{return window.CasaTodaAndroid||null}catch(e){return null}}
+function isParent(){try{return typeof isParentSession==='function'&&isParentSession()}catch(e){return false}}
+
 function closeBox(){document.getElementById('ctConnect38')?.remove()}
 function openBox(){
  closeBox();
@@ -11,9 +15,32 @@ function openBox(){
  card.innerHTML='<h2 style="margin:0 0 8px">Conectar à família</h2><p style="margin:0 0 16px;color:#6f697c">Digite o código da família CasaToda usado nos outros aparelhos.</p><input id="ctCode38" type="text" placeholder="Código da família" style="width:100%;height:50px;border:2px solid #e7e2ef;border-radius:14px;padding:0 12px;font-size:17px;text-transform:uppercase;box-sizing:border-box"><div id="ctErr38" style="min-height:20px;padding-top:6px;color:#c83c52;font-size:12px"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><button id="ctCancel38" type="button" style="height:46px;border:0;border-radius:13px;background:#f0edf5;font-weight:800">Cancelar</button><button id="ctOk38" type="button" style="height:46px;border:0;border-radius:13px;background:#6f43df;color:#fff;font-weight:800">Conectar</button></div>';
  box.appendChild(card);document.body.appendChild(box);
  const input=document.getElementById('ctCode38'),err=document.getElementById('ctErr38'),ok=document.getElementById('ctOk38');
- const saveCode=()=>{const code=String(input?.value||'').trim().toUpperCase();if(!code){err.textContent='Digite o código da família.';return}try{localStorage.setItem(KEY,code);if(window.CasaTodaAndroid?.setFamilyCode)window.CasaTodaAndroid.setFamilyCode(code);ok.textContent='Conectando...';setTimeout(()=>location.reload(),150)}catch(e){err.textContent='Não foi possível salvar o código.'}};
+ const saveCode=()=>{const code=String(input?.value||'').trim().toUpperCase();if(!code){err.textContent='Digite o código da família.';return}try{localStorage.setItem(KEY,code);ok.textContent='Conectando...';setTimeout(()=>location.reload(),150)}catch(e){err.textContent='Não foi possível salvar o código.'}};
  document.getElementById('ctCancel38')?.addEventListener('click',closeBox);ok?.addEventListener('click',saveCode);input?.addEventListener('keydown',e=>{if(e.key==='Enter')saveCode()});setTimeout(()=>input?.focus(),50)
 }
 document.addEventListener('click',e=>{const b=e.target.closest?.('.ctSyncConnect');if(!b)return;e.preventDefault();e.stopPropagation();openBox()},true);
 window.CasaTodaConnectFamily=openBox;
+
+function removeTestButton(){document.getElementById('ctProtectionTest38')?.remove()}
+function ensureTestButton(){
+ const b=bridge();
+ if(!b||typeof b.startProtectionTest!=='function'||!isParent()){removeTestButton();return}
+ if(document.getElementById('ctProtectionTest38'))return;
+ const btn=document.createElement('button');
+ btn.id='ctProtectionTest38';btn.type='button';btn.textContent='Testar proteção por 30 s';
+ btn.style.cssText='position:fixed;right:16px;bottom:106px;z-index:9990;border:0;border-radius:999px;padding:12px 16px;background:#241b52;color:#fff;font:800 12px system-ui;box-shadow:0 10px 26px rgba(36,27,82,.28)';
+ btn.onclick=()=>{
+  if(!confirm('Iniciar um teste de bloqueio por 30 segundos? O teste se desfaz sozinho e não altera o horário configurado.'))return;
+  try{b.startProtectionTest(30);alert('Teste iniciado. Saia do CasaToda e abra outro aplicativo. Ele deve ser bloqueado e liberado automaticamente em até 30 segundos.')}catch(e){alert('Não foi possível iniciar o teste neste aparelho.')}
+ };
+ document.body.appendChild(btn)
+}
+function tune(){if(isParent())ensureTestButton();else removeTestButton()}
+const oldRender=typeof render==='function'?render:null;
+if(oldRender){render=function(){const x=oldRender();setTimeout(tune,80);return x}}
+const oldEnter=typeof enterSession==='function'?enterSession:null;
+if(oldEnter){enterSession=function(role){const x=oldEnter(role);setTimeout(tune,120);return x}}
+window.addEventListener('focus',()=>setTimeout(tune,100));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tune,100)});
+setTimeout(tune,700);
 })();
