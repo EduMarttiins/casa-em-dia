@@ -23,11 +23,12 @@ class BlockAccessibilityService : AccessibilityService() {
     private lateinit var wm: WindowManager
     private var overlay: View? = null
     private var currentPackage: String? = null
+    private var overlayTestMode = false
 
     private val ticker = object : Runnable {
         override fun run() {
             evaluate()
-            handler.postDelayed(this, 5_000)
+            handler.postDelayed(this, 1_000)
         }
     }
 
@@ -54,16 +55,15 @@ class BlockAccessibilityService : AccessibilityService() {
 
     private fun evaluate() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
+        val now = System.currentTimeMillis()
         val unlockUntil = prefs.getLong(MainActivity.KEY_UNLOCK_UNTIL, 0L)
-        if (unlockUntil > System.currentTimeMillis()) {
+        if (unlockUntil > now) {
             hideOverlay()
             return
-        } else if (unlockUntil > 0L) {
-            prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
-        }
+        } else if (unlockUntil > 0L) prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
 
         val enabled = prefs.getBoolean(MainActivity.KEY_ENABLED, false)
-        if (!enabled || !isBlockedNow(prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320), prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360))) {
+        if (!enabled) {
             hideOverlay()
             return
         }
@@ -79,7 +79,21 @@ class BlockAccessibilityService : AccessibilityService() {
             "com.android.emergency"
         )
 
-        if (currentPackage in allowed) hideOverlay() else showOverlay()
+        val testUntil = prefs.getLong(MainActivity.KEY_TEST_BLOCK_UNTIL, 0L)
+        val testActive = testUntil > now
+        if (!testActive && testUntil > 0L) prefs.edit().remove(MainActivity.KEY_TEST_BLOCK_UNTIL).apply()
+
+        val scheduledBlocked = isBlockedNow(
+            prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320),
+            prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)
+        )
+
+        if (!testActive && !scheduledBlocked) {
+            hideOverlay()
+            return
+        }
+
+        if (currentPackage in allowed) hideOverlay() else showOverlay(testActive)
     }
 
     private fun isBlockedNow(cutoff: Int, wake: Int): Boolean {
@@ -88,8 +102,10 @@ class BlockAccessibilityService : AccessibilityService() {
         return if (cutoff > wake) minute >= cutoff || minute < wake else minute >= cutoff && minute < wake
     }
 
-    private fun showOverlay() {
-        if (overlay != null) return
+    private fun showOverlay(testMode: Boolean) {
+        if (overlay != null && overlayTestMode == testMode) return
+        hideOverlay()
+        overlayTestMode = testMode
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -100,13 +116,13 @@ class BlockAccessibilityService : AccessibilityService() {
         }
 
         val moon = TextView(this).apply {
-            text = "☾"
+            text = if (testMode) "✓" else "☾"
             textSize = 58f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(214, 190, 255))
         }
         val title = TextView(this).apply {
-            text = "Tempo encerrado por hoje"
+            text = if (testMode) "Teste do CasaToda Proteção" else "Tempo encerrado por hoje"
             textSize = 28f
             gravity = Gravity.CENTER
             typeface = Typeface.DEFAULT_BOLD
@@ -114,7 +130,10 @@ class BlockAccessibilityService : AccessibilityService() {
             setPadding(0, 18, 0, 12)
         }
         val message = TextView(this).apply {
-            text = "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até amanhã de manhã."
+            text = if (testMode)
+                "Este é apenas um teste. O aparelho será liberado automaticamente em até 30 segundos."
+            else
+                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até amanhã de manhã."
             textSize = 16f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(220, 216, 235))
@@ -141,7 +160,10 @@ class BlockAccessibilityService : AccessibilityService() {
             }
         }
         val note = TextView(this).apply {
-            text = "Para liberar temporariamente, toque em Desbloqueio dos pais, entre no perfil Pais e confirme o PIN."
+            text = if (testMode)
+                "Nenhuma alteração permanente foi feita no horário."
+            else
+                "Para liberar temporariamente, toque em Desbloqueio dos pais, entre no perfil Pais e confirme o PIN."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))
@@ -161,9 +183,7 @@ class BlockAccessibilityService : AccessibilityService() {
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-        }
+        ).apply { gravity = Gravity.TOP or Gravity.START }
 
         runCatching {
             wm.addView(root, params)
@@ -175,5 +195,6 @@ class BlockAccessibilityService : AccessibilityService() {
         val v = overlay ?: return
         runCatching { wm.removeView(v) }
         overlay = null
+        overlayTestMode = false
     }
 }
