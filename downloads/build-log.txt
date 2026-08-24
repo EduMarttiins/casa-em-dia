@@ -14,6 +14,7 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
@@ -21,16 +22,15 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :app:mergeDebugAssets
 > Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
+> Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeDebugNativeLibs NO-SOURCE
 > Task :app:stripDebugDebugSymbols NO-SOURCE
-> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeLibDexDebug
+> Task :app:processDebugResources
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeLibDexDebug
 > Task :app:writeDebugSigningConfigVersions
-> Task :app:processDebugManifestForPackage
-> Task :app:processDebugResources
 > Task :app:mergeExtDexDebug
 
 > Task :app:compileDebugKotlin
@@ -41,7 +41,7 @@ w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:24:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:25:16 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:35:13 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:85:62 'fun onBackPressed(): Unit' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:92:62 'fun onBackPressed(): Unit' is deprecated. Deprecated in Java.
 
 > Task :app:compileDebugJavaWithJavac NO-SOURCE
 > Task :app:dexBuilderDebug
@@ -52,7 +52,7 @@ w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787593775541.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787594976313.json
 
-BUILD SUCCESSFUL in 24s
+BUILD SUCCESSFUL in 25s
 33 actionable tasks: 33 executed
