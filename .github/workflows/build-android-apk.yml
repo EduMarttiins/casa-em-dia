@@ -7,6 +7,7 @@ on:
       - "android/**"
       - "v35.js"
       - "v37.js"
+      - "v42.js"
       - ".github/workflows/build-android-apk.yml"
 
 permissions:
