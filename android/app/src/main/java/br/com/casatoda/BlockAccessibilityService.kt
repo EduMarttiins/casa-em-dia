@@ -27,7 +27,7 @@ class BlockAccessibilityService : AccessibilityService() {
     private val ticker = object : Runnable {
         override fun run() {
             evaluate()
-            handler.postDelayed(this, 2_000)
+            handler.postDelayed(this, 5_000)
         }
     }
 
@@ -54,16 +54,16 @@ class BlockAccessibilityService : AccessibilityService() {
 
     private fun evaluate() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
-        val enabled = prefs.getBoolean(MainActivity.KEY_ENABLED, false)
-        val pauseUntil = prefs.getLong(MainActivity.KEY_PAUSE_UNTIL, 0L)
-        if (!enabled || System.currentTimeMillis() < pauseUntil) {
+        val unlockUntil = prefs.getLong(MainActivity.KEY_UNLOCK_UNTIL, 0L)
+        if (unlockUntil > System.currentTimeMillis()) {
             hideOverlay()
             return
+        } else if (unlockUntil > 0L) {
+            prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
         }
 
-        val cutoff = prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320)
-        val wake = prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)
-        if (!isBlockedNow(cutoff, wake)) {
+        val enabled = prefs.getBoolean(MainActivity.KEY_ENABLED, false)
+        if (!enabled || !isBlockedNow(prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320), prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360))) {
             hideOverlay()
             return
         }
@@ -123,10 +123,11 @@ class BlockAccessibilityService : AccessibilityService() {
         val parentButton = Button(this).apply {
             text = "Desbloqueio dos pais"
             setOnClickListener {
+                val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
+                prefs.edit().putBoolean(MainActivity.KEY_PARENT_UNLOCK_REQUESTED, true).apply()
                 hideOverlay()
                 val i = Intent(this@BlockAccessibilityService, MainActivity::class.java).apply {
-                    putExtra(MainActivity.EXTRA_PARENT_UNLOCK, true)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
                 startActivity(i)
             }
@@ -140,7 +141,7 @@ class BlockAccessibilityService : AccessibilityService() {
             }
         }
         val note = TextView(this).apply {
-            text = "Pais podem liberar o aparelho por 15 minutos usando o código da família."
+            text = "Para liberar temporariamente, toque em Desbloqueio dos pais, entre no perfil Pais e confirme o PIN."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))

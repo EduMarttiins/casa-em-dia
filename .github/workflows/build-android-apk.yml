@@ -6,6 +6,7 @@ on:
     paths:
       - "android/**"
       - "v35.js"
+      - "v37.js"
       - ".github/workflows/build-android-apk.yml"
 
 permissions:
