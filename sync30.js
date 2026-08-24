@@ -96,6 +96,18 @@ function mergeChild(remote,local,id){
  return out
 }
 
+async function syncParent(showMessage=false){
+ if(syncing||!familyCode())return;syncing=true;status('Sincronizando','wait');
+ try{
+  const remote=await fetchRemote();if(!remote.valid)throw new Error('Código inválido');
+  const row=remote.row||{};
+  if(!row.state||Object.keys(row.state).length===0){syncing=false;return pushParent(true)}
+  importShared(row.state);lastVersion=Number(row.version||0);status('Sincronizado','ok')
+ }catch(e){status('Offline','err');console.warn('CasaToda parent baseline',e);if(showMessage)alert('Não foi possível sincronizar agora.');return}
+ finally{syncing=false}
+ await pushParent(true)
+}
+
 async function pushParent(force=false){
  if(syncing||!familyCode())return;syncing=true;status('Enviando','wait');
  try{
@@ -133,14 +145,14 @@ async function syncPinsOnly(showMessage=false){
  if(!familyCode())return;status('Conectando','wait');
  try{const remote=await fetchRemote();if(!remote.valid){status('Código inválido','err');if(showMessage)alert('Código da família inválido.');return false}const pins=remote.row?.state?.childPins||{};let changed=false;for(const [id,h] of Object.entries(pins)){const c=childById(id);if(c&&h&&c.pinHash!==h){c.pinHash=h;changed=true}}if(changed)saveLocalOnly();lastVersion=Number(remote.row?.version||0);lastSharedSig=sharedSig();status('Sincronizado','ok');return true}catch(e){status('Offline','err');return false}
 }
-async function syncForRole(showMessage=false){const r=role();setRoleClass();if(r==='parent')return pushParent(true);if(r==='bernardo'||r==='julia')return pullChild(showMessage);return syncPinsOnly(showMessage)}
+async function syncForRole(showMessage=false){const r=role();setRoleClass();if(r==='parent')return syncParent(showMessage);if(r==='bernardo'||r==='julia')return pullChild(showMessage);return syncPinsOnly(showMessage)}
 function queuePush(){if(applying||!familyCode())return;const sig=sharedSig();if(sig===lastSharedSig)return;lastSharedSig=sig;clearTimeout(pushTimer);pushTimer=setTimeout(()=>{const r=role();if(r==='parent')pushParent();else if(r==='bernardo'||r==='julia')pushChild(r)},450)}
 
 captureCode();
 if(baseSave30){save=function(){const x=baseSave30();queuePush();return x}}
 
 const baseEnter30=typeof enterSession==='function'?enterSession:null;
-if(baseEnter30){enterSession=function(r){const x=baseEnter30(r);setRoleClass();setTimeout(()=>{if(r==='parent')pushParent(true);else if(r==='bernardo'||r==='julia')pullChild(true)},120);return x}}
+if(baseEnter30){enterSession=function(r){const x=baseEnter30(r);setRoleClass();setTimeout(()=>{if(r==='parent')syncParent(true);else if(r==='bernardo'||r==='julia')pullChild(true)},120);return x}}
 const baseGate30=typeof renderProfileGate==='function'?renderProfileGate:null;
 if(baseGate30){renderProfileGate=function(){const x=baseGate30();setTimeout(()=>{addConnectButton();syncPinsOnly(false)},0);return x}}
 
