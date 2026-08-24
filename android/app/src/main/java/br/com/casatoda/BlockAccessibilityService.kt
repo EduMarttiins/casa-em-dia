@@ -50,7 +50,18 @@ class BlockAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg = event?.packageName?.toString()
-        if (!pkg.isNullOrBlank()) currentPackage = pkg
+        val cls = event?.className?.toString().orEmpty()
+        val isWindowEvent = event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+            event?.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+
+        val isOwnOverlayEvent = !pkg.isNullOrBlank() &&
+            pkg == packageName &&
+            overlay != null &&
+            cls != MainActivity::class.java.name
+
+        if (!pkg.isNullOrBlank() && !isOwnOverlayEvent && (isWindowEvent || currentPackage == null)) {
+            currentPackage = pkg
+        }
         evaluate()
     }
 
@@ -105,7 +116,18 @@ class BlockAccessibilityService : AccessibilityService() {
             return
         }
 
-        if (currentPackage in allowed) hideOverlay() else showOverlay(testActive)
+        val foreground = foregroundPackage()
+        if (foreground in allowed) hideOverlay() else showOverlay(testActive)
+    }
+
+    private fun foregroundPackage(): String? {
+        val rootPkg = runCatching { rootInActiveWindow?.packageName?.toString() }.getOrNull()
+        if (!rootPkg.isNullOrBlank()) {
+            if (!(overlay != null && rootPkg == packageName && currentPackage != packageName)) {
+                return rootPkg
+            }
+        }
+        return currentPackage
     }
 
     private fun maybePollRemoteTest() {
