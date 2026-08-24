@@ -1,0 +1,137 @@
+package br.com.casatoda
+
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.os.Bundle
+import android.provider.Settings
+import android.webkit.JavascriptInterface
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+
+class MainActivity : Activity() {
+    private lateinit var webView: WebView
+    private var permissionDialogVisible = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.statusBarColor = Color.rgb(91, 53, 201)
+        window.navigationBarColor = Color.WHITE
+
+        rememberDialerPackage()
+
+        webView = WebView(this)
+        setContentView(webView)
+
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            databaseEnabled = true
+            cacheMode = WebSettings.LOAD_DEFAULT
+            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            userAgentString = "$userAgentString CasaTodaAndroid/0.1"
+        }
+
+        webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val uri = request?.url ?: return false
+                return if (uri.scheme == "http" || uri.scheme == "https") {
+                    false
+                } else {
+                    runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
+                    true
+                }
+            }
+        }
+
+        if (savedInstanceState == null) {
+            webView.loadUrl("https://edumarttiins.github.io/casa-em-dia/?source=apk")
+        } else {
+            webView.restoreState(savedInstanceState)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        webView.saveState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isProtectionEnabled() && !permissionDialogVisible) {
+            permissionDialogVisible = true
+            AlertDialog.Builder(this)
+                .setTitle("Ativar CasaToda Proteção")
+                .setMessage("Para bloquear os aplicativos no horário definido, ative o serviço CasaToda Proteção em Acessibilidade. O Android mostra esse aviso porque o serviço precisa identificar qual aplicativo está na tela para aplicar o bloqueio.")
+                .setNegativeButton("Depois") { _, _ -> permissionDialogVisible = false }
+                .setPositiveButton("Ativar agora") { _, _ ->
+                    permissionDialogVisible = false
+                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                }
+                .setOnCancelListener { permissionDialogVisible = false }
+                .show()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
+    }
+
+    private fun isProtectionEnabled(): Boolean {
+        val component = ComponentName(this, BlockAccessibilityService::class.java).flattenToString()
+        val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
+        return enabled.split(':').any { it.equals(component, ignoreCase = true) }
+    }
+
+    private fun rememberDialerPackage() {
+        val dial = Intent(Intent.ACTION_DIAL, Uri.parse("tel:"))
+        val resolved = dial.resolveActivity(packageManager)?.packageName ?: return
+        getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY_DIALER, resolved).apply()
+    }
+
+    class CasaTodaBridge(private val activity: MainActivity) {
+        private val prefs = activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+
+        @JavascriptInterface
+        fun setChildSchedule(childId: String, baseMinutes: Int, lostMinutes: Int, gainedMinutes: Int) {
+            val base = baseMinutes.coerceIn(0, 1439)
+            val cutoff = (base - lostMinutes.coerceAtLeast(0) + gainedMinutes.coerceAtLeast(0)).coerceIn(0, 1439)
+            prefs.edit()
+                .putBoolean(KEY_ENABLED, true)
+                .putString(KEY_CHILD_ID, childId)
+                .putInt(KEY_BASE_MINUTES, base)
+                .putInt(KEY_CUTOFF_MINUTES, cutoff)
+                .apply()
+            activity.sendBroadcast(Intent(ACTION_REFRESH))
+        }
+
+        @JavascriptInterface
+        fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
+
+        @JavascriptInterface
+        fun openProtectionSettings() {
+            activity.runOnUiThread {
+                activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }
+        }
+    }
+
+    companion object {
+        const val PREFS = "casatoda_native"
+        const val KEY_ENABLED = "block_enabled"
+        const val KEY_CHILD_ID = "child_id"
+        const val KEY_BASE_MINUTES = "base_minutes"
+        const val KEY_CUTOFF_MINUTES = "cutoff_minutes"
+        const val KEY_WAKE_MINUTES = "wake_minutes"
+        const val KEY_DIALER = "dialer_package"
+        const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
+    }
+}
