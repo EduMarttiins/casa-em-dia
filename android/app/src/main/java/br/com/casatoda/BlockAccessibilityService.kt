@@ -27,7 +27,7 @@ class BlockAccessibilityService : AccessibilityService() {
     private val ticker = object : Runnable {
         override fun run() {
             evaluate()
-            handler.postDelayed(this, 10_000)
+            handler.postDelayed(this, 2_000)
         }
     }
 
@@ -55,7 +55,15 @@ class BlockAccessibilityService : AccessibilityService() {
     private fun evaluate() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val enabled = prefs.getBoolean(MainActivity.KEY_ENABLED, false)
-        if (!enabled || !isBlockedNow(prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320), prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360))) {
+        val pauseUntil = prefs.getLong(MainActivity.KEY_PAUSE_UNTIL, 0L)
+        if (!enabled || System.currentTimeMillis() < pauseUntil) {
+            hideOverlay()
+            return
+        }
+
+        val cutoff = prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320)
+        val wake = prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)
+        if (!isBlockedNow(cutoff, wake)) {
             hideOverlay()
             return
         }
@@ -117,7 +125,8 @@ class BlockAccessibilityService : AccessibilityService() {
             setOnClickListener {
                 hideOverlay()
                 val i = Intent(this@BlockAccessibilityService, MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    putExtra(MainActivity.EXTRA_PARENT_UNLOCK, true)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
                 startActivity(i)
             }
@@ -131,7 +140,7 @@ class BlockAccessibilityService : AccessibilityService() {
             }
         }
         val note = TextView(this).apply {
-            text = "O bloqueio volta automaticamente ao abrir outro aplicativo."
+            text = "Pais podem liberar o aparelho por 15 minutos usando o código da família."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))

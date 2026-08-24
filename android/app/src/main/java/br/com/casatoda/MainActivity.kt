@@ -9,11 +9,14 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.EditText
+import android.widget.Toast
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
@@ -35,7 +38,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.2"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.3"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -56,6 +59,14 @@ class MainActivity : Activity() {
         } else {
             webView.restoreState(savedInstanceState)
         }
+
+        maybeShowParentUnlock(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        maybeShowParentUnlock(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -111,6 +122,53 @@ class MainActivity : Activity() {
         getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY_DIALER, resolved).apply()
     }
 
+    private fun maybeShowParentUnlock(sourceIntent: Intent?) {
+        if (sourceIntent?.getBooleanExtra(EXTRA_PARENT_UNLOCK, false) != true) return
+        sourceIntent.removeExtra(EXTRA_PARENT_UNLOCK)
+        val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val expected = (prefs.getString(KEY_FAMILY_CODE, "") ?: "").trim().uppercase()
+        if (expected.isBlank()) {
+            AlertDialog.Builder(this)
+                .setTitle("Desbloqueio dos pais")
+                .setMessage("Este aparelho ainda não recebeu o código da família. Para recuperar o acesso agora, desative temporariamente CasaToda Proteção em Configurações > Acessibilidade. Depois abra o CasaToda para sincronizar novamente.")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Abrir Acessibilidade") { _, _ -> startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+                .show()
+            return
+        }
+
+        val input = EditText(this).apply {
+            hint = "Código da família"
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+            setSingleLine(true)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Desbloqueio dos pais")
+            .setMessage("Digite o código da família para liberar este aparelho por 15 minutos.")
+            .setView(input)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Desbloquear") { _, _ ->
+                val typed = input.text.toString().trim().uppercase()
+                if (typed == expected) {
+                    prefs.edit().putLong(KEY_PAUSE_UNTIL, System.currentTimeMillis() + 15L * 60L * 1000L).apply()
+                    sendBroadcast(Intent(ACTION_REFRESH))
+                    Toast.makeText(this, "CasaToda liberado por 15 minutos", Toast.LENGTH_LONG).show()
+                    goHome()
+                } else {
+                    Toast.makeText(this, "Código da família incorreto", Toast.LENGTH_LONG).show()
+                }
+            }
+            .show()
+    }
+
+    private fun goHome() {
+        val home = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(home)
+    }
+
     class CasaTodaBridge(private val activity: MainActivity) {
         private val prefs = activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
@@ -123,9 +181,23 @@ class MainActivity : Activity() {
                 .putString(KEY_CHILD_ID, childId)
                 .putInt(KEY_BASE_MINUTES, base)
                 .putInt(KEY_CUTOFF_MINUTES, cutoff)
+                .putInt(KEY_WAKE_MINUTES, prefs.getInt(KEY_WAKE_MINUTES, 360))
+                .putLong(KEY_LAST_SCHEDULE_SYNC, System.currentTimeMillis())
                 .apply()
             activity.sendBroadcast(Intent(ACTION_REFRESH))
         }
+
+        @JavascriptInterface
+        fun setFamilyCode(code: String) {
+            val normalized = code.trim().uppercase()
+            if (normalized.isNotBlank()) prefs.edit().putString(KEY_FAMILY_CODE, normalized).apply()
+        }
+
+        @JavascriptInterface
+        fun getFamilyCode(): String = prefs.getString(KEY_FAMILY_CODE, "") ?: ""
+
+        @JavascriptInterface
+        fun getChildId(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
         fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
@@ -151,6 +223,10 @@ class MainActivity : Activity() {
         const val KEY_CUTOFF_MINUTES = "cutoff_minutes"
         const val KEY_WAKE_MINUTES = "wake_minutes"
         const val KEY_DIALER = "dialer_package"
+        const val KEY_FAMILY_CODE = "family_code"
+        const val KEY_PAUSE_UNTIL = "pause_until"
+        const val KEY_LAST_SCHEDULE_SYNC = "last_schedule_sync"
         const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
+        const val EXTRA_PARENT_UNLOCK = "parent_unlock"
     }
 }
