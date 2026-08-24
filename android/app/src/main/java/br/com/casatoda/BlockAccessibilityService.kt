@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -16,14 +17,22 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.Calendar
+import java.util.concurrent.Executors
 
 class BlockAccessibilityService : AccessibilityService() {
     private val handler = Handler(Looper.getMainLooper())
+    private val networkExecutor = Executors.newSingleThreadExecutor()
     private lateinit var wm: WindowManager
     private var overlay: View? = null
     private var currentPackage: String? = null
     private var overlayTestMode = false
+    @Volatile private var remotePolling = false
+    private var lastRemotePoll = 0L
 
     private val ticker = object : Runnable {
         override fun run() {
@@ -49,11 +58,14 @@ class BlockAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         handler.removeCallbacks(ticker)
+        networkExecutor.shutdownNow()
         hideOverlay()
         super.onDestroy()
     }
 
     private fun evaluate() {
+        maybePollRemoteTest()
+
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
         val unlockUntil = prefs.getLong(MainActivity.KEY_UNLOCK_UNTIL, 0L)
@@ -94,6 +106,70 @@ class BlockAccessibilityService : AccessibilityService() {
         }
 
         if (currentPackage in allowed) hideOverlay() else showOverlay(testActive)
+    }
+
+    private fun maybePollRemoteTest() {
+        val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
+        val code = (prefs.getString(MainActivity.KEY_FAMILY_CODE, "") ?: "").trim().uppercase()
+        val childId = (prefs.getString(MainActivity.KEY_CHILD_ID, "") ?: "").trim().lowercase()
+        if (code.isBlank() || childId.isBlank()) return
+
+        val now = System.currentTimeMillis()
+        if (remotePolling || now - lastRemotePoll < 2_500L) return
+        remotePolling = true
+        lastRemotePoll = now
+
+        networkExecutor.execute {
+            try {
+                val connection = (URL("$SB_URL/rest/v1/rpc/casatoda_get_state").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    connectTimeout = 5_000
+                    readTimeout = 5_000
+                    doOutput = true
+                    setRequestProperty("Content-Type", "application/json")
+                    setRequestProperty("apikey", SB_KEY)
+                    setRequestProperty("Authorization", "Bearer $SB_KEY")
+                }
+
+                val body = JSONObject().put("p_code", code).toString()
+                connection.outputStream.use { it.write(body.toByteArray(Charsets.UTF_8)) }
+                val responseCode = connection.responseCode
+                if (responseCode !in 200..299) {
+                    connection.disconnect()
+                    return@execute
+                }
+
+                val text = connection.inputStream.bufferedReader().use { it.readText() }
+                connection.disconnect()
+                val rows = JSONArray(text)
+                if (rows.length() == 0) return@execute
+                val state = rows.optJSONObject(0)?.optJSONObject("state") ?: return@execute
+                val command = state.optJSONObject("protectionTest") ?: return@execute
+                val target = command.optString("target", "").trim().lowercase()
+                val nonce = command.optString("nonce", "").trim()
+                if (target != childId || nonce.isBlank()) return@execute
+
+                val lastNonce = prefs.getString(KEY_LAST_REMOTE_TEST_NONCE, "") ?: ""
+                if (lastNonce == nonce) return@execute
+
+                val requestedAt = command.optLong("requestedAt", 0L)
+                val age = System.currentTimeMillis() - requestedAt
+                if (requestedAt <= 0L || age < -60_000L || age > 5L * 60L * 1000L) return@execute
+
+                val seconds = command.optInt("seconds", 30).coerceIn(10, 120)
+                prefs.edit()
+                    .putString(KEY_LAST_REMOTE_TEST_NONCE, nonce)
+                    .putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L)
+                    .apply()
+
+                Log.i("CasaToda", "Teste remoto recebido para $childId")
+                handler.post { evaluate() }
+            } catch (e: Exception) {
+                Log.w("CasaToda", "Falha ao consultar teste remoto", e)
+            } finally {
+                remotePolling = false
+            }
+        }
     }
 
     private fun isBlockedNow(cutoff: Int, wake: Int): Boolean {
@@ -195,5 +271,11 @@ class BlockAccessibilityService : AccessibilityService() {
         runCatching { wm.removeView(v) }
         overlay = null
         overlayTestMode = false
+    }
+
+    companion object {
+        private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
+        private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
+        private const val KEY_LAST_REMOTE_TEST_NONCE = "last_remote_test_nonce"
     }
 }
