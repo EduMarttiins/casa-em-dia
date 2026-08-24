@@ -37,7 +37,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.5"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.6"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -180,6 +180,9 @@ class MainActivity : Activity() {
 
         @JavascriptInterface
         fun getFamilyCode(): String = prefs.getString(KEY_FAMILY_CODE, "") ?: ""
+
+        @JavascriptInterface
+        fun getChildId(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
         fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
