@@ -146,7 +146,7 @@ class BlockAccessibilityService : AccessibilityService() {
                 if (stateRows.length() > 0) {
                     val state = stateRows.optJSONObject(0)?.optJSONObject("state")
                     if (state != null) {
-                        updateScheduleFromState(state, childId, prefs)
+                        if (childId != "irmaos") updateScheduleFromState(state, childId, prefs)
                         processProtectionTest(state, childId, prefs)
                     }
                 }
@@ -158,8 +158,15 @@ class BlockAccessibilityService : AccessibilityService() {
                 if (controlRows.length() > 0) {
                     val row = controlRows.optJSONObject(0)
                     if (row != null) {
+                        val block = row.optInt("block_minutes", 1320).coerceIn(0, 1439)
                         val wake = row.optInt("wake_minutes", 360).coerceIn(0, 1439)
-                        prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake).apply()
+                        val editor = prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake)
+                        if (childId == "irmaos") {
+                            editor.putInt(MainActivity.KEY_BASE_MINUTES, block)
+                                .putInt(MainActivity.KEY_CUTOFF_MINUTES, block)
+                                .putBoolean(MainActivity.KEY_ENABLED, true)
+                        }
+                        editor.apply()
                         processDeviceCommand(row.optJSONObject("command"), prefs)
                     }
                 }
@@ -268,10 +275,6 @@ class BlockAccessibilityService : AccessibilityService() {
         hideOverlay()
         overlayTestMode = testMode
 
-        val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
-        val wake = prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)
-        val wakeText = String.format(Locale.getDefault(), "%02d:%02d", wake / 60, wake % 60)
-
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
@@ -298,7 +301,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Este é apenas um teste. O aparelho será liberado automaticamente em até 30 segundos."
             else
-                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até $wakeText."
+                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até o horário de liberação configurado."
             textSize = 16f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(220, 216, 235))
@@ -327,7 +330,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Nenhuma alteração permanente foi feita no horário."
             else
-                "Se necessário, seus responsáveis podem liberar o aparelho remotamente pelo CasaToda."
+                "Para liberar temporariamente, use o aplicativo dos Pais ou toque em Desbloqueio dos pais e digite o código da família."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))
