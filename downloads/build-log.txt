@@ -1,0 +1,58 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugResValues
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeDebugNativeLibs NO-SOURCE
+> Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:checkDebugDuplicateClasses
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:mergeLibDexDebug
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:mergeExtDexDebug
+
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:91:13 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:91:39 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:91:73 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:91:112 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:24:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:25:16 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:35:13 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:85:62 'fun onBackPressed(): Unit' is deprecated. Deprecated in Java.
+
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787593775541.json
+
+BUILD SUCCESSFUL in 24s
+33 actionable tasks: 33 executed
