@@ -21,7 +21,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.Executors
 
 class BlockAccessibilityService : AccessibilityService() {
@@ -53,11 +56,7 @@ class BlockAccessibilityService : AccessibilityService() {
         val cls = event?.className?.toString().orEmpty()
         val isWindowEvent = event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
             event?.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-
-        val isOwnOverlayEvent = !pkg.isNullOrBlank() &&
-            pkg == packageName &&
-            overlay != null &&
-            cls != MainActivity::class.java.name
+        val isOwnOverlayEvent = !pkg.isNullOrBlank() && pkg == packageName && overlay != null && cls != MainActivity::class.java.name
 
         if (!pkg.isNullOrBlank() && !isOwnOverlayEvent && (isWindowEvent || currentPackage == null)) {
             currentPackage = pkg
@@ -75,7 +74,7 @@ class BlockAccessibilityService : AccessibilityService() {
     }
 
     private fun evaluate() {
-        maybePollRemoteTest()
+        maybePollRemoteState()
 
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
@@ -83,7 +82,9 @@ class BlockAccessibilityService : AccessibilityService() {
         if (unlockUntil > now) {
             hideOverlay()
             return
-        } else if (unlockUntil > 0L) prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
+        } else if (unlockUntil > 0L) {
+            prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
+        }
 
         val enabled = prefs.getBoolean(MainActivity.KEY_ENABLED, false)
         if (!enabled) {
@@ -123,14 +124,12 @@ class BlockAccessibilityService : AccessibilityService() {
     private fun foregroundPackage(): String? {
         val rootPkg = runCatching { rootInActiveWindow?.packageName?.toString() }.getOrNull()
         if (!rootPkg.isNullOrBlank()) {
-            if (!(overlay != null && rootPkg == packageName && currentPackage != packageName)) {
-                return rootPkg
-            }
+            if (!(overlay != null && rootPkg == packageName && currentPackage != packageName)) return rootPkg
         }
         return currentPackage
     }
 
-    private fun maybePollRemoteTest() {
+    private fun maybePollRemoteState() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val code = (prefs.getString(MainActivity.KEY_FAMILY_CODE, "") ?: "").trim().uppercase()
         val childId = (prefs.getString(MainActivity.KEY_CHILD_ID, "") ?: "").trim().lowercase()
@@ -143,55 +142,119 @@ class BlockAccessibilityService : AccessibilityService() {
 
         networkExecutor.execute {
             try {
-                val connection = (URL("$SB_URL/rest/v1/rpc/casatoda_get_state").openConnection() as HttpURLConnection).apply {
-                    requestMethod = "POST"
-                    connectTimeout = 5_000
-                    readTimeout = 5_000
-                    doOutput = true
-                    setRequestProperty("Content-Type", "application/json")
-                    setRequestProperty("apikey", SB_KEY)
-                    setRequestProperty("Authorization", "Bearer $SB_KEY")
+                val stateRows = postRpc("casatoda_get_state", JSONObject().put("p_code", code))
+                if (stateRows.length() > 0) {
+                    val state = stateRows.optJSONObject(0)?.optJSONObject("state")
+                    if (state != null) {
+                        updateScheduleFromState(state, childId, prefs)
+                        processProtectionTest(state, childId, prefs)
+                    }
                 }
 
-                val body = JSONObject().put("p_code", code).toString()
-                connection.outputStream.use { it.write(body.toByteArray(Charsets.UTF_8)) }
-                val responseCode = connection.responseCode
-                if (responseCode !in 200..299) {
-                    connection.disconnect()
-                    return@execute
+                val controlRows = postRpc(
+                    "casatoda_get_device_control",
+                    JSONObject().put("p_code", code).put("p_child_id", childId)
+                )
+                if (controlRows.length() > 0) {
+                    val row = controlRows.optJSONObject(0)
+                    if (row != null) {
+                        val wake = row.optInt("wake_minutes", 360).coerceIn(0, 1439)
+                        prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake).apply()
+                        processDeviceCommand(row.optJSONObject("command"), prefs)
+                    }
                 }
 
-                val text = connection.inputStream.bufferedReader().use { it.readText() }
-                connection.disconnect()
-                val rows = JSONArray(text)
-                if (rows.length() == 0) return@execute
-                val state = rows.optJSONObject(0)?.optJSONObject("state") ?: return@execute
-                val command = state.optJSONObject("protectionTest") ?: return@execute
-                val target = command.optString("target", "").trim().lowercase()
-                val nonce = command.optString("nonce", "").trim()
-                if (target != childId || nonce.isBlank()) return@execute
-
-                val lastNonce = prefs.getString(KEY_LAST_REMOTE_TEST_NONCE, "") ?: ""
-                if (lastNonce == nonce) return@execute
-
-                val requestedAt = command.optLong("requestedAt", 0L)
-                val age = System.currentTimeMillis() - requestedAt
-                if (requestedAt <= 0L || age < -60_000L || age > 5L * 60L * 1000L) return@execute
-
-                val seconds = command.optInt("seconds", 30).coerceIn(10, 120)
-                prefs.edit()
-                    .putString(KEY_LAST_REMOTE_TEST_NONCE, nonce)
-                    .putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L)
-                    .apply()
-
-                Log.i("CasaToda", "Teste remoto recebido para $childId")
                 handler.post { evaluate() }
             } catch (e: Exception) {
-                Log.w("CasaToda", "Falha ao consultar teste remoto", e)
+                Log.w("CasaToda", "Falha ao atualizar controle remoto", e)
             } finally {
                 remotePolling = false
             }
         }
+    }
+
+    private fun postRpc(name: String, body: JSONObject): JSONArray {
+        val connection = (URL("$SB_URL/rest/v1/rpc/$name").openConnection() as HttpURLConnection).apply {
+            requestMethod = "POST"
+            connectTimeout = 5_000
+            readTimeout = 5_000
+            doOutput = true
+            setRequestProperty("Content-Type", "application/json")
+            setRequestProperty("apikey", SB_KEY)
+            setRequestProperty("Authorization", "Bearer $SB_KEY")
+        }
+        connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
+        val responseCode = connection.responseCode
+        if (responseCode !in 200..299) {
+            connection.disconnect()
+            throw IllegalStateException("RPC $name retornou $responseCode")
+        }
+        val text = connection.inputStream.bufferedReader().use { it.readText() }
+        connection.disconnect()
+        return JSONArray(text)
+    }
+
+    private fun updateScheduleFromState(state: JSONObject, childId: String, prefs: android.content.SharedPreferences) {
+        val settings = state.optJSONObject("settings")
+        val base = settings?.optJSONObject("cutoffMinutes")?.optInt(childId, 1320)?.coerceIn(0, 1439) ?: 1320
+        val dateKey = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        val childDay = state.optJSONObject("days")
+            ?.optJSONObject(dateKey)
+            ?.optJSONObject("children")
+            ?.optJSONObject(childId)
+        val lost = childDay?.optInt("lost", 0)?.coerceAtLeast(0) ?: 0
+        val gained = childDay?.optInt("gained", 0)?.coerceAtLeast(0) ?: 0
+        val finalCutoff = (base - lost + gained).coerceIn(0, 1439)
+
+        prefs.edit()
+            .putBoolean(MainActivity.KEY_ENABLED, true)
+            .putInt(MainActivity.KEY_BASE_MINUTES, base)
+            .putInt(MainActivity.KEY_CUTOFF_MINUTES, finalCutoff)
+            .apply()
+    }
+
+    private fun processProtectionTest(state: JSONObject, childId: String, prefs: android.content.SharedPreferences) {
+        val command = state.optJSONObject("protectionTest") ?: return
+        val target = command.optString("target", "").trim().lowercase()
+        val nonce = command.optString("nonce", "").trim()
+        if (target != childId || nonce.isBlank()) return
+
+        val lastNonce = prefs.getString(KEY_LAST_REMOTE_TEST_NONCE, "") ?: ""
+        if (lastNonce == nonce) return
+
+        val requestedAt = command.optLong("requestedAt", 0L)
+        val age = System.currentTimeMillis() - requestedAt
+        if (requestedAt <= 0L || age < -60_000L || age > 5L * 60L * 1000L) return
+
+        val seconds = command.optInt("seconds", 30).coerceIn(10, 120)
+        prefs.edit()
+            .putString(KEY_LAST_REMOTE_TEST_NONCE, nonce)
+            .putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L)
+            .apply()
+        Log.i("CasaToda", "Teste remoto recebido para $childId")
+    }
+
+    private fun processDeviceCommand(command: JSONObject?, prefs: android.content.SharedPreferences) {
+        if (command == null) return
+        val nonce = command.optString("nonce", "").trim()
+        if (nonce.isBlank()) return
+        val last = prefs.getString(KEY_LAST_DEVICE_COMMAND_NONCE, "") ?: ""
+        if (last == nonce) return
+
+        when (command.optString("action", "")) {
+            "unlock" -> {
+                val until = command.optLong("untilMs", 0L)
+                if (until > System.currentTimeMillis()) {
+                    prefs.edit().putLong(MainActivity.KEY_UNLOCK_UNTIL, until).apply()
+                    Log.i("CasaToda", "Desbloqueio remoto aplicado")
+                }
+            }
+            "resume" -> {
+                prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
+                Log.i("CasaToda", "Regra normal reaplicada")
+            }
+        }
+        prefs.edit().putString(KEY_LAST_DEVICE_COMMAND_NONCE, nonce).apply()
     }
 
     private fun isBlockedNow(cutoff: Int, wake: Int): Boolean {
@@ -204,6 +267,10 @@ class BlockAccessibilityService : AccessibilityService() {
         if (overlay != null && overlayTestMode == testMode) return
         hideOverlay()
         overlayTestMode = testMode
+
+        val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
+        val wake = prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)
+        val wakeText = String.format(Locale.getDefault(), "%02d:%02d", wake / 60, wake % 60)
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -231,7 +298,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Este é apenas um teste. O aparelho será liberado automaticamente em até 30 segundos."
             else
-                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até amanhã de manhã."
+                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até $wakeText."
             textSize = 16f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(220, 216, 235))
@@ -260,7 +327,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Nenhuma alteração permanente foi feita no horário."
             else
-                "Para liberar temporariamente, toque em Desbloqueio dos pais e digite o código da família."
+                "Se necessário, seus responsáveis podem liberar o aparelho remotamente pelo CasaToda."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))
@@ -299,5 +366,6 @@ class BlockAccessibilityService : AccessibilityService() {
         private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
         private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
         private const val KEY_LAST_REMOTE_TEST_NONCE = "last_remote_test_nonce"
+        private const val KEY_LAST_DEVICE_COMMAND_NONCE = "last_device_command_nonce"
     }
 }
