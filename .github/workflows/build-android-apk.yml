@@ -9,7 +9,7 @@ on:
       - ".github/workflows/build-android-apk.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -36,9 +36,53 @@ jobs:
           gradle-version: "8.9"
 
       - name: Build debug APK
-        run: gradle -p android :app:assembleDebug
+        id: build_apk
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p downloads
+          set +e
+          gradle -p android :app:assembleDebug 2>&1 | tee downloads/build-log.txt
+          CODE=${PIPESTATUS[0]}
+          echo "exit_code=$CODE" >> "$GITHUB_OUTPUT"
+          exit 0
 
-      - name: Upload APK
+      - name: Prepare public test package
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p downloads
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          if [ -f "$APK" ]; then
+            cp "$APK" downloads/CasaToda-Filhos-Teste.apk
+            {
+              echo "SUCESSO"
+              echo "APK gerado em $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+              echo "Commit: $GITHUB_SHA"
+            } > downloads/build-status.txt
+          else
+            {
+              echo "FALHA"
+              echo "O APK não foi gerado."
+              echo "Commit: $GITHUB_SHA"
+              echo "Código do Gradle: ${{ steps.build_apk.outputs.exit_code }}"
+            } > downloads/build-status.txt
+          fi
+
+      - name: Commit APK and build status
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "CasaToda Builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add downloads
+          if ! git diff --cached --quiet; then
+            git commit -m "Android: atualizar APK de teste"
+            git push origin HEAD:main
+          fi
+
+      - name: Upload APK artifact
+        if: ${{ hashFiles('android/app/build/outputs/apk/debug/app-debug.apk') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: CasaToda-child-debug
