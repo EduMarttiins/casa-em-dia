@@ -37,7 +37,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.6"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.9"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -161,16 +161,35 @@ class MainActivity : Activity() {
 
         @JavascriptInterface
         fun setChildSchedule(childId: String, baseMinutes: Int, lostMinutes: Int, gainedMinutes: Int) {
+            val normalized = childId.trim().lowercase()
+            if (normalized !in setOf("bernardo", "julia")) return
             val base = baseMinutes.coerceIn(0, 1439)
             val cutoff = (base - lostMinutes.coerceAtLeast(0) + gainedMinutes.coerceAtLeast(0)).coerceIn(0, 1439)
             prefs.edit()
                 .putBoolean(KEY_ENABLED, true)
-                .putString(KEY_CHILD_ID, childId)
+                .putString(KEY_CHILD_ID, normalized)
                 .putInt(KEY_BASE_MINUTES, base)
                 .putInt(KEY_CUTOFF_MINUTES, cutoff)
                 .apply()
             activity.sendBroadcast(Intent(ACTION_REFRESH))
         }
+
+        @JavascriptInterface
+        fun setDeviceProfile(deviceId: String) {
+            val normalized = deviceId.trim().lowercase()
+            if (normalized !in setOf("bernardo", "julia", "irmaos")) return
+            val editor = prefs.edit()
+                .putBoolean(KEY_ENABLED, true)
+                .putString(KEY_CHILD_ID, normalized)
+            if (!prefs.contains(KEY_CUTOFF_MINUTES)) editor.putInt(KEY_CUTOFF_MINUTES, 1320)
+            if (!prefs.contains(KEY_BASE_MINUTES)) editor.putInt(KEY_BASE_MINUTES, 1320)
+            if (!prefs.contains(KEY_WAKE_MINUTES)) editor.putInt(KEY_WAKE_MINUTES, 360)
+            editor.apply()
+            activity.sendBroadcast(Intent(ACTION_REFRESH))
+        }
+
+        @JavascriptInterface
+        fun getDeviceProfile(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
         fun setFamilyCode(code: String) {
