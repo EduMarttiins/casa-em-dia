@@ -142,10 +142,9 @@ class BlockAccessibilityService : AccessibilityService() {
         val parentButton = Button(this).apply {
             text = "Desbloqueio dos pais"
             setOnClickListener {
-                val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
-                prefs.edit().putBoolean(MainActivity.KEY_PARENT_UNLOCK_REQUESTED, true).apply()
                 hideOverlay()
                 val i = Intent(this@BlockAccessibilityService, MainActivity::class.java).apply {
+                    putExtra(MainActivity.EXTRA_PARENT_UNLOCK, true)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
                 startActivity(i)
@@ -163,7 +162,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Nenhuma alteração permanente foi feita no horário."
             else
-                "Para liberar temporariamente, toque em Desbloqueio dos pais, entre no perfil Pais e confirme o PIN."
+                "Para liberar temporariamente, toque em Desbloqueio dos pais e digite o código da família."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))
