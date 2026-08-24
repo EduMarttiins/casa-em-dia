@@ -8,10 +8,15 @@ on:
       - "v35.js"
       - "v37.js"
       - "v42.js"
+      - "v43.js"
       - ".github/workflows/build-android-apk.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: casatoda-android-apk
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -80,11 +85,18 @@ jobs:
           git add downloads
           if ! git diff --cached --quiet; then
             git commit -m "Android: atualizar APK de teste"
-            git push origin HEAD:main
+            for attempt in 1 2 3; do
+              if git pull --rebase origin main && git push origin HEAD:main; then
+                exit 0
+              fi
+              git rebase --abort || true
+              sleep 3
+            done
+            exit 1
           fi
 
       - name: Upload APK artifact
-        if: ${{ hashFiles('android/app/build/outputs/apk/debug/app-debug.apk') != '' }}
+        if: ${{ always() && hashFiles('android/app/build/outputs/apk/debug/app-debug.apk') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: CasaToda-child-debug
