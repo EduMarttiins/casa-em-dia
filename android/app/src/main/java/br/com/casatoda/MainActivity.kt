@@ -23,7 +23,6 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = Color.rgb(91, 53, 201)
         window.navigationBarColor = Color.WHITE
-
         rememberDialerPackage()
 
         webView = WebView(this)
@@ -35,27 +34,23 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.3"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.4"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 val uri = request?.url ?: return false
-                return if (uri.scheme == "http" || uri.scheme == "https") {
-                    false
-                } else {
+                return if (uri.scheme == "http" || uri.scheme == "https") false
+                else {
                     runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
                     true
                 }
             }
         }
 
-        if (savedInstanceState == null) {
-            webView.loadUrl("https://edumarttiins.github.io/casa-em-dia/?source=apk")
-        } else {
-            webView.restoreState(savedInstanceState)
-        }
+        if (savedInstanceState == null) webView.loadUrl("https://edumarttiins.github.io/casa-em-dia/?source=apk")
+        else webView.restoreState(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -69,19 +64,10 @@ class MainActivity : Activity() {
             permissionDialogVisible = true
             AlertDialog.Builder(this)
                 .setTitle("Ativar CasaToda Proteção")
-                .setMessage(
-                    "Para bloquear os aplicativos no horário definido, ative CasaToda Proteção em Acessibilidade.\n\n" +
-                    "Se CasaToda Proteção não aparecer ou estiver bloqueado, abra Informações do app, toque no menu de três pontos e escolha Permitir configurações restritas. Depois volte para Acessibilidade."
-                )
+                .setMessage("Para bloquear os aplicativos no horário definido, ative CasaToda Proteção em Acessibilidade.\n\nSe estiver bloqueado, abra Informações do app e escolha Permitir configurações restritas.")
                 .setNegativeButton("Depois") { _, _ -> permissionDialogVisible = false }
-                .setNeutralButton("Informações do app") { _, _ ->
-                    permissionDialogVisible = false
-                    openAppInfo()
-                }
-                .setPositiveButton("Abrir Acessibilidade") { _, _ ->
-                    permissionDialogVisible = false
-                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                }
+                .setNeutralButton("Informações do app") { _, _ -> permissionDialogVisible = false; openAppInfo() }
+                .setPositiveButton("Abrir Acessibilidade") { _, _ -> permissionDialogVisible = false; startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
                 .setOnCancelListener { permissionDialogVisible = false }
                 .show()
         }
@@ -99,9 +85,7 @@ class MainActivity : Activity() {
     }
 
     private fun openAppInfo() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.parse("package:$packageName")
-        }
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply { data = Uri.parse("package:$packageName") }
         startActivity(intent)
     }
 
@@ -137,10 +121,7 @@ class MainActivity : Activity() {
         fun grantParentUnlock(minutes: Int) {
             val safeMinutes = minutes.coerceIn(5, 120)
             val until = System.currentTimeMillis() + safeMinutes * 60_000L
-            prefs.edit()
-                .putLong(KEY_UNLOCK_UNTIL, until)
-                .putBoolean(KEY_PARENT_UNLOCK_REQUESTED, false)
-                .apply()
+            prefs.edit().putLong(KEY_UNLOCK_UNTIL, until).putBoolean(KEY_PARENT_UNLOCK_REQUESTED, false).apply()
             activity.sendBroadcast(Intent(ACTION_REFRESH))
         }
 
@@ -150,10 +131,15 @@ class MainActivity : Activity() {
         }
 
         @JavascriptInterface
+        fun startProtectionTest(seconds: Int) {
+            val safeSeconds = seconds.coerceIn(10, 120)
+            prefs.edit().putLong(KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + safeSeconds * 1000L).apply()
+            activity.sendBroadcast(Intent(ACTION_REFRESH))
+        }
+
+        @JavascriptInterface
         fun openProtectionSettings() {
-            activity.runOnUiThread {
-                activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-            }
+            activity.runOnUiThread { activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         }
 
         @JavascriptInterface
@@ -172,6 +158,7 @@ class MainActivity : Activity() {
         const val KEY_DIALER = "dialer_package"
         const val KEY_PARENT_UNLOCK_REQUESTED = "parent_unlock_requested"
         const val KEY_UNLOCK_UNTIL = "unlock_until"
+        const val KEY_TEST_BLOCK_UNTIL = "test_block_until"
         const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
     }
 }
