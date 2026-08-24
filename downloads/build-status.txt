@@ -1,4 +1,3 @@
-FALHA
-O APK não foi gerado.
-Commit: cd0f0485ad832d8129e7a72ecaacfcf25105356e
-Código do Gradle: 
+SUCESSO
+APK gerado em 2026-08-24 23:25:34 UTC
+Commit: 38d24005ecdfbeb5a626df2ecf042aab4685a0f6

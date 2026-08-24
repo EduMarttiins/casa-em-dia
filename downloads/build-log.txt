@@ -14,7 +14,6 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
@@ -23,21 +22,22 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
 > Task :app:mergeDebugJniLibFolders
+> Task :app:processDebugManifestForPackage
+> Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugNativeLibs NO-SOURCE
 > Task :app:stripDebugDebugSymbols NO-SOURCE
-> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeLibDexDebug
 > Task :app:processDebugResources
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeLibDexDebug
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:mergeExtDexDebug
 
 > Task :app:compileDebugKotlin
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:283:13 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:283:39 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:283:73 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:283:112 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:325:13 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:325:39 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:325:73 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:325:112 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:27:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:28:16 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
 w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:37:13 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
@@ -52,7 +52,7 @@ w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787612155815.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787613912231.json
 
-BUILD SUCCESSFUL in 23s
+BUILD SUCCESSFUL in 26s
 33 actionable tasks: 33 executed
