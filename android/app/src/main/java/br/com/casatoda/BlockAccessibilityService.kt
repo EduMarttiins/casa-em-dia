@@ -36,6 +36,7 @@ class BlockAccessibilityService : AccessibilityService() {
     private var overlayTestMode = false
     @Volatile private var remotePolling = false
     private var lastRemotePoll = 0L
+    private var lastHeartbeat = 0L
 
     private val ticker = object : Runnable {
         override fun run() {
@@ -139,9 +140,24 @@ class BlockAccessibilityService : AccessibilityService() {
         if (remotePolling || now - lastRemotePoll < 2_500L) return
         remotePolling = true
         lastRemotePoll = now
+        val sendHeartbeat = now - lastHeartbeat >= 15_000L
+        if (sendHeartbeat) lastHeartbeat = now
 
         networkExecutor.execute {
             try {
+                if (sendHeartbeat) {
+                    runCatching {
+                        postRpcBoolean(
+                            "casatoda_device_heartbeat",
+                            JSONObject()
+                                .put("p_code", code)
+                                .put("p_child_id", childId)
+                                .put("p_protection_enabled", true)
+                                .put("p_apk_version", APK_VERSION)
+                        )
+                    }
+                }
+
                 val stateRows = postRpc("casatoda_get_state", JSONObject().put("p_code", code))
                 if (stateRows.length() > 0) {
                     val state = stateRows.optJSONObject(0)?.optJSONObject("state")
@@ -181,15 +197,7 @@ class BlockAccessibilityService : AccessibilityService() {
     }
 
     private fun postRpc(name: String, body: JSONObject): JSONArray {
-        val connection = (URL("$SB_URL/rest/v1/rpc/$name").openConnection() as HttpURLConnection).apply {
-            requestMethod = "POST"
-            connectTimeout = 5_000
-            readTimeout = 5_000
-            doOutput = true
-            setRequestProperty("Content-Type", "application/json")
-            setRequestProperty("apikey", SB_KEY)
-            setRequestProperty("Authorization", "Bearer $SB_KEY")
-        }
+        val connection = openRpcConnection(name)
         connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
         val responseCode = connection.responseCode
         if (responseCode !in 200..299) {
@@ -199,6 +207,31 @@ class BlockAccessibilityService : AccessibilityService() {
         val text = connection.inputStream.bufferedReader().use { it.readText() }
         connection.disconnect()
         return JSONArray(text)
+    }
+
+    private fun postRpcBoolean(name: String, body: JSONObject): Boolean {
+        val connection = openRpcConnection(name)
+        connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
+        val responseCode = connection.responseCode
+        if (responseCode !in 200..299) {
+            connection.disconnect()
+            throw IllegalStateException("RPC $name retornou $responseCode")
+        }
+        val text = connection.inputStream.bufferedReader().use { it.readText() }.trim()
+        connection.disconnect()
+        return text == "true"
+    }
+
+    private fun openRpcConnection(name: String): HttpURLConnection {
+        return (URL("$SB_URL/rest/v1/rpc/$name").openConnection() as HttpURLConnection).apply {
+            requestMethod = "POST"
+            connectTimeout = 5_000
+            readTimeout = 5_000
+            doOutput = true
+            setRequestProperty("Content-Type", "application/json")
+            setRequestProperty("apikey", SB_KEY)
+            setRequestProperty("Authorization", "Bearer $SB_KEY")
+        }
     }
 
     private fun updateScheduleFromState(state: JSONObject, childId: String, prefs: android.content.SharedPreferences) {
@@ -259,6 +292,15 @@ class BlockAccessibilityService : AccessibilityService() {
             "resume" -> {
                 prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
                 Log.i("CasaToda", "Regra normal reaplicada")
+            }
+            "test" -> {
+                val requestedAt = command.optLong("requestedAt", 0L)
+                val age = System.currentTimeMillis() - requestedAt
+                if (requestedAt > 0L && age in -60_000L..(5L * 60L * 1000L)) {
+                    val seconds = command.optInt("seconds", 30).coerceIn(10, 120)
+                    prefs.edit().putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L).apply()
+                    Log.i("CasaToda", "Teste remoto seguro aplicado")
+                }
             }
         }
         prefs.edit().putString(KEY_LAST_DEVICE_COMMAND_NONCE, nonce).apply()
@@ -368,6 +410,7 @@ class BlockAccessibilityService : AccessibilityService() {
     companion object {
         private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
         private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
+        private const val APK_VERSION = "0.10.0"
         private const val KEY_LAST_REMOTE_TEST_NONCE = "last_remote_test_nonce"
         private const val KEY_LAST_DEVICE_COMMAND_NONCE = "last_device_command_nonce"
     }
