@@ -1,0 +1,286 @@
+/* CasaToda V51 • layout responsivo adaptativo */
+:root{
+  --ct-ring-size:142px;
+  --ct-card-pad:14px;
+  --ct-stat-h:48px;
+  --ct-tile-h:60px;
+  --ct-profile-gap:8px;
+  --ct-nav-safe:82px;
+}
+
+/* Uma unica rolagem, com reserva real para o rodape medido no aparelho */
+body.ct-parent-session.v15{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+body.ct-parent-session.v15 .app{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  padding-bottom:var(--ct-nav-safe)!important;
+  scroll-padding-bottom:var(--ct-nav-safe)!important;
+}
+
+/* Aproxima o seletor Bernardo/Julia do perfil aberto sem encostar */
+body.ct-parent-session.v15 .v15-switcher{
+  margin:0!important;
+  gap:clamp(8px,2.2vw,12px)!important;
+}
+body.ct-parent-session.v15 #ctProfileGap47{
+  height:var(--ct-profile-gap)!important;
+  min-height:var(--ct-profile-gap)!important;
+  flex-basis:var(--ct-profile-gap)!important;
+}
+body.ct-parent-session.v15 #people.people{
+  margin-top:0!important;
+  top:auto!important;
+  transform:none!important;
+}
+
+/* Card principal usa proporcoes fluidas */
+body.ct-parent-session.v15 .people .person{
+  min-height:0!important;
+  height:auto!important;
+  padding:var(--ct-card-pad)!important;
+  border-radius:clamp(24px,6vw,30px)!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+body.ct-parent-session.v15 .person-head{
+  margin-bottom:clamp(9px,2.3vw,12px)!important;
+}
+body.ct-parent-session.v15 .avatar{
+  width:clamp(54px,15vw,62px)!important;
+  height:clamp(54px,15vw,62px)!important;
+  border-radius:clamp(17px,4.8vw,20px)!important;
+}
+body.ct-parent-session.v15 .name{
+  font-size:clamp(18px,5vw,21px)!important;
+  line-height:1.04!important;
+}
+body.ct-parent-session.v15 .meta{
+  margin-top:4px!important;
+  font-size:clamp(8.5px,2.5vw,10px)!important;
+  line-height:1.2!important;
+}
+body.ct-parent-session.v15 .stars{
+  flex:0 0 auto!important;
+}
+
+/* Relogio e resumo crescem ou diminuem juntos */
+body.ct-parent-session.v15 .balance{
+  display:grid!important;
+  grid-template-columns:var(--ct-ring-size) minmax(0,1fr)!important;
+  gap:clamp(9px,3vw,14px)!important;
+  align-items:center!important;
+  min-height:var(--ct-ring-size)!important;
+  height:auto!important;
+  margin-top:0!important;
+  margin-bottom:clamp(10px,2.8vw,14px)!important;
+}
+body.ct-parent-session.v15 .ring{
+  position:relative!important;
+  width:var(--ct-ring-size)!important;
+  height:var(--ct-ring-size)!important;
+  min-width:var(--ct-ring-size)!important;
+  min-height:var(--ct-ring-size)!important;
+  max-width:var(--ct-ring-size)!important;
+  max-height:var(--ct-ring-size)!important;
+  aspect-ratio:1/1!important;
+  margin:0!important;
+  justify-self:center!important;
+  align-self:center!important;
+  flex:none!important;
+}
+
+/* Centro geometrico real do circulo */
+body.ct-parent-session.v15 .ring-text{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  inset:auto!important;
+  width:78%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translate(-50%,-50%)!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-items:center!important;
+  align-content:center!important;
+  row-gap:clamp(5px,1.5vw,8px)!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+  z-index:6!important;
+  pointer-events:none!important;
+}
+body.ct-parent-session.v15 .ring-text span,
+body.ct-parent-session.v15 .ring-text strong{
+  position:static!important;
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:center!important;
+  transform:none!important;
+}
+body.ct-parent-session.v15 .ring-text span{
+  font-size:clamp(7.5px,2.2vw,9px)!important;
+  line-height:1!important;
+  letter-spacing:.14em!important;
+  white-space:nowrap!important;
+}
+body.ct-parent-session.v15 .ring-text strong{
+  font-size:clamp(31px,9.6vw,38px)!important;
+  line-height:.92!important;
+  letter-spacing:-.055em!important;
+  white-space:nowrap!important;
+}
+body.ct-parent-session.v15 .ring-text span:last-child{
+  font-size:clamp(7px,2vw,8px)!important;
+}
+
+/* Resumo: icone em uma coluna, texto em outra, sem sobreposicao */
+body.ct-parent-session.v15 .person-stats{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:clamp(6px,1.8vw,8px)!important;
+  min-width:0!important;
+  width:100%!important;
+}
+body.ct-parent-session.v15 .person-stats .stat{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:clamp(26px,7.5vw,32px) minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:clamp(6px,2vw,9px)!important;
+  row-gap:1px!important;
+  align-items:center!important;
+  align-content:center!important;
+  min-height:var(--ct-stat-h)!important;
+  height:auto!important;
+  padding:clamp(6px,1.8vw,8px) clamp(8px,2.5vw,11px)!important;
+  border-radius:clamp(11px,3.2vw,14px)!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+body.ct-parent-session.v15 .person-stats .stat > :not(span):not(strong){
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+  align-self:center!important;
+  justify-self:center!important;
+}
+body.ct-parent-session.v15 .person-stats .stat > span{
+  grid-column:2!important;
+  grid-row:1!important;
+  align-self:end!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:clamp(7px,2vw,8px)!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.ct-parent-session.v15 .person-stats .stat > strong{
+  grid-column:2!important;
+  grid-row:2!important;
+  align-self:start!important;
+  min-width:0!important;
+  margin:1px 0 0!important;
+  padding:0!important;
+  font-size:clamp(13px,3.8vw,15px)!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+/* Linha inferior do horario */
+body.ct-parent-session.v15 .clockline{
+  margin-top:clamp(7px,2vw,9px)!important;
+  padding:clamp(8px,2.3vw,10px) clamp(10px,3vw,12px)!important;
+  border-radius:clamp(13px,3.6vw,15px)!important;
+}
+body.ct-parent-session.v15 .clock-route{
+  gap:clamp(6px,2vw,8px)!important;
+  font-size:clamp(9px,2.6vw,11px)!important;
+}
+body.ct-parent-session.v15 .clock-route strong{
+  font-size:clamp(13px,3.8vw,15px)!important;
+}
+body.ct-parent-session.v15 .clock-sub{
+  margin-top:3px!important;
+  font-size:clamp(7px,2.1vw,8.5px)!important;
+}
+
+/* Acoes rapidas tambem seguem a altura util da tela */
+body.ct-parent-session.v15 .actions{
+  margin-top:clamp(9px,2.5vw,12px)!important;
+  padding-bottom:6px!important;
+}
+body.ct-parent-session.v15 .section-head{
+  margin-bottom:clamp(6px,2vw,8px)!important;
+}
+body.ct-parent-session.v15 .section-head h2{
+  font-size:clamp(16px,4.6vw,18px)!important;
+}
+body.ct-parent-session.v15 .quick{
+  grid-template-rows:repeat(2,var(--ct-tile-h))!important;
+  gap:clamp(6px,1.8vw,8px)!important;
+}
+body.ct-parent-session.v15 .action.v15-tile{
+  height:var(--ct-tile-h)!important;
+  min-height:var(--ct-tile-h)!important;
+  padding:clamp(7px,2vw,9px) clamp(9px,2.8vw,12px)!important;
+  border-radius:clamp(16px,4.5vw,19px)!important;
+}
+body.ct-parent-session.v15 .action.v15-tile .aicon{
+  width:clamp(27px,7.6vw,31px)!important;
+  height:clamp(27px,7.6vw,31px)!important;
+  border-radius:clamp(9px,2.8vw,11px)!important;
+  font-size:clamp(16px,4.6vw,18px)!important;
+}
+body.ct-parent-session.v15 .action.v15-tile strong{
+  font-size:clamp(10px,3vw,11.5px)!important;
+  line-height:1.05!important;
+}
+body.ct-parent-session.v15 .action.v15-tile small{
+  font-size:clamp(6.8px,2vw,7.6px)!important;
+  line-height:1.05!important;
+}
+
+/* Rodape compacto e responsivo */
+body.v15 .nav{
+  min-height:clamp(58px,16vw,64px)!important;
+  padding:4px 7px calc(4px + env(safe-area-inset-bottom))!important;
+  border-radius:20px 20px 0 0!important;
+}
+body.v15 .nav button{
+  height:clamp(43px,12vw,48px)!important;
+  min-height:clamp(43px,12vw,48px)!important;
+  border-radius:12px!important;
+}
+body.v15 .nav .main{
+  width:clamp(50px,14vw,54px)!important;
+  height:clamp(50px,14vw,54px)!important;
+  min-height:clamp(50px,14vw,54px)!important;
+  margin-top:-14px!important;
+}
+
+/* Telas muito estreitas: resumo continua legivel */
+@media(max-width:360px){
+  body.ct-parent-session.v15 .balance{gap:8px!important}
+  body.ct-parent-session.v15 .person-stats .stat{grid-template-columns:24px minmax(0,1fr)!important;padding-left:7px!important;padding-right:7px!important}
+  body.ct-parent-session.v15 .person-stats .stat > span{font-size:6.8px!important}
+  body.ct-parent-session.v15 .person-stats .stat > strong{font-size:12.5px!important}
+}
+
+/* Telas largas: impede que o card fique exageradamente grande */
+@media(min-width:520px){
+  body.ct-parent-session.v15 .people .person{padding:16px!important}
+  body.ct-parent-session.v15 .balance{max-width:620px!important;margin-left:auto!important;margin-right:auto!important}
+}
