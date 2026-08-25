@@ -1,0 +1,90 @@
+/* CasaToda V45 • central dos aparelhos no topo e status de sincronização visível */
+body.ct-parent-session #ctDeviceControl44{
+ position:static!important;
+ right:auto!important;
+ bottom:auto!important;
+ width:100%!important;
+ min-height:52px!important;
+ height:52px!important;
+ margin:8px 0 12px!important;
+ padding:0 16px!important;
+ box-sizing:border-box!important;
+ border:1px solid rgba(255,255,255,.16)!important;
+ border-radius:18px!important;
+ background:linear-gradient(135deg,#241b52,#34246f)!important;
+ color:#fff!important;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:10px!important;
+ font:900 12px system-ui!important;
+ box-shadow:0 10px 24px rgba(36,27,82,.18)!important;
+ z-index:3!important;
+}
+body.ct-parent-session #ctDeviceControl44 span:first-child{
+ width:30px!important;
+ height:30px!important;
+ display:grid!important;
+ place-items:center!important;
+ border-radius:10px!important;
+ background:rgba(255,255,255,.12)!important;
+ flex:0 0 30px!important;
+}
+body.ct-parent-session #ctDeviceControl44 span:last-child{
+ flex:1!important;
+ text-align:left!important;
+ letter-spacing:.01em!important;
+}
+
+/* Volta a exibir o texto do estado da sincronização no cabeçalho */
+#ctSyncChip{
+ width:auto!important;
+ min-width:76px!important;
+ max-width:92px!important;
+ height:32px!important;
+ padding:0 9px!important;
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:6px!important;
+ border-radius:11px!important;
+ box-sizing:border-box!important;
+}
+#ctSyncChip .txt{
+ display:inline!important;
+ font-size:7.5px!important;
+ line-height:1!important;
+ font-weight:900!important;
+ white-space:nowrap!important;
+}
+#ctSyncChip .dot{
+ width:7px!important;
+ height:7px!important;
+ flex:0 0 7px!important;
+ margin:0!important;
+}
+#ctSyncChip.ok{
+ color:#147a57!important;
+ background:#eaf9f3!important;
+ border-color:#c9ecdf!important;
+}
+#ctSyncChip.ok .dot{
+ background:#25c58e!important;
+ box-shadow:0 0 0 3px rgba(37,197,142,.14)!important;
+}
+#ctSyncChip.wait{
+ color:#8b6612!important;
+ background:#fff8e8!important;
+ border-color:#f3e2b7!important;
+}
+#ctSyncChip.err{
+ color:#a84754!important;
+ background:#fff1f3!important;
+ border-color:#f3d6dc!important;
+}
+@media(max-width:420px){
+ body.ct-parent-session #ctDeviceControl44{height:50px!important;min-height:50px!important;margin:7px 0 10px!important;padding:0 13px!important;border-radius:17px!important;font-size:11px!important}
+ #ctSyncChip{min-width:72px!important;max-width:82px!important;height:30px!important;padding:0 7px!important;gap:5px!important}
+ #ctSyncChip .txt{font-size:7px!important}
+ #ctSyncChip .dot{width:6px!important;height:6px!important;flex-basis:6px!important}
+}
