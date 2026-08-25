@@ -1,12 +1,15 @@
 package br.com.casatoda
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
@@ -21,6 +24,7 @@ import android.widget.Toast
 class MainActivity : Activity() {
     private lateinit var webView: WebView
     private var permissionDialogVisible = false
+    private var locationDialogVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +41,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.10"
+            userAgentString = "$userAgentString CasaTodaAndroid/0.11"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -81,7 +85,20 @@ class MainActivity : Activity() {
                 .setPositiveButton("Abrir Acessibilidade") { _, _ -> permissionDialogVisible = false; startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
                 .setOnCancelListener { permissionDialogVisible = false }
                 .show()
+            return
         }
+        if (isProtectionEnabled() && !locationDialogVisible) maybeOfferLocationSetup()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQUEST_LOCATION) return
+        val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(KEY_LOCATION_SETUP_PROMPTED, true).apply()
+        webView.postDelayed({
+            locationDialogVisible = false
+            if (isProtectionEnabled()) maybeOfferLocationSetup(force = true)
+        }, 350)
     }
 
     @Deprecated("Deprecated in Java")
@@ -93,6 +110,86 @@ class MainActivity : Activity() {
         val component = ComponentName(this, BlockAccessibilityService::class.java).flattenToString()
         val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
         return enabled.split(':').any { it.equals(component, ignoreCase = true) }
+    }
+
+    private fun hasForegroundLocation(): Boolean {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun hasBackgroundLocation(): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
+            checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun locationPermissionStatus(): String {
+        if (!hasForegroundLocation()) return "permission_denied"
+        if (!hasBackgroundLocation()) return "background_permission_required"
+        return "granted"
+    }
+
+    private fun maybeOfferLocationSetup(force: Boolean = false) {
+        val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val required = prefs.getBoolean(KEY_LOCATION_PERMISSION_REQUIRED, false)
+        val prompted = prefs.getBoolean(KEY_LOCATION_SETUP_PROMPTED, false)
+
+        if (hasForegroundLocation() && hasBackgroundLocation()) {
+            prefs.edit()
+                .putBoolean(KEY_LOCATION_PERMISSION_REQUIRED, false)
+                .putBoolean(KEY_LOCATION_SETUP_PROMPTED, true)
+                .apply()
+            return
+        }
+        if (!force && !required && prompted) return
+        if (locationDialogVisible) return
+
+        locationDialogVisible = true
+        if (!hasForegroundLocation()) {
+            AlertDialog.Builder(this)
+                .setTitle("Ativar Encontrar aparelho")
+                .setMessage("O CasaToda pode localizar este celular quando você usar Localizar agora na Central dos aparelhos. A localização é consultada somente quando solicitada.")
+                .setNegativeButton("Agora não") { _, _ ->
+                    locationDialogVisible = false
+                    prefs.edit()
+                        .putBoolean(KEY_LOCATION_SETUP_PROMPTED, true)
+                        .putBoolean(KEY_LOCATION_PERMISSION_REQUIRED, false)
+                        .apply()
+                }
+                .setPositiveButton("Permitir localização") { _, _ ->
+                    locationDialogVisible = false
+                    prefs.edit().putBoolean(KEY_LOCATION_SETUP_PROMPTED, true).apply()
+                    requestPermissions(
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                        REQUEST_LOCATION
+                    )
+                }
+                .setOnCancelListener { locationDialogVisible = false }
+                .show()
+            return
+        }
+
+        if (!hasBackgroundLocation()) {
+            AlertDialog.Builder(this)
+                .setTitle("Permitir localização o tempo todo")
+                .setMessage("Para encontrar este aparelho mesmo quando o CasaToda não estiver aberto na tela, permita Localização o tempo todo nas permissões do aplicativo.")
+                .setNegativeButton("Depois") { _, _ ->
+                    locationDialogVisible = false
+                    prefs.edit()
+                        .putBoolean(KEY_LOCATION_SETUP_PROMPTED, true)
+                        .putBoolean(KEY_LOCATION_PERMISSION_REQUIRED, false)
+                        .apply()
+                }
+                .setPositiveButton("Abrir permissões") { _, _ ->
+                    locationDialogVisible = false
+                    prefs.edit()
+                        .putBoolean(KEY_LOCATION_SETUP_PROMPTED, true)
+                        .putBoolean(KEY_LOCATION_PERMISSION_REQUIRED, false)
+                        .apply()
+                    openAppInfo()
+                }
+                .setOnCancelListener { locationDialogVisible = false }
+                .show()
+        }
     }
 
     private fun openAppInfo() {
@@ -204,10 +301,18 @@ class MainActivity : Activity() {
         fun getChildId(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
-        fun getNativeVersion(): String = "0.10.0"
+        fun getNativeVersion(): String = "0.11.0"
 
         @JavascriptInterface
         fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
+
+        @JavascriptInterface
+        fun getLocationPermissionStatus(): String = activity.locationPermissionStatus()
+
+        @JavascriptInterface
+        fun requestLocationSetup() {
+            activity.runOnUiThread { activity.maybeOfferLocationSetup(force = true) }
+        }
 
         @JavascriptInterface
         fun getParentUnlockRequested(): Boolean = prefs.getBoolean(KEY_PARENT_UNLOCK_REQUESTED, false)
@@ -255,7 +360,10 @@ class MainActivity : Activity() {
         const val KEY_UNLOCK_UNTIL = "unlock_until"
         const val KEY_TEST_BLOCK_UNTIL = "test_block_until"
         const val KEY_FAMILY_CODE = "family_code"
+        const val KEY_LOCATION_SETUP_PROMPTED = "location_setup_prompted"
+        const val KEY_LOCATION_PERMISSION_REQUIRED = "location_permission_required"
         const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
         const val EXTRA_PARENT_UNLOCK = "parent_unlock"
+        private const val REQUEST_LOCATION = 511
     }
 }
