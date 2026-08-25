@@ -12,15 +12,14 @@ function protectFooter(){
  const app=document.querySelector('.app');
  const nav=document.querySelector('.nav');
  if(!app||!nav)return;
- const ar=app.getBoundingClientRect();
- const nr=nav.getBoundingClientRect();
- const available=Math.max(320,Math.floor(nr.top-ar.top));
- app.style.setProperty('height',available+'px','important');
- app.style.setProperty('max-height',available+'px','important');
- app.style.setProperty('overflow-y','auto','important');
- app.style.setProperty('overflow-x','hidden','important');
- app.style.setProperty('padding-bottom','120px','important');
- app.style.setProperty('scroll-padding-bottom','122px','important');
+ const safe=Math.max(74,Math.ceil(nav.getBoundingClientRect().height)+14);
+ app.style.setProperty('height','auto','important');
+ app.style.setProperty('max-height','none','important');
+ app.style.setProperty('overflow','visible','important');
+ app.style.setProperty('padding-bottom',safe+'px','important');
+ app.style.setProperty('scroll-padding-bottom',safe+'px','important');
+ document.body.style.setProperty('overflow-y','auto','important');
+ document.body.style.setProperty('overflow-x','hidden','important');
 }
 
 function centerParentBadge(){
@@ -32,11 +31,7 @@ function centerParentBadge(){
  b.style.setProperty('line-height','1','important');
 }
 
-function tune48(){
- protectFooter();
- centerParentBadge();
-}
-
+function tune48(){protectFooter();centerParentBadge()}
 const obs=new MutationObserver(()=>requestAnimationFrame(tune48));
 obs.observe(document.documentElement,{subtree:true,childList:true});
 window.addEventListener('pageshow',()=>setTimeout(tune48,0));
