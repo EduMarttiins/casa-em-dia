@@ -1,4 +1,4 @@
 FALHA
 O APK não foi gerado.
-Commit: 2b653acf956f7a6eb6d2bb78babcc2b382c05cdc
+Commit: 3c9856f24867df18e7f0b6c6a0f797fd1a308771
 Código do Gradle: 
