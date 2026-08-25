@@ -52,26 +52,80 @@ function measureFooter(){
 
 function forceClockCenter(){
  document.querySelectorAll('.ring').forEach(ring=>{
-  const text=ring.querySelector('.ring-text');
+  let text=ring.querySelector('.ring-text');
+  if(!text){
+   const candidate=ring.parentElement?.querySelector('.ring-text');
+   if(candidate){
+    text=candidate;
+    ring.appendChild(text);
+   }
+  }
   if(!text)return;
+
+  const rr=ring.getBoundingClientRect();
+  const size=Math.max(110,Math.min(rr.width||140,rr.height||140));
+
+  ring.style.setProperty('position','relative','important');
+  ring.style.setProperty('overflow','hidden','important');
+  ring.style.setProperty('isolation','isolate','important');
+
   text.style.setProperty('position','absolute','important');
-  text.style.setProperty('left','50%','important');
-  text.style.setProperty('top','50%','important');
-  text.style.setProperty('right','auto','important');
-  text.style.setProperty('bottom','auto','important');
-  text.style.setProperty('inset','auto','important');
-  text.style.setProperty('transform','translate(-50%,-50%)','important');
-  text.style.setProperty('width','78%','important');
-  text.style.setProperty('height','auto','important');
-  text.style.setProperty('display','grid','important');
-  text.style.setProperty('justify-items','center','important');
-  text.style.setProperty('align-content','center','important');
+  text.style.setProperty('inset','0','important');
+  text.style.setProperty('left','0','important');
+  text.style.setProperty('top','0','important');
+  text.style.setProperty('right','0','important');
+  text.style.setProperty('bottom','0','important');
+  text.style.setProperty('width','100%','important');
+  text.style.setProperty('height','100%','important');
+  text.style.setProperty('max-width','100%','important');
+  text.style.setProperty('max-height','100%','important');
+  text.style.setProperty('margin','0','important');
+  text.style.setProperty('padding','16% 10%','important');
+  text.style.setProperty('box-sizing','border-box','important');
+  text.style.setProperty('transform','none','important');
+  text.style.setProperty('translate','none','important');
+  text.style.setProperty('display','flex','important');
+  text.style.setProperty('flex-direction','column','important');
+  text.style.setProperty('align-items','center','important');
+  text.style.setProperty('justify-content','center','important');
+  text.style.setProperty('gap',Math.round(clamp(size*.042,5,7))+'px','important');
   text.style.setProperty('text-align','center','important');
+  text.style.setProperty('overflow','hidden','important');
+  text.style.setProperty('z-index','10','important');
+
   [...text.children].forEach(el=>{
+   el.style.setProperty('position','static','important');
+   el.style.setProperty('left','auto','important');
+   el.style.setProperty('top','auto','important');
+   el.style.setProperty('right','auto','important');
+   el.style.setProperty('bottom','auto','important');
+   el.style.setProperty('float','none','important');
+   el.style.setProperty('display','block','important');
    el.style.setProperty('width','100%','important');
-   el.style.setProperty('text-align','center','important');
+   el.style.setProperty('max-width','100%','important');
    el.style.setProperty('margin','0','important');
+   el.style.setProperty('padding','0','important');
    el.style.setProperty('transform','none','important');
+   el.style.setProperty('translate','none','important');
+   el.style.setProperty('text-align','center','important');
+   el.style.setProperty('white-space','nowrap','important');
+   el.style.setProperty('box-sizing','border-box','important');
+  });
+
+  const strong=text.querySelector('strong');
+  if(strong){
+   strong.style.setProperty('font-size',Math.round(clamp(size*.245,30,37))+'px','important');
+   strong.style.setProperty('line-height','.94','important');
+   strong.style.setProperty('letter-spacing','-.045em','important');
+   strong.style.setProperty('font-weight','950','important');
+   strong.style.setProperty('font-variant-numeric','tabular-nums','important');
+  }
+
+  const spans=[...text.querySelectorAll('span')];
+  spans.forEach((sp,i)=>{
+   const fs=i===spans.length-1?clamp(size*.052,7,8):clamp(size*.06,7.5,9);
+   sp.style.setProperty('font-size',fs.toFixed(1)+'px','important');
+   sp.style.setProperty('line-height','1','important');
   });
  });
 }
@@ -105,6 +159,6 @@ window.addEventListener('pageshow',schedule);
 window.visualViewport?.addEventListener('resize',schedule);
 document.addEventListener('click',()=>setTimeout(schedule,0),true);
 setTimeout(tune51,0);
-setTimeout(tune51,250);
-setTimeout(tune51,900);
+setTimeout(tune51,200);
+setTimeout(tune51,700);
 })();
