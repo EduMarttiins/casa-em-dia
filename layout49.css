@@ -1,0 +1,114 @@
+/* CasaToda V49 • tela mais compacta e rodape totalmente protegido */
+
+/* Mais espaco rolavel no fim da tela para que nenhum card fique sob a navegacao */
+body.ct-parent-session.v15 .app{
+  padding-bottom:124px!important;
+  scroll-padding-bottom:126px!important;
+}
+body.ct-parent-session.v15 .actions{
+  margin-top:10px!important;
+  padding-bottom:8px!important;
+}
+
+/* Reduz um pouco os espacos verticais superiores */
+body.ct-parent-session #ctDeviceControl44{
+  margin-top:10px!important;
+  margin-bottom:20px!important;
+}
+body.ct-parent-session.v15 #ctProfileGap47{
+  height:18px!important;
+  min-height:18px!important;
+  flex-basis:18px!important;
+}
+
+/* Card principal mais compacto, mantendo leitura e destaque */
+body.ct-parent-session.v15 .people .person{
+  min-height:0!important;
+  padding:15px!important;
+  border-radius:27px!important;
+}
+body.ct-parent-session.v15 .person-head{
+  margin-bottom:12px!important;
+}
+body.ct-parent-session.v15 .avatar{
+  width:56px!important;
+  height:56px!important;
+  border-radius:18px!important;
+}
+body.ct-parent-session.v15 .name{
+  font-size:18px!important;
+}
+body.ct-parent-session.v15 .balance{
+  grid-template-columns:138px 1fr!important;
+  gap:12px!important;
+  min-height:138px!important;
+  margin-top:0!important;
+  margin-bottom:12px!important;
+}
+body.ct-parent-session.v15 .ring{
+  width:138px!important;
+  height:138px!important;
+}
+body.ct-parent-session.v15 .ring-text strong{
+  font-size:33px!important;
+}
+body.ct-parent-session.v15 .person-stats{
+  gap:6px!important;
+}
+body.ct-parent-session.v15 .stat{
+  min-height:38px!important;
+  padding:7px 10px!important;
+  border-radius:12px!important;
+}
+body.ct-parent-session.v15 .stat strong{
+  font-size:13px!important;
+}
+body.ct-parent-session.v15 .clockline{
+  margin-top:8px!important;
+  padding:9px 11px!important;
+  border-radius:14px!important;
+}
+
+/* Acoes rapidas menores para ganhar altura util na tela */
+body.ct-parent-session.v15 .section-head{
+  margin-bottom:8px!important;
+}
+body.ct-parent-session.v15 .section-head h2{
+  font-size:16px!important;
+}
+body.ct-parent-session.v15 .quick{
+  grid-template-rows:repeat(2,66px)!important;
+  gap:8px!important;
+}
+body.ct-parent-session.v15 .action.v15-tile{
+  height:66px!important;
+  min-height:66px!important;
+  padding:8px 11px!important;
+  border-radius:18px!important;
+}
+body.ct-parent-session.v15 .action.v15-tile .aicon{
+  width:28px!important;
+  height:28px!important;
+  border-radius:10px!important;
+  font-size:17px!important;
+}
+body.ct-parent-session.v15 .action.v15-tile strong{
+  font-size:10.5px!important;
+  line-height:1.05!important;
+}
+body.ct-parent-session.v15 .action.v15-tile small{
+  font-size:7px!important;
+  line-height:1.05!important;
+}
+
+@media(max-width:560px){
+  body.ct-parent-session.v15 .app{padding-bottom:120px!important;scroll-padding-bottom:122px!important}
+  body.ct-parent-session #ctDeviceControl44{margin-bottom:18px!important}
+  body.ct-parent-session.v15 #ctProfileGap47{height:16px!important;min-height:16px!important;flex-basis:16px!important}
+  body.ct-parent-session.v15 .people .person{padding:14px!important}
+  body.ct-parent-session.v15 .balance{grid-template-columns:132px 1fr!important;gap:10px!important;min-height:132px!important}
+  body.ct-parent-session.v15 .ring{width:132px!important;height:132px!important}
+  body.ct-parent-session.v15 .ring-text strong{font-size:31px!important}
+  body.ct-parent-session.v15 .quick{grid-template-rows:repeat(2,64px)!important;gap:7px!important}
+  body.ct-parent-session.v15 .action.v15-tile{height:64px!important;min-height:64px!important;padding:7px 10px!important;border-radius:17px!important}
+}
