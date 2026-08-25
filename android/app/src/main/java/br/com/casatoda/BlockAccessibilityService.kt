@@ -69,6 +69,7 @@ class BlockAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         handler.removeCallbacks(ticker)
+        FindDeviceSupport.stop(this)
         networkExecutor.shutdownNow()
         hideOverlay()
         super.onDestroy()
@@ -183,7 +184,7 @@ class BlockAccessibilityService : AccessibilityService() {
                                 .putBoolean(MainActivity.KEY_ENABLED, true)
                         }
                         editor.apply()
-                        processDeviceCommand(row.optJSONObject("command"), prefs)
+                        processDeviceCommand(row.optJSONObject("command"), prefs, code, childId)
                     }
                 }
 
@@ -274,7 +275,12 @@ class BlockAccessibilityService : AccessibilityService() {
         Log.i("CasaToda", "Teste remoto recebido para $childId")
     }
 
-    private fun processDeviceCommand(command: JSONObject?, prefs: android.content.SharedPreferences) {
+    private fun processDeviceCommand(
+        command: JSONObject?,
+        prefs: android.content.SharedPreferences,
+        familyCode: String,
+        childId: String
+    ) {
         if (command == null) return
         val nonce = command.optString("nonce", "").trim()
         if (nonce.isBlank()) return
@@ -301,6 +307,9 @@ class BlockAccessibilityService : AccessibilityService() {
                     prefs.edit().putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L).apply()
                     Log.i("CasaToda", "Teste remoto seguro aplicado")
                 }
+            }
+            "locate", "ring", "stop_ring" -> {
+                FindDeviceSupport.handleCommand(this, command, familyCode, childId, prefs)
             }
         }
         prefs.edit().putString(KEY_LAST_DEVICE_COMMAND_NONCE, nonce).apply()
@@ -410,7 +419,7 @@ class BlockAccessibilityService : AccessibilityService() {
     companion object {
         private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
         private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
-        private const val APK_VERSION = "0.10.0"
+        private const val APK_VERSION = "0.11.0"
         private const val KEY_LAST_REMOTE_TEST_NONCE = "last_remote_test_nonce"
         private const val KEY_LAST_DEVICE_COMMAND_NONCE = "last_device_command_nonce"
     }
