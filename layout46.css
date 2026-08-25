@@ -1,0 +1,154 @@
+/* CasaToda V46 • acabamento premium do cabeçalho e melhor respiro entre blocos */
+
+/* Grupo de ações do cabeçalho */
+body.v15 .top-actions{
+ gap:7px!important;
+ align-items:center!important;
+}
+
+/* Sincronização: chip verde mais refinado */
+#ctSyncChip{
+ min-width:96px!important;
+ max-width:112px!important;
+ height:38px!important;
+ padding:0 11px!important;
+ gap:7px!important;
+ border:1px solid rgba(72,190,145,.28)!important;
+ border-radius:14px!important;
+ background:linear-gradient(145deg,rgba(244,255,251,.98),rgba(226,248,239,.96))!important;
+ box-shadow:0 8px 20px rgba(38,148,105,.10),inset 0 1px 0 rgba(255,255,255,.92)!important;
+ backdrop-filter:blur(12px)!important;
+ -webkit-backdrop-filter:blur(12px)!important;
+}
+#ctSyncChip .txt{
+ display:inline!important;
+ font-size:8.5px!important;
+ line-height:1!important;
+ font-weight:900!important;
+ letter-spacing:-.01em!important;
+ white-space:nowrap!important;
+}
+#ctSyncChip .dot{
+ width:8px!important;
+ height:8px!important;
+ flex:0 0 8px!important;
+ border-radius:50%!important;
+}
+#ctSyncChip.ok{
+ color:#147858!important;
+ border-color:#bfe8d8!important;
+}
+#ctSyncChip.ok .dot{
+ background:#20bd84!important;
+ box-shadow:0 0 0 4px rgba(32,189,132,.12),0 0 12px rgba(32,189,132,.24)!important;
+}
+
+/* Botão Pais */
+body.v15 .session-badge{
+ min-width:68px!important;
+ max-width:76px!important;
+ height:42px!important;
+ min-height:42px!important;
+ padding:0 12px!important;
+ border:1px solid rgba(105,76,179,.16)!important;
+ border-radius:15px!important;
+ background:linear-gradient(145deg,#ffffff,#f3effc)!important;
+ color:#4f4661!important;
+ font-size:9px!important;
+ font-weight:900!important;
+ box-shadow:0 8px 20px rgba(59,42,105,.10),inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+
+/* Configurações e troca de perfil */
+body.v15 .icon-btn{
+ width:42px!important;
+ height:42px!important;
+ min-height:42px!important;
+ border:1px solid rgba(90,72,139,.14)!important;
+ border-radius:15px!important;
+ background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(246,243,251,.94))!important;
+ color:#4c465c!important;
+ box-shadow:0 8px 20px rgba(52,40,92,.09),inset 0 1px 0 rgba(255,255,255,.98)!important;
+ backdrop-filter:blur(12px)!important;
+ -webkit-backdrop-filter:blur(12px)!important;
+ transition:transform .16s ease,box-shadow .16s ease!important;
+}
+body.v15 .icon-btn:active,
+body.v15 .session-badge:active,
+#ctSyncChip:active{
+ transform:translateY(1px) scale(.98)!important;
+ box-shadow:0 4px 12px rgba(52,40,92,.08)!important;
+}
+
+/* Central dos aparelhos com acabamento mais nobre e mais espaço abaixo */
+body.ct-parent-session #ctDeviceControl44{
+ position:relative!important;
+ overflow:hidden!important;
+ min-height:58px!important;
+ height:58px!important;
+ margin:12px 0 28px!important;
+ padding:0 18px!important;
+ border:1px solid rgba(255,255,255,.20)!important;
+ border-radius:20px!important;
+ background:radial-gradient(circle at 18% 0%,rgba(125,91,255,.36),transparent 34%),linear-gradient(135deg,#221845 0%,#2d205f 54%,#5130a6 100%)!important;
+ box-shadow:0 14px 30px rgba(42,27,94,.20),inset 0 1px 0 rgba(255,255,255,.18)!important;
+ font-size:12px!important;
+ letter-spacing:.005em!important;
+}
+body.ct-parent-session #ctDeviceControl44::before{
+ content:'';
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ background:linear-gradient(110deg,rgba(255,255,255,.10),transparent 32%,transparent 70%,rgba(255,255,255,.05));
+}
+body.ct-parent-session #ctDeviceControl44::after{
+ content:'›';
+ position:relative;
+ z-index:1;
+ margin-left:auto;
+ width:30px;
+ height:30px;
+ display:grid;
+ place-items:center;
+ border-radius:10px;
+ background:rgba(255,255,255,.11);
+ color:#fff;
+ font-size:22px;
+ font-weight:500;
+ line-height:1;
+}
+body.ct-parent-session #ctDeviceControl44 span{
+ position:relative;
+ z-index:1;
+}
+body.ct-parent-session #ctDeviceControl44 span:first-child{
+ width:34px!important;
+ height:34px!important;
+ flex:0 0 34px!important;
+ border-radius:11px!important;
+ background:rgba(255,255,255,.12)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+body.ct-parent-session #ctDeviceControl44 span:last-child{
+ font-size:12px!important;
+ font-weight:900!important;
+}
+
+@media(max-width:560px){
+ body.v15 .top-actions{gap:5px!important}
+ #ctSyncChip{min-width:88px!important;max-width:98px!important;height:36px!important;padding:0 9px!important;gap:6px!important;border-radius:13px!important}
+ #ctSyncChip .txt{font-size:8px!important}
+ body.v15 .session-badge{min-width:60px!important;max-width:66px!important;height:40px!important;min-height:40px!important;padding:0 8px!important;border-radius:14px!important;font-size:8.5px!important}
+ body.v15 .icon-btn{width:40px!important;height:40px!important;min-height:40px!important;border-radius:14px!important}
+ body.ct-parent-session #ctDeviceControl44{min-height:56px!important;height:56px!important;margin:11px 0 24px!important;padding:0 15px!important;border-radius:19px!important}
+}
+
+@media(max-width:400px){
+ body.v15 .top-actions{gap:4px!important}
+ #ctSyncChip{min-width:80px!important;max-width:88px!important;height:34px!important;padding:0 7px!important;gap:5px!important}
+ #ctSyncChip .txt{font-size:7.5px!important}
+ body.v15 .session-badge{min-width:54px!important;max-width:60px!important;height:38px!important;min-height:38px!important;padding:0 6px!important;font-size:8px!important}
+ body.v15 .icon-btn{width:38px!important;height:38px!important;min-height:38px!important}
+ body.ct-parent-session #ctDeviceControl44{margin-bottom:22px!important}
+}
