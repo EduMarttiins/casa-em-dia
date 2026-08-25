@@ -21,6 +21,9 @@ function ensureProfileGap(){
  if(gap.parentNode!==sw.parentNode||gap.previousElementSibling!==sw){
   sw.insertAdjacentElement('afterend',gap);
  }
+ gap.style.setProperty('height','8px','important');
+ gap.style.setProperty('min-height','8px','important');
+ gap.style.setProperty('flex-basis','8px','important');
  people.style.setProperty('position','relative','important');
  people.style.setProperty('top','auto','important');
  people.style.setProperty('transform','none','important');
@@ -31,39 +34,33 @@ function ensureProfileGap(){
   card.style.setProperty('transform','none','important');
   card.style.setProperty('margin-top','0px','important');
  });
- requestAnimationFrame(()=>{
-  const s=sw.getBoundingClientRect();
-  const p=people.getBoundingClientRect();
-  const target=24;
-  const current=parseFloat(getComputedStyle(gap).height)||24;
-  if(p.top < s.bottom+target){
-   const extra=(s.bottom+target)-p.top;
-   const next=Math.min(120,current+extra+2);
-   gap.style.setProperty('height',next+'px','important');
-   gap.style.setProperty('min-height',next+'px','important');
-   gap.style.setProperty('flex-basis',next+'px','important');
-  }
- });
 }
 
 function tuneClock(){
  document.querySelectorAll('.ring').forEach(ring=>{
   const text=ring.querySelector('.ring-text');
   if(!text)return;
+  text.style.setProperty('position','absolute','important');
+  text.style.setProperty('inset','0','important');
   text.style.setProperty('display','flex','important');
   text.style.setProperty('flex-direction','column','important');
   text.style.setProperty('align-items','center','important');
   text.style.setProperty('justify-content','center','important');
   text.style.setProperty('text-align','center','important');
+  text.style.setProperty('transform','none','important');
   const strong=text.querySelector('strong');
-  if(strong)strong.style.setProperty('text-align','center','important');
+  if(strong){
+   strong.style.setProperty('display','block','important');
+   strong.style.setProperty('width','100%','important');
+   strong.style.setProperty('text-align','center','important');
+   strong.style.setProperty('margin','0','important');
+  }
  });
 }
 
 function tune(){ensureProfileGap();tuneClock()}
-
 const observer=new MutationObserver(()=>tune());
-observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});
+observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
 window.addEventListener('pageshow',()=>setTimeout(tune,0));
 window.addEventListener('resize',()=>setTimeout(tune,80));
 document.addEventListener('click',()=>setTimeout(tune,0),true);
