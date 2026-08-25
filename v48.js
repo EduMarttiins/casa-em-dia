@@ -19,8 +19,8 @@ function protectFooter(){
  app.style.setProperty('max-height',available+'px','important');
  app.style.setProperty('overflow-y','auto','important');
  app.style.setProperty('overflow-x','hidden','important');
- app.style.setProperty('padding-bottom','26px','important');
- app.style.setProperty('scroll-padding-bottom','28px','important');
+ app.style.setProperty('padding-bottom','120px','important');
+ app.style.setProperty('scroll-padding-bottom','122px','important');
 }
 
 function centerParentBadge(){
