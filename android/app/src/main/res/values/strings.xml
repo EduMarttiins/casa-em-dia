@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CasaToda</string>
-    <string name="accessibility_description">Aplica o horário de uso definido pelos pais no CasaToda e mostra a tela de bloqueio quando o tempo termina.</string>
+    <string name="app_name">CasaSegura</string>
+    <string name="accessibility_description">Aplica o horário de uso definido pelos pais no CasaSegura e mostra a tela de bloqueio quando o tempo termina.</string>
 </resources>
