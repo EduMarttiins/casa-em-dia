@@ -7,12 +7,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
+import android.util.Base64
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -20,6 +23,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.Toast
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import kotlin.math.max
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
@@ -42,7 +48,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaSeguraAndroid/0.12"
+            userAgentString = "$userAgentString CasaSeguraAndroid/0.13"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -105,7 +111,66 @@ class MainActivity : Activity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        val bound = (getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_CHILD_ID, "") ?: "").trim().lowercase()
+        if (bound in setOf("bernardo", "julia", "irmaos")) {
+            moveTaskToBack(true)
+            return
+        }
         if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_PROFILE_PHOTO || resultCode != RESULT_OK) return
+        val uri = data?.data ?: return
+        runCatching {
+            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        val photo = encodeProfilePhoto(uri)
+        if (photo.isBlank()) {
+            Toast.makeText(this, "Não foi possível abrir essa foto", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val quoted = JSONObject.quote(photo)
+        webView.post {
+            webView.evaluateJavascript(
+                "window.__CasaSeguraProfilePhotoSelected && window.__CasaSeguraProfilePhotoSelected($quoted);",
+                null
+            )
+        }
+    }
+
+    private fun openProfilePhotoPicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+        }
+        runCatching { startActivityForResult(intent, REQUEST_PROFILE_PHOTO) }
+            .onFailure {
+                val fallback = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/*"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                }
+                startActivityForResult(fallback, REQUEST_PROFILE_PHOTO)
+            }
+    }
+
+    private fun encodeProfilePhoto(uri: Uri): String {
+        val original = contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) } ?: return ""
+        val largest = max(original.width, original.height).coerceAtLeast(1)
+        val ratio = minOf(1f, 512f / largest.toFloat())
+        val targetWidth = (original.width * ratio).toInt().coerceAtLeast(1)
+        val targetHeight = (original.height * ratio).toInt().coerceAtLeast(1)
+        val scaled = if (targetWidth != original.width || targetHeight != original.height) {
+            Bitmap.createScaledBitmap(original, targetWidth, targetHeight, true)
+        } else original
+        val out = ByteArrayOutputStream()
+        scaled.compress(Bitmap.CompressFormat.JPEG, 82, out)
+        if (scaled !== original) scaled.recycle()
+        original.recycle()
+        val encoded = Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+        return "data:image/jpeg;base64,$encoded"
     }
 
     private fun isProtectionEnabled(): Boolean {
@@ -207,7 +272,7 @@ class MainActivity : Activity() {
         usageDialogVisible = true
         AlertDialog.Builder(this)
             .setTitle("Ativar Tempo de tela")
-            .setMessage("Para mostrar aos pais quanto tempo foi usado em YouTube, TikTok, WhatsApp e outros aplicativos, permita Acesso ao uso para o CasaSegura. O CasaSegura registra apenas o tempo de uso, não o conteúdo visto ou as mensagens.")
+            .setMessage("Para mostrar quanto tempo foi usado em YouTube, TikTok, WhatsApp e outros aplicativos, permita Acesso ao uso para o CasaSegura. O CasaSegura registra apenas o tempo de uso, não o conteúdo visto ou as mensagens.")
             .setNegativeButton("Depois") { _, _ ->
                 usageDialogVisible = false
                 prefs.edit().putBoolean(KEY_USAGE_SETUP_PROMPTED, true).apply()
@@ -338,7 +403,7 @@ class MainActivity : Activity() {
         fun getChildId(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
-        fun getNativeVersion(): String = "0.12.0"
+        fun getNativeVersion(): String = "0.13.0"
 
         @JavascriptInterface
         fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
@@ -355,8 +420,19 @@ class MainActivity : Activity() {
         fun getUsageAccessEnabled(): Boolean = UsageStatsSupport.hasUsageAccess(activity)
 
         @JavascriptInterface
+        fun getLocalUsageJson(): String = UsageStatsSupport.getLocalUsageJson(activity)
+
+        @JavascriptInterface
+        fun getAppIconDataUrl(packageName: String): String = UsageStatsSupport.getAppIconDataUrl(activity, packageName)
+
+        @JavascriptInterface
         fun openUsageAccessSettings() {
             activity.runOnUiThread { activity.openUsageAccessSettings() }
+        }
+
+        @JavascriptInterface
+        fun chooseProfilePhoto() {
+            activity.runOnUiThread { activity.openProfilePhotoPicker() }
         }
 
         @JavascriptInterface
@@ -411,5 +487,6 @@ class MainActivity : Activity() {
         const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
         const val EXTRA_PARENT_UNLOCK = "parent_unlock"
         private const val REQUEST_LOCATION = 511
+        private const val REQUEST_PROFILE_PHOTO = 612
     }
 }
