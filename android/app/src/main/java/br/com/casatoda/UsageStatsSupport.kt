@@ -55,14 +55,14 @@ object UsageStatsSupport {
         executor.execute {
             try {
                 if (!hasUsageAccess(context)) {
-                    report(context, familyCode, childId, JSONObject(), "permission_required")
+                    report(familyCode, childId, JSONObject(), "permission_required")
                     return@execute
                 }
                 val summary = buildSummary(context)
-                report(context, familyCode, childId, summary, "ok")
+                report(familyCode, childId, summary, "ok")
             } catch (e: Exception) {
                 Log.w(TAG, "Falha ao preparar tempo de tela", e)
-                runCatching { report(context, familyCode, childId, JSONObject(), "error") }
+                runCatching { report(familyCode, childId, JSONObject(), "error") }
             }
         }
     }
@@ -119,7 +119,7 @@ object UsageStatsSupport {
         val apps = merged.map { (pkg, ms) ->
             val label = runCatching {
                 val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    pm.getApplicationInfo(pkg, PackageManager.ApplicationInfoFlags.of(0))
+                    pm.getApplicationInfo(pkg, PackageManager.ApplicationInfoFlags.of(0L))
                 } else {
                     @Suppress("DEPRECATION") pm.getApplicationInfo(pkg, 0)
                 }
@@ -161,7 +161,7 @@ object UsageStatsSupport {
         }.timeInMillis
     }
 
-    private fun report(context: Context, familyCode: String, childId: String, summary: JSONObject, status: String) {
+    private fun report(familyCode: String, childId: String, summary: JSONObject, status: String) {
         val body = JSONObject()
             .put("p_code", familyCode)
             .put("p_child_id", childId)
