@@ -1,4 +1,4 @@
-name: Build CasaToda Android APK
+name: Build CasaSegura Android APK
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: casatoda-android-apk
+  group: casasegura-android-apk
   cancel-in-progress: true
 
 jobs:
@@ -61,10 +61,11 @@ jobs:
           mkdir -p downloads
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           if [ -f "$APK" ]; then
+            cp "$APK" downloads/CasaSegura-Filhos-Teste.apk
             cp "$APK" downloads/CasaToda-Filhos-Teste.apk
             {
               echo "SUCESSO"
-              echo "APK gerado em $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+              echo "APK CasaSegura gerado em $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
               echo "Commit: $GITHUB_SHA"
             } > downloads/build-status.txt
           else
@@ -80,11 +81,11 @@ jobs:
         if: always()
         shell: bash
         run: |
-          git config user.name "CasaToda Builder"
+          git config user.name "CasaSegura Builder"
           git config user.email "actions@users.noreply.github.com"
           git add downloads
           if ! git diff --cached --quiet; then
-            git commit -m "Android: atualizar APK de teste"
+            git commit -m "Android: atualizar APK CasaSegura"
             for attempt in 1 2 3; do
               if git pull --rebase origin main && git push origin HEAD:main; then
                 exit 0
@@ -99,5 +100,5 @@ jobs:
         if: ${{ always() && hashFiles('android/app/build/outputs/apk/debug/app-debug.apk') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: CasaToda-child-debug
+          name: CasaSegura-child-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
