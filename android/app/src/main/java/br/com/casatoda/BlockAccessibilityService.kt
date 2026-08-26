@@ -159,6 +159,8 @@ class BlockAccessibilityService : AccessibilityService() {
                     }
                 }
 
+                UsageStatsSupport.maybeReport(this, code, childId)
+
                 val stateRows = postRpc("casatoda_get_state", JSONObject().put("p_code", code))
                 if (stateRows.length() > 0) {
                     val state = stateRows.optJSONObject(0)?.optJSONObject("state")
@@ -190,7 +192,7 @@ class BlockAccessibilityService : AccessibilityService() {
 
                 handler.post { evaluate() }
             } catch (e: Exception) {
-                Log.w("CasaToda", "Falha ao atualizar controle remoto", e)
+                Log.w("CasaSegura", "Falha ao atualizar controle remoto", e)
             } finally {
                 remotePolling = false
             }
@@ -272,7 +274,7 @@ class BlockAccessibilityService : AccessibilityService() {
             .putString(KEY_LAST_REMOTE_TEST_NONCE, nonce)
             .putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L)
             .apply()
-        Log.i("CasaToda", "Teste remoto recebido para $childId")
+        Log.i("CasaSegura", "Teste remoto recebido para $childId")
     }
 
     private fun processDeviceCommand(
@@ -292,12 +294,12 @@ class BlockAccessibilityService : AccessibilityService() {
                 val until = command.optLong("untilMs", 0L)
                 if (until > System.currentTimeMillis()) {
                     prefs.edit().putLong(MainActivity.KEY_UNLOCK_UNTIL, until).apply()
-                    Log.i("CasaToda", "Desbloqueio remoto aplicado")
+                    Log.i("CasaSegura", "Desbloqueio remoto aplicado")
                 }
             }
             "resume" -> {
                 prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
-                Log.i("CasaToda", "Regra normal reaplicada")
+                Log.i("CasaSegura", "Regra normal reaplicada")
             }
             "test" -> {
                 val requestedAt = command.optLong("requestedAt", 0L)
@@ -305,11 +307,14 @@ class BlockAccessibilityService : AccessibilityService() {
                 if (requestedAt > 0L && age in -60_000L..(5L * 60L * 1000L)) {
                     val seconds = command.optInt("seconds", 30).coerceIn(10, 120)
                     prefs.edit().putLong(MainActivity.KEY_TEST_BLOCK_UNTIL, System.currentTimeMillis() + seconds * 1000L).apply()
-                    Log.i("CasaToda", "Teste remoto seguro aplicado")
+                    Log.i("CasaSegura", "Teste remoto seguro aplicado")
                 }
             }
             "locate", "ring", "stop_ring" -> {
                 FindDeviceSupport.handleCommand(this, command, familyCode, childId, prefs)
+            }
+            "usage_refresh" -> {
+                UsageStatsSupport.maybeReport(this, familyCode, childId, force = true)
             }
         }
         prefs.edit().putString(KEY_LAST_DEVICE_COMMAND_NONCE, nonce).apply()
@@ -341,7 +346,7 @@ class BlockAccessibilityService : AccessibilityService() {
             setTextColor(Color.rgb(214, 190, 255))
         }
         val title = TextView(this).apply {
-            text = if (testMode) "Teste do CasaToda Proteção" else "Tempo encerrado por hoje"
+            text = if (testMode) "Teste do CasaSegura Proteção" else "Tempo encerrado por hoje"
             textSize = 28f
             gravity = Gravity.CENTER
             typeface = Typeface.DEFAULT_BOLD
@@ -352,7 +357,7 @@ class BlockAccessibilityService : AccessibilityService() {
             text = if (testMode)
                 "Este é apenas um teste. O aparelho será liberado automaticamente em até 30 segundos."
             else
-                "O horário definido no CasaToda chegou. Os aplicativos ficam bloqueados até o horário de liberação configurado."
+                "O horário definido no CasaSegura chegou. Os aplicativos ficam bloqueados até o horário de liberação configurado."
             textSize = 16f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(220, 216, 235))
@@ -419,7 +424,7 @@ class BlockAccessibilityService : AccessibilityService() {
     companion object {
         private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
         private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
-        private const val APK_VERSION = "0.11.0"
+        private const val APK_VERSION = "0.12.0"
         private const val KEY_LAST_REMOTE_TEST_NONCE = "last_remote_test_nonce"
         private const val KEY_LAST_DEVICE_COMMAND_NONCE = "last_device_command_nonce"
     }
