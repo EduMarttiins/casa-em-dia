@@ -4,11 +4,15 @@ import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Process
+import android.util.Base64
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -44,6 +48,37 @@ object UsageStatsSupport {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
+    fun getLocalUsageJson(context: Context): String {
+        return try {
+            if (!hasUsageAccess(context)) {
+                JSONObject().put("status", "permission_required").put("usage", JSONObject()).toString()
+            } else {
+                JSONObject().put("status", "ok").put("usage", buildSummary(context)).toString()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Falha ao ler uso local", e)
+            JSONObject().put("status", "error").put("usage", JSONObject()).toString()
+        }
+    }
+
+    fun getAppIconDataUrl(context: Context, packageName: String): String {
+        val pkg = packageName.trim()
+        if (pkg.isBlank()) return ""
+        return try {
+            val drawable = context.packageManager.getApplicationIcon(pkg)
+            val bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            val out = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
+            bitmap.recycle()
+            "data:image/png;base64," + Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
     fun maybeReport(context: Context, familyCode: String, childId: String, force: Boolean = false) {
         if (childId == "irmaos") return
         val prefs = context.getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
@@ -72,7 +107,7 @@ object UsageStatsSupport {
         val todayStart = startOfDay(now)
         val today = appUsageForRange(context, todayStart, now)
         val appsArray = JSONArray()
-        today.second.take(15).forEach { app ->
+        today.second.take(30).forEach { app ->
             appsArray.put(
                 JSONObject()
                     .put("package", app.packageName)
