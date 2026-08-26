@@ -1,3 +1,4 @@
-SUCESSO
-APK gerado em 2026-08-26 02:43:18 UTC
-Commit: c3214a9613d31baec173ad90b1179d11f57a9431
+FALHA
+O APK não foi gerado.
+Commit: d600706d9ecf98b972ad5371d5a9e47249a273c9
+Código do Gradle: 
