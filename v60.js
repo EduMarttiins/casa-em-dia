@@ -30,7 +30,6 @@ function isVisible(el){
  return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length)
 }
 
-/* Evita reconstruir a tela inteira a cada consulta de sincronizacao quando nada mudou. */
 function stateSignature(){
  try{
   if(!isChild()&&!isParent())return '';
@@ -66,7 +65,6 @@ function patchRender(){
  }catch(e){console.warn('CasaSegura V60 render',e)}
 }
 
-/* Mantem os retratos como background persistente. Assim, se o DOM for recriado, nunca aparece o texto alternativo. */
 function photoFor(id){
  try{const c=state?.children?.find(x=>x.id===id);if(c?.photo)return String(c.photo)}catch(e){}
  if(id==='bernardo')return new URL('./media21/bernardo.jpg?v=60',location.href).href;
@@ -108,7 +106,6 @@ function stabilizePhotos(){
  })
 }
 
-/* Mede a barra inferior real para reservar somente o espaco necessario. */
 function updateNavHeight(){
  let h=0;
  for(const nav of [q('.nav'),q('#cs56Nav')]){
@@ -119,7 +116,6 @@ function updateNavHeight(){
  document.documentElement.style.setProperty('--cs60-nav-h',`${h}px`)
 }
 
-/* Historico passa a ser acessado pela pequena aba lateral. */
 function ensureHistoryTab(){
  let b=q('#cs60HistoryTab');
  if(!isChild()){b?.remove();return}
@@ -145,7 +141,7 @@ function classifyOverlay(overlay){
  const history=visibleRows(sheet,'.historyrow');
  const tasks=visibleRows(sheet,'.taskrow');
  const rewards=visibleRows(sheet,'.rewardrow');
- const cash=/pr[oó]xima retirada|estrelas acumuladas|valor equivalente|convers[aã]o fixa/.test(text)&&text.includes('cofrinho');
+ const cash=/pr[oó]xima retirada|estrelas acumuladas|convers[aã]o fixa|retirada m[ií]nima/.test(text)&&text.includes('cofrinho');
  let type='';
  if(history.length)type='history';
  else if(tasks.length)type='routine';
@@ -201,7 +197,6 @@ function decorateOverlays(){
  if(!active.length)removeFeedback()
 }
 
-/* Feedback aparece no mesmo instante do toque, antes de o DOM pesado do painel terminar de montar. */
 function showFeedback(text){
  let x=q('#cs60TapFeedback');if(!x){x=document.createElement('div');x.id='cs60TapFeedback';document.body.appendChild(x)}x.textContent=text;
  clearTimeout(feedbackTimer);feedbackTimer=setTimeout(()=>x?.remove(),1100)
