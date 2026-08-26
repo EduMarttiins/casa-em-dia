@@ -1,3 +1,3 @@
 SUCESSO
-APK CasaSegura gerado em 2026-08-26 17:51:12 UTC
-Commit: 5cd07e8c7b6672425859f1d5a204845edd8fb81e
+APK CasaSegura gerado em 2026-08-26 17:54:10 UTC
+Commit: 8d90ebff4c13bfbe6560e0812026e24d3d2ae18a
