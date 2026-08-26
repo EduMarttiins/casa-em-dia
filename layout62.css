@@ -1,0 +1,380 @@
+/* CasaSegura V62 • proporções estáveis, abas laterais e tempo por aplicativo */
+:root{
+  --cs62-gap:6px;
+  --cs62-ring:clamp(124px,18vw,158px);
+  --cs62-nav:var(--cs60-nav-h,64px);
+}
+
+/* ---------- FILHOS ---------- */
+body.ct-child-session.v15:not(.cs60-modal-open){overflow:hidden!important;height:100dvh!important}
+body.ct-child-session.v15:not(.cs60-modal-open) .app{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:var(--cs62-gap)!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  padding:max(7px,env(safe-area-inset-top)) 12px calc(var(--cs62-nav) + 8px + env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;
+}
+body.ct-child-session.v15 .top{flex:0 0 auto!important;margin:0!important;min-height:40px!important}
+body.ct-child-session.v15 #people.people{flex:0 0 auto!important;margin:0!important;min-height:0!important}
+body.ct-child-session.v15 .people .person,
+body.ct-child-session.v15 .people.child-mode .person{
+  width:100%!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+  padding:12px!important;
+  border-radius:24px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+body.ct-child-session.v15 .person-head{margin:0 0 8px!important;gap:9px!important;align-items:center!important}
+body.ct-child-session.v15 .identity{gap:9px!important;align-items:center!important;min-width:0!important}
+body.ct-child-session.v15 .avatar{
+  position:relative!important;
+  width:clamp(50px,7vw,60px)!important;
+  height:clamp(50px,7vw,60px)!important;
+  min-width:clamp(50px,7vw,60px)!important;
+  min-height:clamp(50px,7vw,60px)!important;
+  max-width:clamp(50px,7vw,60px)!important;
+  max-height:clamp(50px,7vw,60px)!important;
+  flex:0 0 clamp(50px,7vw,60px)!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  transform:none!important;
+  scale:1!important;
+  box-sizing:border-box!important;
+  background-position:center!important;
+}
+body.ct-child-session.v15 .avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+body.ct-child-session.v15 .name{font-size:clamp(17px,3vw,21px)!important;line-height:1!important}
+body.ct-child-session.v15 .meta{font-size:clamp(8px,1.45vw,10px)!important;line-height:1.2!important;margin-top:4px!important}
+body.ct-child-session.v15 .stars{font-size:10px!important;padding:6px 9px!important;border-radius:12px!important}
+
+body.ct-child-session.v15 .balance{
+  display:grid!important;
+  grid-template-columns:var(--cs62-ring) minmax(0,1fr)!important;
+  gap:clamp(10px,2vw,18px)!important;
+  align-items:center!important;
+  min-height:var(--cs62-ring)!important;
+  height:auto!important;
+  margin:0 0 7px!important;
+  transform:none!important;
+}
+body.ct-child-session.v15 .ring{
+  position:relative!important;
+  width:var(--cs62-ring)!important;
+  height:var(--cs62-ring)!important;
+  min-width:var(--cs62-ring)!important;
+  min-height:var(--cs62-ring)!important;
+  max-width:var(--cs62-ring)!important;
+  max-height:var(--cs62-ring)!important;
+  flex:0 0 var(--cs62-ring)!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  justify-self:center!important;
+  align-self:center!important;
+  margin:0!important;
+  transform:none!important;
+  scale:1!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+body.ct-child-session.v15 .ring::before,
+body.ct-child-session.v15 .ring::after{border-radius:50%!important;transform:none!important}
+body.ct-child-session.v15 .ring-text{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:12%!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:clamp(5px,1vw,8px)!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  z-index:10!important;
+}
+body.ct-child-session.v15 .ring-text>*{position:static!important;width:100%!important;margin:0!important;padding:0!important;transform:none!important;text-align:center!important;white-space:nowrap!important}
+body.ct-child-session.v15 .ring-text strong{font-size:clamp(28px,5vw,39px)!important;line-height:.94!important;font-variant-numeric:tabular-nums!important}
+body.ct-child-session.v15 .ring-text span{font-size:clamp(7px,1.2vw,9px)!important;line-height:1!important;letter-spacing:.10em!important}
+
+body.ct-child-session.v15 .person-stats{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:6px!important;
+  min-width:0!important;
+  width:100%!important;
+}
+body.ct-child-session.v15 .person-stats .stat{
+  display:grid!important;
+  grid-template-columns:32px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:8px!important;
+  row-gap:2px!important;
+  align-content:center!important;
+  min-height:43px!important;
+  height:auto!important;
+  padding:7px 10px!important;
+  border-radius:13px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+body.ct-child-session.v15 .person-stats .stat>:not(span):not(strong){grid-column:1!important;grid-row:1/span 2!important;justify-self:center!important;align-self:center!important}
+body.ct-child-session.v15 .person-stats .stat>span{grid-column:2!important;grid-row:1!important;font-size:7.5px!important;line-height:1.05!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.ct-child-session.v15 .person-stats .stat>strong{grid-column:2!important;grid-row:2!important;font-size:13px!important;line-height:1!important;margin:1px 0 0!important;white-space:nowrap!important}
+body.ct-child-session.v15 .clockline{margin:0!important;padding:8px 10px!important;border-radius:13px!important}
+body.ct-child-session.v15 .clock-route{font-size:8.5px!important;gap:6px!important}
+body.ct-child-session.v15 .clock-route strong{font-size:12px!important}
+body.ct-child-session.v15 .clock-sub{font-size:7px!important;margin-top:3px!important}
+
+/* Os antigos atalhos saem do fluxo. */
+body.ct-child-session.v15 .actions{display:none!important}
+
+/* Abas laterais do filho */
+#cs62LeftTabs{
+  position:fixed;
+  z-index:86;
+  left:max(0px,calc((100vw - 760px)/2));
+  top:49%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  align-items:flex-start;
+}
+.cs62-side-tab,
+#cs60HistoryTab{
+  width:27px!important;
+  height:76px!important;
+  padding:0!important;
+  border:0!important;
+  color:#fff!important;
+  font:850 7px system-ui!important;
+  letter-spacing:.025em!important;
+  writing-mode:vertical-rl!important;
+  text-orientation:mixed!important;
+  box-shadow:0 8px 20px rgba(31,26,49,.16)!important;
+  opacity:.82!important;
+  backdrop-filter:none!important;
+}
+.cs62-side-tab{border-radius:0 13px 13px 0!important}
+.cs62-side-tab[data-action="routine"]{background:#328be8!important}
+.cs62-side-tab[data-action="reward"]{background:#7a49e9!important}
+.cs62-side-tab[data-action="cash"]{background:#15ad8c!important}
+#cs60HistoryTab{right:max(0px,calc((100vw - 760px)/2))!important;border-radius:13px 0 0 13px!important;background:#4a465a!important;top:49%!important}
+.cs62-side-tab:active,#cs60HistoryTab:active{opacity:1!important}
+
+/* Foto escolhida pelo próprio filho */
+.cs62-photo-edit{
+  position:absolute;
+  right:-2px;
+  bottom:-2px;
+  z-index:4;
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  border:2px solid #fff;
+  border-radius:50%;
+  background:#232038;
+  color:#fff;
+  font:900 10px system-ui;
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+  pointer-events:none;
+}
+body.ct-child-session.v15 .avatar{cursor:pointer!important}
+
+/* Tempo de aplicativos dentro da tela do filho */
+#cs62ChildUsage{
+  flex:1 1 auto;
+  min-height:112px;
+  max-width:760px;
+  width:100%;
+  margin:0 auto;
+  padding:10px 11px;
+  border:1px solid #e8e4f0;
+  border-radius:18px;
+  background:rgba(255,255,255,.94);
+  color:#282338;
+  box-shadow:0 9px 24px rgba(47,38,89,.07);
+  box-sizing:border-box;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.cs62-usage-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;margin-bottom:7px}
+.cs62-usage-head>div{min-width:0}
+.cs62-usage-kicker{font-size:7px;letter-spacing:.11em;font-weight:950;color:#8b849a;text-transform:uppercase}
+.cs62-usage-title{font-size:13px;font-weight:950;line-height:1.05;margin-top:2px}
+.cs62-usage-total{font-size:10px;font-weight:900;color:#6547ca;white-space:nowrap}
+.cs62-usage-list{
+  min-height:0;
+  flex:1 1 auto;
+  overflow:auto;
+  overscroll-behavior:contain;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px 9px;
+  align-content:start;
+  scrollbar-width:thin;
+}
+.cs62-app-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:7px;align-items:center;min-width:0;padding:5px 6px;border-radius:11px;background:#f7f5fb;box-sizing:border-box}
+.cs62-app-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;overflow:hidden;background:#ece8f6;color:#6447c6;font:950 12px system-ui}
+.cs62-app-icon img{width:100%;height:100%;object-fit:cover;border-radius:9px}
+.cs62-app-copy{min-width:0}
+.cs62-app-name{font-size:8.5px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs62-app-bar{height:5px;border-radius:99px;background:#e6e2ec;overflow:hidden;margin-top:4px}
+.cs62-app-bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5b77ec,#7b4fe7)}
+.cs62-app-time{font-size:8px;font-weight:900;color:#544d61;white-space:nowrap}
+.cs62-usage-empty{grid-column:1/-1;padding:12px;border-radius:12px;background:#f6f4f9;color:#777181;font-size:9px;font-weight:750;text-align:center;line-height:1.35}
+.cs62-usage-enable{border:0;border-radius:10px;background:#6847d6;color:#fff;padding:8px 10px;font:900 9px system-ui}
+
+/* ---------- PAIS / PWA ---------- */
+body.ct-parent-session.v15:not(.cs56-parent):not(.cs60-modal-open){overflow:hidden!important;height:100dvh!important}
+body.ct-parent-session.v15:not(.cs56-parent):not(.cs60-modal-open) .app{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  padding:max(7px,env(safe-area-inset-top)) 12px calc(var(--cs62-nav) + 7px + env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;
+}
+body.ct-parent-session.v15:not(.cs56-parent) .app>.top,
+body.ct-parent-session.v15:not(.cs56-parent) #ctDeviceControl44,
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55,
+body.ct-parent-session.v15:not(.cs56-parent) #v15Switcher,
+body.ct-parent-session.v15:not(.cs56-parent) #people,
+body.ct-parent-session.v15:not(.cs56-parent) .actions{flex:0 0 auto!important;margin:0!important;position:relative!important;inset:auto!important;top:auto!important;bottom:auto!important;transform:none!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctProfileGap47{display:none!important}
+
+body.ct-parent-session.v15:not(.cs56-parent) .top{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-height:48px!important;
+  margin:0!important;
+}
+body.ct-parent-session.v15:not(.cs56-parent) .brand{min-width:0!important;gap:7px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .logo{width:43px!important;height:43px!important;flex:0 0 43px!important;border-radius:14px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .brand>div:last-child{min-width:0!important}
+body.ct-parent-session.v15:not(.cs56-parent) .brand .kicker{font-size:6.5px!important;line-height:1!important;white-space:nowrap!important}
+body.ct-parent-session.v15:not(.cs56-parent) .brand h1{font-size:17px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.ct-parent-session.v15:not(.cs56-parent) .top-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;min-width:0!important;flex-wrap:nowrap!important}
+body.ct-parent-session.v15:not(.cs56-parent) #switchUserBtn{display:none!important}
+body.ct-parent-session.v15:not(.cs56-parent) .top-actions>*{position:relative!important;inset:auto!important;transform:none!important;margin:0!important;height:34px!important;min-height:34px!important;border-radius:11px!important;box-sizing:border-box!important;font-size:7.5px!important;white-space:nowrap!important}
+body.ct-parent-session.v15:not(.cs56-parent) .top-actions .icon-btn{width:34px!important;min-width:34px!important;padding:0!important}
+body.ct-parent-session.v15:not(.cs56-parent) .session-badge{min-width:48px!important;max-width:58px!important;padding:0 8px!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctSyncChip{min-width:78px!important;width:auto!important;padding:0 9px!important}
+
+body.ct-parent-session.v15:not(.cs56-parent) #ctDeviceControl44{
+  width:100%!important;
+  height:48px!important;
+  min-height:48px!important;
+  padding:0 13px!important;
+  border-radius:15px!important;
+  box-sizing:border-box!important;
+  justify-content:flex-start!important;
+}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55{
+  width:100%!important;
+  height:58px!important;
+  min-height:58px!important;
+  padding:8px 10px!important;
+  border-radius:15px!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) 34px!important;
+  gap:9px!important;
+  align-items:center!important;
+  overflow:hidden!important;
+}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-icon{width:38px!important;height:38px!important;border-radius:12px!important;font-size:16px!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55>span:nth-child(2){min-width:0!important;display:grid!important;grid-template-rows:auto auto auto!important;align-content:center!important;gap:1px!important;line-height:1!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-kicker,
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-main,
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-sub{display:block!important;position:static!important;margin:0!important;padding:0!important;transform:none!important;line-height:1.08!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-kicker{font-size:7px!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-main{font-size:15px!important;letter-spacing:-.02em!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-sub{font-size:7.5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) #ctScreenTime55 .ct55-arrow{width:31px!important;height:31px!important;border-radius:10px!important}
+
+body.ct-parent-session.v15:not(.cs56-parent) .v15-switcher{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;height:54px!important;min-height:54px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .v15-person-tab{height:54px!important;min-height:54px!important;padding:6px 8px!important;border-radius:14px!important;gap:7px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .v15-tab-avatar{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;flex:0 0 40px!important;aspect-ratio:1/1!important;border-radius:50%!important;background-position:center!important}
+body.ct-parent-session.v15:not(.cs56-parent) .v15-tab-copy strong{font-size:11px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .v15-tab-copy span{font-size:6.5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .v15-tab-check{width:19px!important;height:19px!important}
+
+body.ct-parent-session.v15:not(.cs56-parent) #people.people{min-height:0!important;margin:0!important}
+body.ct-parent-session.v15:not(.cs56-parent) .people .person{padding:10px!important;border-radius:21px!important;box-sizing:border-box!important;overflow:hidden!important}
+body.ct-parent-session.v15:not(.cs56-parent) .person-head{margin:0 0 6px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .avatar{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1/1!important;border-radius:50%!important;background-position:center!important}
+body.ct-parent-session.v15:not(.cs56-parent) .name{font-size:14px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .meta{font-size:7px!important;margin-top:3px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .balance{display:grid!important;grid-template-columns:116px minmax(0,1fr)!important;gap:8px!important;min-height:116px!important;margin:0 0 5px!important;align-items:center!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring{width:116px!important;height:116px!important;min-width:116px!important;min-height:116px!important;max-width:116px!important;max-height:116px!important;aspect-ratio:1/1!important;border-radius:50%!important;clip-path:circle(50% at 50% 50%)!important;transform:none!important;scale:1!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring::before,
+body.ct-parent-session.v15:not(.cs56-parent) .ring::after{border-radius:50%!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring-text{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;transform:none!important;padding:10px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;text-align:center!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring-text>*{position:static!important;width:100%!important;margin:0!important;transform:none!important;text-align:center!important;white-space:nowrap!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring-text strong{font-size:27px!important;line-height:.94!important}
+body.ct-parent-session.v15:not(.cs56-parent) .ring-text span{font-size:6.5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .person-stats{gap:4px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .person-stats .stat{min-height:34px!important;height:34px!important;padding:4px 7px!important;border-radius:9px!important;grid-template-columns:24px minmax(0,1fr)!important;column-gap:5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .person-stats .stat>span{font-size:6.2px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .person-stats .stat>strong{font-size:11px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .clockline{margin:0!important;padding:6px 8px!important;border-radius:10px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .clock-route{font-size:7.5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .clock-route strong{font-size:10px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .clock-sub{font-size:6.3px!important}
+
+body.ct-parent-session.v15:not(.cs56-parent) .actions{margin:0!important;padding:0!important}
+body.ct-parent-session.v15:not(.cs56-parent) .section-head{margin:0 0 4px!important;min-height:17px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .section-head h2{font-size:12px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .section-head p{display:none!important}
+body.ct-parent-session.v15:not(.cs56-parent) .quick{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:52px!important;gap:5px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .action.v15-tile{height:52px!important;min-height:52px!important;padding:6px 7px!important;border-radius:13px!important;display:grid!important;grid-template-columns:25px minmax(0,1fr)!important;grid-template-rows:auto auto!important;column-gap:5px!important;row-gap:1px!important;align-content:center!important;align-items:center!important}
+body.ct-parent-session.v15:not(.cs56-parent) .action.v15-tile .aicon{grid-column:1!important;grid-row:1/span 2!important;width:25px!important;height:25px!important;border-radius:8px!important;font-size:13px!important}
+body.ct-parent-session.v15:not(.cs56-parent) .action.v15-tile strong{grid-column:2!important;grid-row:1!important;font-size:7.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.ct-parent-session.v15:not(.cs56-parent) .action.v15-tile small{grid-column:2!important;grid-row:2!important;font-size:5.7px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+/* O painel moderno V56 também recebe correções básicas caso esteja ativo. */
+body.cs56-parent #cs56Top{gap:8px!important;align-items:center!important}
+body.cs56-parent #cs56Top>*{min-width:0!important}
+body.cs56-parent #cs56Content{gap:7px!important;overflow:hidden!important}
+body.cs56-parent .cs56-card{box-sizing:border-box!important}
+
+@media(max-width:520px){
+  :root{--cs62-ring:124px}
+  body.ct-child-session.v15 .people .person{padding:10px!important}
+  body.ct-child-session.v15 .person-stats .stat{min-height:39px!important;padding:6px 8px!important;grid-template-columns:28px minmax(0,1fr)!important}
+  .cs62-usage-list{grid-template-columns:1fr!important}
+  #cs62LeftTabs{left:0!important}
+  #cs60HistoryTab{right:0!important}
+  .cs62-side-tab,#cs60HistoryTab{width:23px!important;height:68px!important;font-size:6.5px!important}
+  body.ct-parent-session.v15:not(.cs56-parent) .app{padding-left:9px!important;padding-right:9px!important;gap:5px!important}
+  body.ct-parent-session.v15:not(.cs56-parent) .brand h1{font-size:15px!important;max-width:92px!important}
+  body.ct-parent-session.v15:not(.cs56-parent) #ctSyncChip{min-width:66px!important;padding:0 7px!important}
+  body.ct-parent-session.v15:not(.cs56-parent) .top-actions>*{font-size:7px!important}
+}
+
+@media(min-width:700px){
+  body.ct-child-session.v15 .app{padding-left:max(28px,calc((100vw - 800px)/2));padding-right:max(28px,calc((100vw - 800px)/2))}
+  #cs62ChildUsage{min-height:150px}
+  body.ct-child-session.v15 .people .person{padding:14px!important}
+  body.ct-child-session.v15 .person-stats .stat{min-height:46px!important}
+}
