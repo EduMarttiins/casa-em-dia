@@ -25,6 +25,7 @@ class MainActivity : Activity() {
     private lateinit var webView: WebView
     private var permissionDialogVisible = false
     private var locationDialogVisible = false
+    private var usageDialogVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +42,7 @@ class MainActivity : Activity() {
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "$userAgentString CasaTodaAndroid/0.11"
+            userAgentString = "$userAgentString CasaSeguraAndroid/0.12"
         }
 
         webView.addJavascriptInterface(CasaTodaBridge(this), "CasaTodaAndroid")
@@ -78,8 +79,8 @@ class MainActivity : Activity() {
         if (!isProtectionEnabled() && !permissionDialogVisible) {
             permissionDialogVisible = true
             AlertDialog.Builder(this)
-                .setTitle("Ativar CasaToda Proteção")
-                .setMessage("Para bloquear os aplicativos no horário definido, ative CasaToda Proteção em Acessibilidade.\n\nSe estiver bloqueado, abra Informações do app e escolha Permitir configurações restritas.")
+                .setTitle("Ativar CasaSegura Proteção")
+                .setMessage("Para bloquear os aplicativos no horário definido, ative CasaSegura Proteção em Acessibilidade.\n\nSe estiver bloqueado, abra Informações do app e escolha Permitir configurações restritas.")
                 .setNegativeButton("Depois") { _, _ -> permissionDialogVisible = false }
                 .setNeutralButton("Informações do app") { _, _ -> permissionDialogVisible = false; openAppInfo() }
                 .setPositiveButton("Abrir Acessibilidade") { _, _ -> permissionDialogVisible = false; startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
@@ -88,6 +89,7 @@ class MainActivity : Activity() {
             return
         }
         if (isProtectionEnabled() && !locationDialogVisible) maybeOfferLocationSetup()
+        if (isProtectionEnabled() && !locationDialogVisible && !usageDialogVisible) maybeOfferUsageSetup()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -147,7 +149,7 @@ class MainActivity : Activity() {
         if (!hasForegroundLocation()) {
             AlertDialog.Builder(this)
                 .setTitle("Ativar Encontrar aparelho")
-                .setMessage("O CasaToda pode localizar este celular quando você usar Localizar agora na Central dos aparelhos. A localização é consultada somente quando solicitada.")
+                .setMessage("O CasaSegura pode localizar este celular quando você usar Localizar agora na Central dos aparelhos. A localização é consultada somente quando solicitada.")
                 .setNegativeButton("Agora não") { _, _ ->
                     locationDialogVisible = false
                     prefs.edit()
@@ -171,7 +173,7 @@ class MainActivity : Activity() {
         if (!hasBackgroundLocation()) {
             AlertDialog.Builder(this)
                 .setTitle("Permitir localização o tempo todo")
-                .setMessage("Para encontrar este aparelho mesmo quando o CasaToda não estiver aberto na tela, permita Localização o tempo todo nas permissões do aplicativo.")
+                .setMessage("Para encontrar este aparelho mesmo quando o CasaSegura não estiver aberto na tela, permita Localização o tempo todo nas permissões do aplicativo.")
                 .setNegativeButton("Depois") { _, _ ->
                     locationDialogVisible = false
                     prefs.edit()
@@ -190,6 +192,41 @@ class MainActivity : Activity() {
                 .setOnCancelListener { locationDialogVisible = false }
                 .show()
         }
+    }
+
+    private fun maybeOfferUsageSetup(force: Boolean = false) {
+        val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        if (UsageStatsSupport.hasUsageAccess(this)) {
+            prefs.edit().putBoolean(KEY_USAGE_SETUP_PROMPTED, true).apply()
+            return
+        }
+        val prompted = prefs.getBoolean(KEY_USAGE_SETUP_PROMPTED, false)
+        if (!force && prompted) return
+        if (usageDialogVisible) return
+
+        usageDialogVisible = true
+        AlertDialog.Builder(this)
+            .setTitle("Ativar Tempo de tela")
+            .setMessage("Para mostrar aos pais quanto tempo foi usado em YouTube, TikTok, WhatsApp e outros aplicativos, permita Acesso ao uso para o CasaSegura. O CasaSegura registra apenas o tempo de uso, não o conteúdo visto ou as mensagens.")
+            .setNegativeButton("Depois") { _, _ ->
+                usageDialogVisible = false
+                prefs.edit().putBoolean(KEY_USAGE_SETUP_PROMPTED, true).apply()
+            }
+            .setPositiveButton("Abrir Acesso ao uso") { _, _ ->
+                usageDialogVisible = false
+                prefs.edit().putBoolean(KEY_USAGE_SETUP_PROMPTED, true).apply()
+                openUsageAccessSettings()
+            }
+            .setOnCancelListener { usageDialogVisible = false }
+            .show()
+    }
+
+    private fun openUsageAccessSettings() {
+        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
+            data = Uri.parse("package:$packageName")
+        }
+        runCatching { startActivity(intent) }
+            .onFailure { startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)) }
     }
 
     private fun openAppInfo() {
@@ -213,7 +250,7 @@ class MainActivity : Activity() {
         if (expected.isBlank()) {
             AlertDialog.Builder(this)
                 .setTitle("Desbloqueio dos pais")
-                .setMessage("Este aparelho ainda não armazenou o código da família. Para recuperar o acesso agora, desative temporariamente CasaToda Proteção em Acessibilidade. Depois abra o CasaToda para sincronizar novamente.")
+                .setMessage("Este aparelho ainda não armazenou o código da família. Para recuperar o acesso agora, desative temporariamente CasaSegura Proteção em Acessibilidade. Depois abra o CasaSegura para sincronizar novamente.")
                 .setNegativeButton("Cancelar", null)
                 .setPositiveButton("Abrir Acessibilidade") { _, _ -> startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
                 .show()
@@ -301,7 +338,7 @@ class MainActivity : Activity() {
         fun getChildId(): String = prefs.getString(KEY_CHILD_ID, "") ?: ""
 
         @JavascriptInterface
-        fun getNativeVersion(): String = "0.11.0"
+        fun getNativeVersion(): String = "0.12.0"
 
         @JavascriptInterface
         fun getProtectionEnabled(): Boolean = activity.isProtectionEnabled()
@@ -312,6 +349,14 @@ class MainActivity : Activity() {
         @JavascriptInterface
         fun requestLocationSetup() {
             activity.runOnUiThread { activity.maybeOfferLocationSetup(force = true) }
+        }
+
+        @JavascriptInterface
+        fun getUsageAccessEnabled(): Boolean = UsageStatsSupport.hasUsageAccess(activity)
+
+        @JavascriptInterface
+        fun openUsageAccessSettings() {
+            activity.runOnUiThread { activity.openUsageAccessSettings() }
         }
 
         @JavascriptInterface
@@ -362,6 +407,7 @@ class MainActivity : Activity() {
         const val KEY_FAMILY_CODE = "family_code"
         const val KEY_LOCATION_SETUP_PROMPTED = "location_setup_prompted"
         const val KEY_LOCATION_PERMISSION_REQUIRED = "location_permission_required"
+        const val KEY_USAGE_SETUP_PROMPTED = "usage_setup_prompted"
         const val ACTION_REFRESH = "br.com.casatoda.REFRESH_BLOCKER"
         const val EXTRA_PARENT_UNLOCK = "parent_unlock"
         private const val REQUEST_LOCATION = 511
