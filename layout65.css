@@ -1,0 +1,56 @@
+/* CasaSegura V65 • rotina diária, recompensas e remoção de flicker legado */
+body.cs63-simple.cs65 .nav,
+body.cs63-simple.cs65 #v15HomeBtn,
+body.cs63-simple.cs65 #routineNav,
+body.cs63-simple.cs65 #creditBtn,
+body.cs63-simple.cs65 #rewardBtn,
+body.cs63-simple.cs65 #historyBtn,
+body.cs63-simple.cs65 #backupBtn,
+body.cs63-simple.cs65 #ctDeviceControl44,
+body.cs63-simple.cs65 #ctScreenTime55,
+body.cs63-simple.cs65 #cs56Nav,
+body.cs63-simple.cs65 #cs56App,
+body.cs63-simple.cs65 #cs60HistoryTab,
+body.cs63-simple.cs65 #cs62LeftTabs{display:none!important}
+
+body.cs63-simple.cs65 .cs63-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+body.cs63-simple.cs65 .cs63-actions button{min-height:54px!important;padding:7px!important}
+body.cs63-simple.cs65 .cs63-actions button i{width:32px!important;height:32px!important;font-size:17px!important}
+body.cs63-simple.cs65 .cs63-actions button b{font-size:9.5px!important}
+body.cs63-simple.cs65 .cs63-actions button small{font-size:7px!important}
+
+.cs65-child-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:0 0 auto}
+.cs65-child-actions button{min-width:0;min-height:56px;display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:7px;padding:7px;border:0;border-radius:15px;background:#fff;color:#2b2440;box-shadow:0 8px 18px rgba(21,16,54,.12);text-align:left;font-family:inherit}
+.cs65-child-actions button i{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#eee9fb;color:#6746d5;font-style:normal;font-size:17px;font-weight:950}
+.cs65-child-actions button:nth-child(2) i{background:#fff1d8;color:#b57a00}.cs65-child-actions button:nth-child(3) i{background:#dcfff5;color:#0e9978}
+.cs65-child-actions span{min-width:0}.cs65-child-actions b{display:block;font-size:9.5px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cs65-child-actions small{display:block;margin-top:3px;font-size:7px;line-height:1.15;color:#786f86;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+#cs65Toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:320000;max-width:88%;padding:10px 14px;border-radius:999px;background:#211a31;color:#fff;font:850 11px system-ui;box-shadow:0 12px 32px rgba(0,0,0,.22);text-align:center}
+.cs65-overlay{position:fixed;inset:0;z-index:310000;display:grid;place-items:center;padding:12px;background:rgba(18,14,31,.54);backdrop-filter:blur(7px);box-sizing:border-box}
+.cs65-sheet{width:min(650px,100%);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:#fff;color:#2b2536;box-shadow:0 26px 80px rgba(0,0,0,.28);box-sizing:border-box}
+.cs65-sheet-head{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:17px 18px 12px;border-bottom:1px solid #eeeaf3}
+.cs65-sheet-head span{display:block;font-size:8px;font-weight:950;letter-spacing:.12em;color:#8d8498}.cs65-sheet-head h2{margin:4px 0 0;font-size:22px;line-height:1;font-weight:950;letter-spacing:-.03em}
+.cs65-close{width:36px;height:36px;flex:0 0 auto;border:0;border-radius:12px;background:#f1eef5;color:#463d51;font-size:22px;font-weight:900}
+#cs65SheetBody{min-height:0;overflow:auto;padding:12px 14px 15px;overscroll-behavior:contain}
+
+.cs65-routine-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:10px}.cs65-routine-summary>div{padding:10px;border-radius:14px;background:#f6f3fa;text-align:center}.cs65-routine-summary b{display:block;font-size:17px;color:#6042c8}.cs65-routine-summary span{display:block;margin-top:2px;font-size:7.5px;font-weight:750;color:#81798c}
+.cs65-task-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.cs65-task{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:7px;min-height:54px;padding:7px 8px;border:1px solid #ebe7f0;border-radius:14px;background:#fff;box-sizing:border-box}.cs65-task.done{background:#eefaf5;border-color:#d6f0e5}.cs65-task.requested{background:#fff9e9;border-color:#f2e3b5}
+.cs65-task-num{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#f0ecf7;color:#6b56a4;font:900 10px system-ui}.cs65-task.done .cs65-task-num{background:#d9f4e9;color:#168665}.cs65-task.requested .cs65-task-num{background:#fff0c7;color:#a87900}
+.cs65-task-name{min-width:0;font-size:9.5px;line-height:1.2;font-weight:850;color:#342e3e}
+.cs65-task-btn{min-height:31px;border:0;border-radius:10px;padding:0 9px;background:#6448cd;color:#fff;font:900 8px system-ui;white-space:nowrap}.cs65-task-btn.approve{background:#168665}.cs65-task-btn.reject{background:#fff0f1;color:#b33e4e}.cs65-task-btn.muted{background:#eeeaf3;color:#6e657a}.cs65-parent-actions{display:flex;gap:4px}.cs65-state{font:900 8px system-ui;white-space:nowrap}.cs65-state.done{color:#168665}.cs65-state.wait{color:#a87900}
+
+.cs65-reward-balance{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding:11px 13px;border-radius:14px;background:linear-gradient(100deg,#f4efff,#fff6df)}.cs65-reward-balance span{font-size:9px;font-weight:800;color:#71687d}.cs65-reward-balance b{font-size:18px;color:#5e3dcc}
+.cs65-reward-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cs65-reward-card{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:13px 10px 10px;border:1px solid #ebe6f1;border-radius:16px;background:#fff;text-align:center}.cs65-reward-card.locked{opacity:.66}.cs65-reward-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#f1edfb;font-size:22px}.cs65-reward-copy{min-width:0;margin-top:8px}.cs65-reward-copy b{display:block;font-size:10px;line-height:1.15}.cs65-reward-copy span{display:block;min-height:24px;margin-top:4px;font-size:7.5px;line-height:1.25;color:#7b7287}.cs65-reward-cost{margin:7px 0;font-size:11px;font-weight:950;color:#a66e00}.cs65-reward-card>button{width:100%;min-height:34px;border:0;border-radius:10px;background:#6247ca;color:#fff;font:900 8px system-ui}.cs65-reward-card>button:disabled{background:#eeeaf3;color:#8b8394}.cs65-reward-note{margin-top:auto;font-size:7px;line-height:1.2;color:#8b8394;font-weight:750}
+.cs65-pending-box{margin-bottom:10px;padding:10px;border-radius:15px;background:#fff8e5;border:1px solid #f0dfaa}.cs65-pending-box h3{margin:0 0 6px;font-size:10px}.cs65-pending-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid rgba(157,121,20,.13)}.cs65-pending-row:first-of-type{border-top:0}.cs65-pending-row>div{min-width:0}.cs65-pending-row b{display:block;font-size:9px}.cs65-pending-row div span{display:block;margin-top:2px;font-size:7px;color:#846f34}.cs65-pending-row>span{display:flex;gap:4px}.cs65-pending-row button{height:30px;border:0;border-radius:9px;padding:0 9px;background:#168665;color:#fff;font:900 7.5px system-ui}.cs65-pending-row button.reject{background:#fff0f1;color:#b33e4e}
+
+@media(max-width:640px){
+ body.cs63-simple.cs65 .cs63-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ body.cs63-simple.cs65 .cs63-actions button{min-height:47px!important}
+ .cs65-child-actions{grid-template-columns:1fr 1fr 1fr}.cs65-child-actions button{grid-template-columns:28px minmax(0,1fr);min-height:48px;padding:6px}.cs65-child-actions button i{width:28px;height:28px;font-size:15px}.cs65-child-actions b{font-size:8.5px}.cs65-child-actions small{font-size:6.5px}
+ .cs65-task-list{grid-template-columns:1fr}.cs65-routine-summary{grid-template-columns:repeat(3,1fr)}.cs65-task{min-height:49px}.cs65-task-name{font-size:9px}
+ .cs65-reward-list{grid-template-columns:1fr}.cs65-reward-card{display:grid;grid-template-columns:40px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:9px;text-align:left;padding:9px}.cs65-reward-icon{grid-row:1/3;width:40px;height:40px}.cs65-reward-copy{margin:0}.cs65-reward-copy span{min-height:0}.cs65-reward-cost{margin:0;align-self:start}.cs65-reward-card>button,.cs65-reward-note{grid-column:2/4;margin-top:6px}.cs65-reward-card>button{min-height:30px}
+}
+@media(max-height:720px){
+ body.cs63-simple.cs65 .cs63-actions button{min-height:43px!important}.cs65-child-actions button{min-height:44px}.cs65-sheet-head{padding:12px 14px 9px}.cs65-sheet-head h2{font-size:19px}#cs65SheetBody{padding:9px 11px 11px}.cs65-task{min-height:45px}
+}
