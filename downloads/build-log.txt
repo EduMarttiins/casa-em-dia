@@ -16,32 +16,32 @@ Starting a Gradle Daemon (subsequent builds will be faster)
 > Task :app:processDebugManifest
 > Task :app:javaPreCompileDebug
 > Task :app:mergeDebugShaders
-> Task :app:processDebugManifestForPackage
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
 > Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
 > Task :app:mergeDebugJniLibFolders
-> Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugNativeLibs NO-SOURCE
 > Task :app:stripDebugDebugSymbols NO-SOURCE
-> Task :app:mergeLibDexDebug
-> Task :app:processDebugResources
+> Task :app:checkDebugDuplicateClasses
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
+> Task :app:mergeLibDexDebug
+> Task :app:processDebugManifestForPackage
 > Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugResources
 > Task :app:mergeExtDexDebug
 
 > Task :app:compileDebugKotlin
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:339:13 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:339:39 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:339:73 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:339:112 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:38:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:39:16 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:48:13 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
-w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:119:62 'fun onBackPressed(): Unit' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:200:13 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:200:39 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:200:73 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/BlockAccessibilityService.kt:200:112 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:33:16 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:34:16 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:43:13 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
+w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br/com/casatoda/MainActivity.kt:100:62 'fun onBackPressed(): Unit' is deprecated. Deprecated in Java.
 
 > Task :app:compileDebugJavaWithJavac NO-SOURCE
 > Task :app:dexBuilderDebug
@@ -52,7 +52,7 @@ w: file:///home/runner/work/casa-em-dia/casa-em-dia/android/app/src/main/java/br
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787766820106.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build_apk-1787967459563.json
 
-BUILD SUCCESSFUL in 35s
+BUILD SUCCESSFUL in 23s
 33 actionable tasks: 33 executed
