@@ -70,7 +70,7 @@ class BlockAccessibilityService : AccessibilityService() {
     }
 
     private fun evaluate() {
-        maybePollSchedule()
+        maybePollRemoteState()
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
         val unlockUntil = prefs.getLong(MainActivity.KEY_UNLOCK_UNTIL, 0L)
@@ -117,14 +117,14 @@ class BlockAccessibilityService : AccessibilityService() {
         return currentPackage
     }
 
-    private fun maybePollSchedule() {
+    private fun maybePollRemoteState() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val code = (prefs.getString(MainActivity.KEY_FAMILY_CODE, "") ?: "").trim().uppercase()
         val childId = (prefs.getString(MainActivity.KEY_CHILD_ID, "") ?: "").trim().lowercase()
         if (code.isBlank() || childId !in setOf("bernardo", "julia")) return
 
         val now = System.currentTimeMillis()
-        if (remotePolling || now - lastRemotePoll < 5_000L) return
+        if (remotePolling || now - lastRemotePoll < 3_000L) return
         remotePolling = true
         lastRemotePoll = now
 
@@ -135,9 +135,22 @@ class BlockAccessibilityService : AccessibilityService() {
                     val state = rows.optJSONObject(0)?.optJSONObject("state")
                     if (state != null) updateScheduleFromState(state, childId, prefs)
                 }
+
+                val controlRows = postRpc(
+                    "casatoda_get_device_control",
+                    JSONObject().put("p_code", code).put("p_child_id", childId)
+                )
+                if (controlRows.length() > 0) {
+                    val row = controlRows.optJSONObject(0)
+                    if (row != null) {
+                        val wake = row.optInt("wake_minutes", prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)).coerceIn(0, 1439)
+                        prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake).apply()
+                        processDeviceCommand(row.optJSONObject("command"), prefs)
+                    }
+                }
                 handler.post { evaluate() }
             } catch (e: Exception) {
-                Log.w("CasaSegura", "Falha ao atualizar o horário", e)
+                Log.w("CasaSegura", "Falha ao atualizar horário ou desbloqueio remoto", e)
             } finally {
                 remotePolling = false
             }
@@ -182,6 +195,32 @@ class BlockAccessibilityService : AccessibilityService() {
             .putInt(MainActivity.KEY_BASE_MINUTES, base)
             .putInt(MainActivity.KEY_CUTOFF_MINUTES, finalCutoff)
             .apply()
+    }
+
+    private fun processDeviceCommand(command: JSONObject?, prefs: android.content.SharedPreferences) {
+        if (command == null) return
+        val nonce = command.optString("nonce", "").trim()
+        if (nonce.isBlank()) return
+        val last = prefs.getString(KEY_LAST_DEVICE_COMMAND_NONCE, "") ?: ""
+        if (last == nonce) return
+
+        val now = System.currentTimeMillis()
+        when (command.optString("action", "")) {
+            "unlock" -> {
+                val requestedUntil = command.optLong("untilMs", 0L)
+                val maxUntil = now + 24L * 60L * 60L * 1000L
+                val until = requestedUntil.coerceAtMost(maxUntil)
+                if (until > now) {
+                    prefs.edit().putLong(MainActivity.KEY_UNLOCK_UNTIL, until).apply()
+                    Log.i("CasaSegura", "Desbloqueio remoto aplicado")
+                }
+            }
+            "resume" -> {
+                prefs.edit().remove(MainActivity.KEY_UNLOCK_UNTIL).apply()
+                Log.i("CasaSegura", "Regra normal reaplicada")
+            }
+        }
+        prefs.edit().putString(KEY_LAST_DEVICE_COMMAND_NONCE, nonce).apply()
     }
 
     private fun isBlockedNow(cutoff: Int, wake: Int): Boolean {
@@ -240,7 +279,7 @@ class BlockAccessibilityService : AccessibilityService() {
             }
         }
         val note = TextView(this).apply {
-            text = "Os pais podem liberar temporariamente com o código da família."
+            text = "Os pais podem liberar temporariamente pelo CasaSegura."
             textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.rgb(170, 164, 195))
@@ -272,5 +311,6 @@ class BlockAccessibilityService : AccessibilityService() {
     companion object {
         private const val SB_URL = "https://fkxwlezflfpdrronluci.supabase.co"
         private const val SB_KEY = "sb_publishable_5KlTca79dddAuF976jnd1w_mugqoPbl"
+        private const val KEY_LAST_DEVICE_COMMAND_NONCE = "last_device_command_nonce"
     }
 }
