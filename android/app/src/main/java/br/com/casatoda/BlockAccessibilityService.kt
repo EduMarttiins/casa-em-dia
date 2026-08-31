@@ -121,7 +121,7 @@ class BlockAccessibilityService : AccessibilityService() {
         val prefs = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
         val code = (prefs.getString(MainActivity.KEY_FAMILY_CODE, "") ?: "").trim().uppercase()
         val childId = (prefs.getString(MainActivity.KEY_CHILD_ID, "") ?: "").trim().lowercase()
-        if (code.isBlank() || childId !in setOf("bernardo", "julia")) return
+        if (code.isBlank() || childId !in setOf("bernardo", "julia", "irmaos")) return
 
         val now = System.currentTimeMillis()
         if (remotePolling || now - lastRemotePoll < 3_000L) return
@@ -130,10 +130,12 @@ class BlockAccessibilityService : AccessibilityService() {
 
         networkExecutor.execute {
             try {
-                val rows = postRpc("casatoda_get_state", JSONObject().put("p_code", code))
-                if (rows.length() > 0) {
-                    val state = rows.optJSONObject(0)?.optJSONObject("state")
-                    if (state != null) updateScheduleFromState(state, childId, prefs)
+                if (childId != "irmaos") {
+                    val rows = postRpc("casatoda_get_state", JSONObject().put("p_code", code))
+                    if (rows.length() > 0) {
+                        val state = rows.optJSONObject(0)?.optJSONObject("state")
+                        if (state != null) updateScheduleFromState(state, childId, prefs)
+                    }
                 }
 
                 val controlRows = postRpc(
@@ -144,7 +146,14 @@ class BlockAccessibilityService : AccessibilityService() {
                     val row = controlRows.optJSONObject(0)
                     if (row != null) {
                         val wake = row.optInt("wake_minutes", prefs.getInt(MainActivity.KEY_WAKE_MINUTES, 360)).coerceIn(0, 1439)
-                        prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake).apply()
+                        val editor = prefs.edit().putInt(MainActivity.KEY_WAKE_MINUTES, wake)
+                        if (childId == "irmaos") {
+                            val block = row.optInt("block_minutes", prefs.getInt(MainActivity.KEY_CUTOFF_MINUTES, 1320)).coerceIn(0, 1439)
+                            editor.putBoolean(MainActivity.KEY_ENABLED, true)
+                                .putInt(MainActivity.KEY_BASE_MINUTES, block)
+                                .putInt(MainActivity.KEY_CUTOFF_MINUTES, block)
+                        }
+                        editor.apply()
                         processDeviceCommand(row.optJSONObject("command"), prefs)
                     }
                 }
