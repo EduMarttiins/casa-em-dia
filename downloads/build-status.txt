@@ -1,4 +1,3 @@
-FALHA
-O APK não foi gerado.
-Commit: 9beca70e16359da5eee28cef57313047b788051b
-Código do Gradle: 
+SUCESSO
+APK CasaSegura gerado em 2026-08-31 03:36:37 UTC
+Commit: 76da36485517dd87d9d841decbcad1bd5952ef25
