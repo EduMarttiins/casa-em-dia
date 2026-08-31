@@ -1,3 +1,4 @@
-SUCESSO
-APK CasaSegura gerado em 2026-08-29 01:37:59 UTC
-Commit: 2f58bbc59a5d380a8a976ea308681d9f5c583ed7
+FALHA
+O APK não foi gerado.
+Commit: 4bafeffbdd5ec278e8efc37fc6fc12d847d54911
+Código do Gradle: 
