@@ -74,6 +74,10 @@ jobs:
         shell: bash
         run: python3 tools/v19_transform.py
 
+      - name: Aplicar perguntas recolhidas da versão 20
+        shell: bash
+        run: python3 tools/v20_transform.py
+
       - name: Salvar index direto na branch principal
         shell: bash
         run: |
@@ -83,7 +87,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa de Estudos versão 19 [skip ci]"
+            git commit -m "Publica Lousa de Estudos versão 20 [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
