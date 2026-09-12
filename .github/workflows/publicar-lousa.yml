@@ -1,4 +1,4 @@
-name: Publicar Lousa Digital
+name: Publicar Lousa de Estudos
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/publicar-lousa.yml"
       - "assets/**"
+      - "tools/**"
   workflow_dispatch:
 
 permissions:
@@ -21,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Montar versão 17 direta
+      - name: Montar base direta
         shell: bash
         run: |
           node <<'NODE'
@@ -62,8 +63,12 @@ jobs:
           );
 
           fs.writeFileSync('index.html', html, 'utf8');
-          console.log(`index.html versão 17 gerado com ${Buffer.byteLength(html)} bytes`);
+          console.log(`base gerada com ${Buffer.byteLength(html)} bytes`);
           NODE
+
+      - name: Aplicar experiência lúdica da versão 18
+        shell: bash
+        run: python3 tools/v18_transform.py
 
       - name: Salvar index direto na branch principal
         shell: bash
@@ -74,7 +79,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa de Estudos versão 17 [skip ci]"
+            git commit -m "Publica Lousa de Estudos versão 18 [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
