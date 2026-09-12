@@ -1,0 +1,2 @@
+17
+Mini lousa ativada somente nas questões de cálculo e operação selecionadas.
