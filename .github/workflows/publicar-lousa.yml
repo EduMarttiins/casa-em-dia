@@ -53,25 +53,10 @@ jobs:
           const compressed = Buffer.from(parts.join(''), 'base64');
           let html = zlib.gunzipSync(compressed).toString('utf8');
           if (!html.toLowerCase().includes('<html')) throw new Error('HTML final inválido');
-
-          const oldScratch = `function shouldShowScratchpad(q){
-  return currentSubjectKey==='math' && q.type==='mcq';
-}`;
-          const newScratch = `const scratchpadQuestionIds=new Set([
-  'm_op1','m_op2','m_op3','m_op4',
-  'm_cal1','m_cal2','m_cal3','m_cal4','m_cal5',
-  'm_gra4','m_gra5',
-  'm_din2','m_din3','m_din5',
-  'm_fr3','m_fr4',
-  'm_pct1','m_pct2','m_pct3','m_pct4',
-  'm_dec3','m_dec4','m_dec5'
-]);
-function shouldShowScratchpad(q){
-  return currentSubjectKey==='math' && q.type==='mcq' && scratchpadQuestionIds.has(q.id);
-}`;
-          if (!html.includes(oldScratch)) throw new Error('Função da mini lousa não encontrada');
-          html = html.replace(oldScratch, newScratch);
-
+          const oldLine = "  return currentSubjectKey==='math' && q.type==='mcq';";
+          const newLine = "  return currentSubjectKey==='math' && q.type==='mcq' && ['m_op1','m_op2','m_op3','m_op4','m_cal1','m_cal2','m_cal3','m_cal4','m_cal5','m_gra4','m_gra5','m_din2','m_din3','m_din5','m_fr3','m_fr4','m_pct1','m_pct2','m_pct3','m_pct4','m_dec3','m_dec4','m_dec5'].includes(q.id);";
+          if (!html.includes(oldLine)) throw new Error('Regra da mini lousa não encontrada');
+          html = html.replace(oldLine, newLine);
           fs.writeFileSync('index.html', html, 'utf8');
           console.log(`index.html versão 17 gerado com ${Buffer.byteLength(html)} bytes`);
           NODE
