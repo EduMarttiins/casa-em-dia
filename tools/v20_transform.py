@@ -1,78 +1,56 @@
 from pathlib import Path
 
 path = Path('index.html')
-html = path.read_text(encoding='utf-8')
+text = path.read_text(encoding='utf-8')
 
-html = html.replace('<meta name="app-version" content="18">', '<meta name="app-version" content="20">', 1)
+text = text.replace('<meta name="app-version" content="18">', '<meta name="app-version" content="20">', 1)
 
-old_css = ".reviewCard.subjectScience{background:linear-gradient(135deg,#f7fff9 0%,#f4fbff 100%)}.reviewCard.subjectPortuguese{background:linear-gradient(135deg,#fffdf4 0%,#faf7ff 100%)}.reviewCard.subjectMath{background:linear-gradient(135deg,#f6f9ff 0%,#fbfdff 100%)}.reviewCard.subjectGeography{background:linear-gradient(135deg,#f5fff8 0%,#f4fbff 100%)}.reviewCard.subjectHistory{background:linear-gradient(135deg,#fff9f2 0%,#fffdf8 100%)}.qTitle{display:flex;align-items:flex-start;gap:11px}.badge{min-width:34px;height:34px;border-radius:11px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;font-weight:900}.qMeta{display:inline-flex;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:#f4f7f5;border:1px solid #e6ece8;color:#59685e;font-size:12px;font-weight:900}.qTitle strong{display:block;font-size:18px;line-height:1.4}"
-new_css = ".reviewCard.subjectScience{background:linear-gradient(135deg,#f7fff9 0%,#f4fbff 100%)}.reviewCard.subjectPortuguese{background:linear-gradient(135deg,#fffdf4 0%,#faf7ff 100%)}.reviewCard.subjectMath{background:linear-gradient(135deg,#f6f9ff 0%,#fbfdff 100%)}.reviewCard.subjectGeography{background:linear-gradient(135deg,#f5fff8 0%,#f4fbff 100%)}.reviewCard.subjectHistory{background:linear-gradient(135deg,#fff9f2 0%,#fffdf8 100%)}.qTitle{width:100%;display:block;border:0;background:transparent;color:inherit;padding:0;text-align:left;cursor:pointer}.qTitle strong{display:block;font-size:18px;line-height:1.5}.qNumber{color:var(--blue);font-weight:950;margin-right:4px}.qTitle:hover strong,.qTitle:focus-visible strong{color:var(--greenDark)}.qTitle:focus-visible{outline:3px solid color-mix(in srgb,var(--green) 28%,transparent);outline-offset:6px;border-radius:10px}.qDetails{display:none;padding-top:18px}.question.expanded>.qDetails{display:block}.question.expanded>.qTitle{margin-bottom:0}"
-if old_css not in html:
-    raise SystemExit('Bloco CSS da versão 19 não encontrado')
-html = html.replace(old_css, new_css, 1)
+css_anchor = '@media (prefers-reduced-motion:reduce){.question{transition:none}}'
+css_extra = """
+/* Versão 20: a ajuda aparece sob a área de resposta somente quando o aluno pedir. */
+.studyHelp{margin-top:14px}
+.studyHelpToggle{display:inline-flex;align-items:center;gap:8px;border:1px solid #d8e6df;background:linear-gradient(135deg,#fffdf5 0%,#f7fbff 100%);color:#3b5146;border-radius:14px;padding:10px 13px;font-weight:900;box-shadow:0 6px 16px rgba(40,58,46,.05)}
+.studyHelpToggle:hover,.studyHelpToggle:focus-visible{border-color:#b8d4c1;outline:none;box-shadow:0 9px 20px rgba(40,58,46,.09)}
+.studyHelpToggle[aria-expanded="true"]{background:linear-gradient(135deg,#f1f8ff 0%,#f8fbff 100%);border-color:#cbdff2;color:#24506f}
+.studyHelp .reviewCard{margin:12px 0 0;display:none}
+.studyHelp.open .reviewCard{display:block;animation:studyHelpIn .18s ease-out}
+.question.stateCorrect>.studyHelp{opacity:.52;filter:saturate(.72)}
+.question.stateWrong>.studyHelp{opacity:.48;filter:grayscale(.72)}
+@keyframes studyHelpIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){.studyHelpToggle{width:100%;justify-content:center}}
+"""
+if css_extra.strip() not in text:
+    if css_anchor not in text:
+        raise SystemExit('Âncora de CSS da versão 19 não encontrada')
+    text = text.replace(css_anchor, css_extra + css_anchor, 1)
 
-html = html.replace(
-    '.question.stateCorrect>.reviewCard,.question.stateCorrect>.qTitle,.question.stateCorrect>.mcqLayout,.question.stateCorrect>.options,.question.stateCorrect>.board,.question.stateCorrect>.actions{opacity:.52;filter:saturate(.72)}',
-    '.question.stateCorrect>.qTitle,.question.stateCorrect .reviewCard,.question.stateCorrect .mcqLayout,.question.stateCorrect .options,.question.stateCorrect .board,.question.stateCorrect .actions{opacity:.52;filter:saturate(.72)}',
-    1,
-)
-html = html.replace(
-    '.question.stateWrong>.reviewCard,.question.stateWrong>.qTitle,.question.stateWrong>.mcqLayout,.question.stateWrong>.options,.question.stateWrong>.board{opacity:.48;filter:grayscale(.72)}',
-    '.question.stateWrong>.qTitle,.question.stateWrong .reviewCard,.question.stateWrong .mcqLayout,.question.stateWrong .options,.question.stateWrong .board{opacity:.48;filter:grayscale(.72)}',
-    1,
-)
-
-old_start = """function buildQuestion(q,num){
-  const card=document.createElement('article');card.className='question';
-  const review=document.createElement('div');
+old_top = """  const review=document.createElement('div');
   const reviewTheme=getReviewTheme();
   review.className=`reviewCard ${reviewTheme.className}`;
   review.innerHTML=buildPreQuestionReview(q);
   card.appendChild(review);
-  const head=document.createElement('div');head.className='qTitle';head.innerHTML=`<div class=\"badge\">${num}</div><div><div class=\"qMeta\">${q.type==='mcq'?'Múltipla escolha':'Resposta à mão'}</div><strong>${q.text}</strong></div>`;card.appendChild(head);
-  const statusSeal=document.createElement('div');statusSeal.className='statusSeal';card.appendChild(statusSeal);
-"""
-new_start = """function buildQuestion(q,num){
-  const card=document.createElement('article');card.className='question';
-  const head=document.createElement('button');head.type='button';head.className='qTitle';head.setAttribute('aria-expanded','false');head.innerHTML=`<strong><span class=\"qNumber\">${num}.</span> ${q.text}</strong>`;card.appendChild(head);
-  const details=document.createElement('div');details.className='qDetails';card.appendChild(details);
-  head.addEventListener('click',()=>{
-    const expanded=card.classList.toggle('expanded');
-    head.setAttribute('aria-expanded',expanded?'true':'false');
-    if(expanded) setTimeout(()=>window.dispatchEvent(new Event('resize')),0);
-  });
-  const review=document.createElement('div');
+  const head=document.createElement('div');"""
+new_top = """  const review=document.createElement('div');
   const reviewTheme=getReviewTheme();
   review.className=`reviewCard ${reviewTheme.className}`;
   review.innerHTML=buildPreQuestionReview(q);
-  details.appendChild(review);
-  const statusSeal=document.createElement('div');statusSeal.className='statusSeal';details.appendChild(statusSeal);
-"""
-if old_start not in html:
-    raise SystemExit('Cabeçalho da questão da versão 19 não encontrado')
-html = html.replace(old_start, new_start, 1)
+  const studyHelp=document.createElement('div');studyHelp.className='studyHelp';
+  const studyHelpToggle=document.createElement('button');studyHelpToggle.type='button';studyHelpToggle.className='studyHelpToggle';studyHelpToggle.setAttribute('aria-expanded','false');studyHelpToggle.textContent='💡 Ver ajuda para pensar';
+  studyHelp.appendChild(studyHelpToggle);studyHelp.appendChild(review);
+  studyHelpToggle.addEventListener('click',()=>{const open=!studyHelp.classList.contains('open');studyHelp.classList.toggle('open',open);studyHelpToggle.setAttribute('aria-expanded',open?'true':'false');studyHelpToggle.textContent=open?'🙈 Ocultar ajuda':'💡 Ver ajuda para pensar';});
+  const head=document.createElement('div');"""
+if old_top not in text:
+    raise SystemExit('Início de buildQuestion da versão 19 não encontrado')
+text = text.replace(old_top, new_top, 1)
 
-start = html.index('function buildQuestion(q,num){')
-end = html.index('\nfunction setCanvasLocked', start)
-block = html[start:end]
-block = block.replace('card.appendChild(mcqLayout);', 'details.appendChild(mcqLayout);')
-block = block.replace('card.appendChild(options);', 'details.appendChild(options);')
-block = block.replace('card.appendChild(board);', 'details.appendChild(board);')
-block = block.replace(
-    'card.appendChild(actions);card.appendChild(gate);card.appendChild(explainer);',
-    'details.appendChild(actions);details.appendChild(gate);details.appendChild(explainer);',
-)
-html = html[:start] + block + html[end:]
+old_bottom = """  actions.appendChild(submit);actions.appendChild(redo);actions.appendChild(feedback);card.appendChild(actions);card.appendChild(gate);card.appendChild(explainer);
+  return card;"""
+new_bottom = """  card.appendChild(studyHelp);
+  actions.appendChild(submit);actions.appendChild(redo);actions.appendChild(feedback);card.appendChild(actions);card.appendChild(gate);card.appendChild(explainer);
+  return card;"""
+if old_bottom not in text:
+    raise SystemExit('Final de buildQuestion da versão 19 não encontrado')
+text = text.replace(old_bottom, new_bottom, 1)
 
-checks = [
-    '<span class="qNumber">${num}.</span>',
-    "details.appendChild(options);",
-    "details.appendChild(board);",
-    "details.appendChild(actions);details.appendChild(gate);details.appendChild(explainer);",
-]
-for check in checks:
-    if check not in html:
-        raise SystemExit(f'Validação falhou: {check}')
-
-path.write_text(html, encoding='utf-8')
-print('Versão 20 aplicada com sucesso')
+path.write_text(text, encoding='utf-8')
+print(f'index.html versão 20 atualizado com {len(text.encode("utf-8"))} bytes')
