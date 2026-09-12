@@ -1,2 +1,2 @@
-17
-Mini lousa ativada somente nas questões de cálculo e operação selecionadas.
+20
+Questões recolhidas. A tela mostra primeiro somente o número e o enunciado. Ao tocar na questão, aparecem revisão, alternativas e controles de resposta.
