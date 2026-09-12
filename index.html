@@ -354,7 +354,7 @@ function renderLesson(lesson){
 }
 
 function shouldShowScratchpad(q){
-  return currentSubjectKey==='math' && q.type==='mcq';
+  return currentSubjectKey==='math' && q.type==='mcq' && ['m_op1','m_op2','m_op3','m_op4','m_cal1','m_cal2','m_cal3','m_cal4','m_cal5','m_gra4','m_gra5','m_din2','m_din3','m_din5','m_fr3','m_fr4','m_pct1','m_pct2','m_pct3','m_pct4','m_dec3','m_dec4','m_dec5'].includes(q.id);
 }
 
 function createScratchBoard(q){
