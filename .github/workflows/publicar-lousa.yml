@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Montar versão 16 direta
+      - name: Montar versão 17 direta
         shell: bash
         run: |
           node <<'NODE'
@@ -51,10 +51,29 @@ jobs:
           parts.push(lerParte(6));
           parts.push(lerParte(7));
           const compressed = Buffer.from(parts.join(''), 'base64');
-          const html = zlib.gunzipSync(compressed).toString('utf8');
+          let html = zlib.gunzipSync(compressed).toString('utf8');
           if (!html.toLowerCase().includes('<html')) throw new Error('HTML final inválido');
+
+          const oldScratch = `function shouldShowScratchpad(q){
+  return currentSubjectKey==='math' && q.type==='mcq';
+}`;
+          const newScratch = `const scratchpadQuestionIds=new Set([
+  'm_op1','m_op2','m_op3','m_op4',
+  'm_cal1','m_cal2','m_cal3','m_cal4','m_cal5',
+  'm_gra4','m_gra5',
+  'm_din2','m_din3','m_din5',
+  'm_fr3','m_fr4',
+  'm_pct1','m_pct2','m_pct3','m_pct4',
+  'm_dec3','m_dec4','m_dec5'
+]);
+function shouldShowScratchpad(q){
+  return currentSubjectKey==='math' && q.type==='mcq' && scratchpadQuestionIds.has(q.id);
+}`;
+          if (!html.includes(oldScratch)) throw new Error('Função da mini lousa não encontrada');
+          html = html.replace(oldScratch, newScratch);
+
           fs.writeFileSync('index.html', html, 'utf8');
-          console.log(`index.html gerado com ${Buffer.byteLength(html)} bytes`);
+          console.log(`index.html versão 17 gerado com ${Buffer.byteLength(html)} bytes`);
           NODE
 
       - name: Salvar index direto na branch principal
@@ -66,7 +85,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa Digital versão 16 direto no navegador [skip ci]"
+            git commit -m "Publica Lousa Digital versão 17 [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
