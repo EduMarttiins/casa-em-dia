@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Revisão da Prova</title>
+<title>Lousa de Estudos</title>
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -91,7 +91,7 @@ button{cursor:pointer}
     <div class="toprow">
       <div class="brand">
         <div class="logo" id="brandLogo">📚</div>
-        <div><h1 id="brandTitle">Revisão da Prova</h1><p id="brandSubtitle">5º ano, Ciências e Língua Portuguesa</p></div>
+        <div><h1 id="brandTitle">Lousa de Estudos</h1><p id="brandSubtitle">5º ano, Ciências e Língua Portuguesa</p></div>
       </div>
       <div class="progressWrap">
         <div class="progressLabel"><span id="progressLabelText">Progresso geral</span><strong id="progressText">0 de 37</strong></div>
@@ -293,7 +293,7 @@ function applySubjectTheme(subject){
 }
 function resetTheme(){
   const root=document.documentElement;root.style.setProperty('--green','#2f9d59');root.style.setProperty('--greenDark','#1f7e45');root.style.setProperty('--greenSoft','#eaf7ef');root.style.setProperty('--bg','#f3f8f5');root.style.setProperty('--blue','#377dff');root.style.setProperty('--blueSoft','#eef4ff');root.style.setProperty('--lineSoft','#e7efe9');
-  document.getElementById('brandLogo').textContent='📚';document.getElementById('brandTitle').textContent='Revisão da Prova';document.getElementById('brandSubtitle').textContent='5º ano, revisão completa do 3º bimestre';
+  document.getElementById('brandLogo').textContent='📚';document.getElementById('brandTitle').textContent='Lousa de Estudos';document.getElementById('brandSubtitle').textContent='5º ano, revisão completa do 3º bimestre';
 }
 function renderSubjectCards(){
   const grid=document.getElementById('subjectGrid');grid.innerHTML='';
