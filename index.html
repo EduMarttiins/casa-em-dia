@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
+<meta name="app-version" content="18">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -45,7 +46,7 @@ button{cursor:pointer}
 .topicHeaderLeft{display:flex;align-items:center;gap:14px}.topicIcon{width:62px;height:62px;border-radius:20px;background:linear-gradient(180deg,#f3fbf6 0%,#e8f8ef 100%);display:grid;place-items:center;font-size:31px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}.topicHeader h3{margin:0;font-size:25px}.topicHeader p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
 .backBtn{border:1px solid #d7e4da;background:#fff;color:#34463c;padding:11px 14px;border-radius:14px;font-weight:900;box-shadow:0 8px 18px rgba(35,55,43,.06)}
 .lesson{background:linear-gradient(180deg,#ffffff 0%,#fbfdfb 100%);border:1px solid var(--lineSoft);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
-.question{padding:22px;border-top:1px solid #edf3ef}.question:first-child{border-top:0}.reviewCard{margin-bottom:18px;padding:18px 18px;border-radius:20px;background:linear-gradient(135deg,#fffef7 0%,#f6fbf7 100%);border:1px solid #e6ead6;box-shadow:0 10px 24px rgba(45,58,32,.05)}.reviewLabel{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;background:#fff8d8;border:1px solid #ece3b1;font-size:11px;font-weight:900;color:#706726;text-transform:uppercase;letter-spacing:.05em}.reviewCard p{margin:12px 0 0;line-height:1.72;color:#38463d;font-size:15px}.reviewVisual{margin-top:13px;padding:12px 14px;border-radius:15px;background:#fff;border:1px solid #e8ebdf;text-align:center;font-size:14px;font-weight:800;color:#44554b;line-height:1.55;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}.qTitle{display:flex;align-items:flex-start;gap:11px}.badge{min-width:34px;height:34px;border-radius:11px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;font-weight:900}.qMeta{display:inline-flex;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:#f4f7f5;border:1px solid #e6ece8;color:#59685e;font-size:12px;font-weight:900}.qTitle strong{display:block;font-size:18px;line-height:1.4}
+.question{padding:22px;border-top:1px solid #edf3ef}.question:first-child{border-top:0}.reviewCard{margin-bottom:18px;padding:18px 18px;border-radius:20px;background:linear-gradient(135deg,#fffef7 0%,#f6fbf7 100%);border:1px solid #e6ead6;box-shadow:0 10px 24px rgba(45,58,32,.05)}.reviewLabel{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;background:#fff8d8;border:1px solid #ece3b1;font-size:11px;font-weight:900;color:#706726;text-transform:uppercase;letter-spacing:.05em}.reviewCard p{margin:12px 0 0;line-height:1.72;color:#38463d;font-size:15px}.reviewVisual{margin-top:13px;padding:12px 14px;border-radius:15px;background:#fff;border:1px solid #e8ebdf;text-align:center;font-size:14px;font-weight:800;color:#44554b;line-height:1.55;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}.reviewLead{margin-top:12px;padding:14px 15px;border-radius:16px;background:rgba(255,255,255,.78);border:1px solid #e7eadf;color:#34443a;line-height:1.7;font-size:15px}.reviewStory{margin-top:12px;padding:14px 15px;border-radius:17px;background:linear-gradient(135deg,#fffaf0 0%,#fffef8 100%);border:1px solid #f0dfb1;box-shadow:0 7px 18px rgba(108,78,19,.05)}.reviewStoryTitle{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:950;color:#7a5a10;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px}.reviewStory p{margin:0;color:#454b47;line-height:1.7;font-size:14px}.reviewTip{display:flex;align-items:flex-start;gap:10px;margin-top:12px;padding:12px 14px;border-radius:15px;background:linear-gradient(135deg,#eef8ff 0%,#f8fcff 100%);border:1px solid #d7e8f7;color:#31516b}.reviewTipIcon{font-size:21px;line-height:1}.reviewTip strong{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#24506f;margin-bottom:3px}.reviewTip span{display:block;font-size:13px;line-height:1.55}.reviewCard.subjectScience{background:linear-gradient(135deg,#f7fff9 0%,#f4fbff 100%)}.reviewCard.subjectPortuguese{background:linear-gradient(135deg,#fffdf4 0%,#faf7ff 100%)}.reviewCard.subjectMath{background:linear-gradient(135deg,#f6f9ff 0%,#fbfdff 100%)}.reviewCard.subjectGeography{background:linear-gradient(135deg,#f5fff8 0%,#f4fbff 100%)}.reviewCard.subjectHistory{background:linear-gradient(135deg,#fff9f2 0%,#fffdf8 100%)}.qTitle{display:flex;align-items:flex-start;gap:11px}.badge{min-width:34px;height:34px;border-radius:11px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;font-weight:900}.qMeta{display:inline-flex;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:#f4f7f5;border:1px solid #e6ece8;color:#59685e;font-size:12px;font-weight:900}.qTitle strong{display:block;font-size:18px;line-height:1.4}
 .options{display:grid;gap:10px;margin-top:15px}.option{display:flex;align-items:flex-start;gap:10px;padding:14px 15px;border:1px solid #dbe5de;border-radius:16px;background:#fff;cursor:pointer;transition:.15s;box-shadow:0 4px 12px rgba(32,49,38,.03)}.option:hover{border-color:#b8d4c1;background:#fbfdfb}.option input{margin-top:3px}.option.locked{cursor:default;opacity:.92}.option.correct{border-color:#76c694;background:#f0fbf4}.option.wrong{border-color:#eca0a0;background:#fff4f4}
 .mcqLayout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:16px;align-items:start;margin-top:15px}.mcqLayout .options{margin-top:0}.scratchCard{border:1px solid #dbe5de;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 22px rgba(32,49,38,.04)}.scratchHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px 14px 10px;background:linear-gradient(135deg,#f7fbff 0%,#eef6ff 100%);border-bottom:1px solid #e7eef6}.scratchHeader strong{display:block;font-size:14px;color:#17324d}.scratchHeader span{display:block;margin-top:4px;color:#5b6d80;font-size:12px;line-height:1.4}.scratchTag{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #d8e6f4;font-size:11px;font-weight:900;color:#29578b;white-space:nowrap}.scratchCard .canvasWrap{height:190px}.scratchCard .toolbar{padding:8px 10px}.scratchCard .tool{padding:7px 9px;font-size:11px}.scratchCard .sizeRange{width:84px}.scratchCard .sizeValue{min-width:42px}.scratchCard .penHint{font-size:11px}.scratchSaved{padding:0 14px 10px;color:#5c6d62;font-size:12px}.scratchSaved strong{color:#17324d}@media (max-width:900px){.mcqLayout{grid-template-columns:1fr}.scratchCard .canvasWrap{height:170px}}
 .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid #d9e4dc;background:#fff;color:#33463b;border-radius:12px;padding:10px 14px;font-weight:900}.btn.primary{background:linear-gradient(135deg,var(--green) 0%,var(--greenDark) 100%);border-color:var(--green);color:#fff;box-shadow:0 10px 18px rgba(47,157,89,.18)}.btn.primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}.btn.secondary{background:#f7faf8}.btn.danger{color:var(--danger)}.feedback{font-size:13px;color:var(--muted);line-height:1.45}.feedback.success{color:#197346;font-weight:800}.feedback.error{color:#b42318;font-weight:800}
@@ -367,9 +368,45 @@ function createScratchBoard(q){
   return wrap;
 }
 
+
+function getReviewTheme(){
+  const themes={
+    science:{label:'🧪 Descubra como funciona',className:'subjectScience',fallback:'Vamos transformar esta ideia em uma cena simples para enxergar melhor como o corpo e a natureza funcionam.'},
+    portuguese:{label:'🔎 Detetive do texto',className:'subjectPortuguese',fallback:'Antes de responder, procure pistas como um detetive. O texto sempre deixa sinais que ajudam a montar a resposta.'},
+    math:{label:'🧮 Pense passo a passo',className:'subjectMath',fallback:'Antes de fazer a conta, descubra o que a questão quer encontrar. Depois escolha a operação e resolva com calma.'},
+    geography:{label:'🌍 Observe o mundo',className:'subjectGeography',fallback:'Imagine que você está olhando um mapa, uma paisagem ou uma cidade. Observe as relações entre os lugares e as pessoas.'},
+    history:{label:'🕰️ Viaje no tempo',className:'subjectHistory',fallback:'Imagine a cena acontecendo no passado. Pense em quem participou, o que mudou e por que isso foi importante.'}
+  };
+  return themes[currentSubjectKey]||{label:'🌟 Entenda brincando',className:'',fallback:'Vamos transformar a ideia em uma situação simples antes de responder.'};
+}
+function isGenericReview(text){
+  const generic=[
+    'Leia com atenção e use as pistas do conteúdo antes de escolher.',
+    'Organize o raciocínio e responda com suas palavras ou faça o cálculo à mão.'
+  ];
+  return generic.includes((text||'').trim());
+}
+function isGenericReviewLabel(label){
+  const generic=['🧠 Antes de responder','✍️ Resolva à mão','📘 Antes de responder, relembre'];
+  return !label||generic.includes(label.trim());
+}
+function buildPreQuestionReview(q){
+  const theme=getReviewTheme();
+  const everyday=q.everyday||DAILY_EXAMPLES[q.id];
+  const label=isGenericReviewLabel(q.reviewLabel)?theme.label:q.reviewLabel;
+  const lead=isGenericReview(q.review)?theme.fallback:q.review;
+  const example=everyday?.example||'';
+  const remember=everyday?.remember||'';
+  return `<div class="reviewLabel">${label}</div><div class="reviewLead">${lead}</div>${example?`<div class="reviewStory"><div class="reviewStoryTitle">🎈 Imagine assim</div><p>${example}</p></div>`:''}${q.reviewVisual?`<div class="reviewVisual">${q.reviewVisual}</div>`:''}${remember?`<div class="reviewTip"><div class="reviewTipIcon">🎯</div><div><strong>Pista para pensar</strong><span>${remember}</span></div></div>`:''}`;
+}
+
 function buildQuestion(q,num){
   const card=document.createElement('article');card.className='question';
-  const review=document.createElement('div');review.className='reviewCard';review.innerHTML=`<div class="reviewLabel">${q.reviewLabel||'📘 Antes de responder, relembre'}</div><p>${q.review}</p>${q.reviewVisual?`<div class="reviewVisual">${q.reviewVisual}</div>`:''}`;card.appendChild(review);
+  const review=document.createElement('div');
+  const reviewTheme=getReviewTheme();
+  review.className=`reviewCard ${reviewTheme.className}`;
+  review.innerHTML=buildPreQuestionReview(q);
+  card.appendChild(review);
   const head=document.createElement('div');head.className='qTitle';head.innerHTML=`<div class="badge">${num}</div><div><div class="qMeta">${q.type==='mcq'?'Múltipla escolha':'Resposta à mão'}</div><strong>${q.text}</strong></div>`;card.appendChild(head);
   const actions=document.createElement('div');actions.className='actions';
   const submit=document.createElement('button');submit.type='button';submit.className='btn primary';submit.textContent=isSubmitted(q)?'Resposta enviada':'Enviar resposta';
@@ -394,8 +431,8 @@ function buildQuestion(q,num){
       status='<div class="resultGood">✍️ Compare o que você escreveu com a ideia principal.</div>';
     }
     const everyday=q.everyday||DAILY_EXAMPLES[q.id];
-    const everydayHtml=everyday?`<div class="everyday"><div class="everydayTitle">🏡 Exemplo do dia a dia</div><p>${everyday.example}</p><div class="remember">💭 Para lembrar: ${everyday.remember}</div></div>`:'';
-    explainer.innerHTML=`<div class="explainTop"><h5>Vamos entender juntos</h5><p>${status}<br>${q.explanation}</p></div><div class="visual">${q.visual}</div>${everydayHtml}<div class="expected">${q.expected}</div>`;
+    const rememberHtml=everyday?`<div class="everyday"><div class="everydayTitle">🧠 Guarde esta ideia</div><div class="remember">${everyday.remember}</div></div>`:'';
+    explainer.innerHTML=`<div class="explainTop"><h5>Vamos entender juntos</h5><p>${status}<br>${q.explanation}</p></div><div class="visual">${q.visual}</div>${rememberHtml}<div class="expected">${q.expected}</div>`;
   }
   renderExplainer();
 
