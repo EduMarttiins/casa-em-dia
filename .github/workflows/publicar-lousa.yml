@@ -37,7 +37,15 @@ jobs:
           for (let i = 0; i <= 4; i++) parts.push(lerParte(i));
           parts.push(
             fs.readFileSync('assets/fixed5a.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b1.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b2.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3a.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3b1.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3b2.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3b3.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3b4.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3c.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b3d.txt','utf8').trim() +
             fs.readFileSync('assets/fixed5c.txt','utf8').trim()
           );
           parts.push(lerParte(6));
