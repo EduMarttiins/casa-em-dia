@@ -54,6 +54,22 @@ button{cursor:pointer}
 .explainer{display:none;margin-top:14px;border-radius:20px;background:#f8fbff;border:1px solid #d8e8ff;overflow:hidden}.explainer.show{display:block}.explainTop{padding:16px 17px;background:#eef6ff}.explainTop h5{margin:0;color:#245ad0;font-size:16px}.explainTop p{margin:5px 0 0;color:#41566e;line-height:1.55}.visual{margin:14px 16px;padding:16px;border-radius:16px;background:#fff;border:1px solid #dbe9f8;text-align:center;font-size:18px;line-height:1.55}.everyday{margin:14px 16px 12px;padding:16px;border-radius:17px;background:linear-gradient(135deg,#fff9e8,#fffdf7);border:1px solid #f0dfad;box-shadow:0 8px 20px rgba(88,69,21,.05)}.everydayTitle{display:flex;align-items:center;gap:8px;font-weight:900;color:#7a5a10;margin-bottom:8px}.everyday p{margin:0;color:#4a4f55;line-height:1.62}.remember{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #eee3c4;color:#5c5133;font-size:13px;font-weight:800}.expected{margin:0 16px 16px;padding:13px 14px;border-radius:14px;background:#fff;border:1px solid #dbe9f8;font-size:14px;line-height:1.55}.resultGood{color:#197346;font-weight:900}.resultTry{color:#9a5a13;font-weight:900}
 .board{margin-top:15px;border:1px solid #dbe5de;border-radius:18px;overflow:hidden;background:#fff}.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px;background:#fbfcfb;border-bottom:1px solid #e7eee9}.tool{border:1px solid #dbe5de;background:#fff;color:#405047;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:900}.tool.active{background:var(--green);border-color:var(--green);color:#fff}.tool.danger{color:var(--danger)}.sep{width:1px;height:27px;background:#dce5df}.sizeLabel{font-size:12px;color:var(--muted);font-weight:900}.sizeRange{width:100px;accent-color:var(--green)}.sizeValue{padding:6px 8px;border-radius:9px;background:var(--greenSoft);color:var(--greenDark);font-size:12px;font-weight:900;min-width:45px;text-align:center}.canvasWrap{height:235px}.answerCanvas{display:block;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain;background:repeating-linear-gradient(to bottom,#fff 0,#fff 35px,#c6d2ca 36px)}
 .penHint{padding:9px 12px;background:#f8faf9;border-top:1px solid #e9efeb;color:#65746a;font-size:12px}.submittedBoard{opacity:.95}
+/* Estados visuais da questão após responder */
+.question{transition:background .25s ease,opacity .25s ease,filter .25s ease,border-color .25s ease}
+.question.stateCorrect{background:linear-gradient(180deg,rgba(238,249,242,.76) 0%,rgba(248,252,249,.82) 100%)}
+.question.stateCorrect>.reviewCard,.question.stateCorrect>.qTitle,.question.stateCorrect>.mcqLayout,.question.stateCorrect>.options,.question.stateCorrect>.board,.question.stateCorrect>.actions{opacity:.52;filter:saturate(.72)}
+.question.stateWrong{background:linear-gradient(180deg,#f1f3f2 0%,#f7f8f8 100%)}
+.question.stateWrong>.reviewCard,.question.stateWrong>.qTitle,.question.stateWrong>.mcqLayout,.question.stateWrong>.options,.question.stateWrong>.board{opacity:.48;filter:grayscale(.72)}
+.question.stateWrong .actions .btn:not(.retryActive){opacity:.42}
+.question .statusSeal{display:none;margin-top:12px;padding:8px 11px;border-radius:999px;width:max-content;max-width:100%;font-size:12px;font-weight:900}
+.question.stateCorrect .statusSeal{display:inline-flex;background:#e3f5e9;color:#17683a;border:1px solid #bfe3cb}
+.question.stateWrong .statusSeal{display:inline-flex;background:#e5e7e6;color:#525c56;border:1px solid #d1d5d3}
+.explainGate.consumed{display:flex!important;opacity:.46;filter:grayscale(.65);pointer-events:none}
+.explainGate.consumed .btn{display:none}
+.explainer.consumed{display:block;opacity:.82;filter:saturate(.8)}
+.explainer.consumed::after{content:'✓ Explicação lida';display:block;margin:0 16px 16px;padding:9px 11px;border-radius:12px;background:#eef1f0;border:1px solid #d9dfdc;color:#59655f;font-size:12px;font-weight:900;text-align:center}
+.btn.retryActive{background:linear-gradient(135deg,#34423a 0%,#202b25 100%);border-color:#34423a;color:#fff;box-shadow:0 9px 18px rgba(31,41,36,.18)}
+@media (prefers-reduced-motion:reduce){.question{transition:none}}
 .topicDone{margin-top:16px;background:linear-gradient(135deg,#173026 0%,#1b3d30 100%);color:#fff;border-radius:24px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 16px 34px rgba(17,33,27,.18)}.topicDone p{margin:5px 0 0;color:#d4e6da}.topicDone button{border:0;background:#fff;color:#183027;padding:12px 15px;border-radius:14px;font-weight:900;box-shadow:0 10px 18px rgba(255,255,255,.14)}
 .footer{margin-top:28px;background:linear-gradient(135deg,#183027 0%,#1d3a2f 100%);color:#fff;border-radius:28px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 18px 34px rgba(19,36,28,.18)}.footer p{margin:6px 0 0;color:#d6e7dd}.finish{border:0;border-radius:15px;padding:13px 18px;background:#fff;color:#183027;font-weight:900;box-shadow:0 10px 18px rgba(255,255,255,.14)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#17221c;color:#fff;padding:12px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -270,7 +286,7 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 function isSubmitted(q){return localStorage.getItem(key(q.id,'submitted'))==='1'}
 function getChoice(q){return localStorage.getItem(key(q.id,'choice'))}
 function getCanvas(q,suffix='canvas'){return localStorage.getItem(key(q.id,suffix))}
-function questionComplete(q){return isSubmitted(q)}
+function questionComplete(q){if(!isSubmitted(q))return false;if(q.type==='mcq')return String(getChoice(q))===String(q.correct);return true}
 function allLessons(){return Object.values(subjects).flatMap(s=>s.lessons)}
 function totalQuestions(){const base=currentSubjectKey?lessons:allLessons();return base.reduce((n,l)=>n+l.questions.length,0)}
 function submittedCount(){const base=currentSubjectKey?lessons:allLessons();return base.flatMap(l=>l.questions).filter(questionComplete).length}
@@ -408,9 +424,10 @@ function buildQuestion(q,num){
   review.innerHTML=buildPreQuestionReview(q);
   card.appendChild(review);
   const head=document.createElement('div');head.className='qTitle';head.innerHTML=`<div class="badge">${num}</div><div><div class="qMeta">${q.type==='mcq'?'Múltipla escolha':'Resposta à mão'}</div><strong>${q.text}</strong></div>`;card.appendChild(head);
+  const statusSeal=document.createElement('div');statusSeal.className='statusSeal';card.appendChild(statusSeal);
   const actions=document.createElement('div');actions.className='actions';
   const submit=document.createElement('button');submit.type='button';submit.className='btn primary';submit.textContent=isSubmitted(q)?'Resposta enviada':'Enviar resposta';
-  const redo=document.createElement('button');redo.type='button';redo.className='btn secondary';redo.textContent='Refazer';redo.style.display=isSubmitted(q)?'inline-flex':'none';
+  const redo=document.createElement('button');redo.type='button';redo.className='btn secondary';redo.textContent='Responder novamente';redo.style.display='none';
   const feedback=document.createElement('span');feedback.className='feedback';
   const gate=document.createElement('div');gate.className='explainGate';
   const explainButton=document.createElement('button');explainButton.type='button';explainButton.className='btn primary';explainButton.textContent='Abrir explicação';
@@ -419,8 +436,11 @@ function buildQuestion(q,num){
   const gateTitle=gate.querySelector('strong');
   const gateDesc=gate.querySelector('span');
   const explainer=document.createElement('div');explainer.className='explainer';
-  const result=document.createElement('div');
   let currentHasAnswer=false;
+
+  const isWrong=()=>q.type==='mcq'&&isSubmitted(q)&&String(getChoice(q))!==String(q.correct);
+  const isCorrect=()=>q.type!=='mcq'?isSubmitted(q):(isSubmitted(q)&&String(getChoice(q))===String(q.correct));
+  const wasExplained=()=>localStorage.getItem(key(q.id,'explained'))==='1';
 
   function renderExplainer(){
     let status='';
@@ -436,48 +456,78 @@ function buildQuestion(q,num){
   }
   renderExplainer();
 
+  function applyCardState(){
+    const submitted=isSubmitted(q),wrong=isWrong(),correct=isCorrect(),explained=wasExplained();
+    card.classList.toggle('stateCorrect',submitted&&correct);
+    card.classList.toggle('stateWrong',submitted&&wrong);
+    card.classList.toggle('explanationRead',submitted&&explained);
+    if(submitted&&correct){statusSeal.textContent='✓ Questão concluída';}
+    else if(submitted&&wrong&&!explained){statusSeal.textContent='Resposta incorreta. Leia a explicação para tentar outra vez.';}
+    else if(submitted&&wrong&&explained){statusSeal.textContent='Explicação lida. Agora tente novamente.';}
+    else statusSeal.textContent='';
+  }
+
   function updateState(){
-    const submitted=isSubmitted(q);
+    const submitted=isSubmitted(q),wrong=isWrong(),correct=isCorrect(),explained=wasExplained();
     if(q.type==='mcq') currentHasAnswer=getChoice(q)!==null;
     else currentHasAnswer=!!getCanvas(q);
     submit.disabled=!currentHasAnswer||submitted;
     submit.textContent=submitted?'Resposta enviada':'Enviar resposta';
-    redo.style.display=submitted?'inline-flex':'none';
-    gate.classList.toggle('show',submitted);
-    gate.classList.remove('success','error');
+    redo.classList.toggle('retryActive',submitted&&wrong&&explained);
+    redo.style.display=submitted&&wrong&&explained?'inline-flex':'none';
+    gate.classList.remove('success','error','consumed');
     feedback.className='feedback';
+    applyCardState();
 
     if(submitted){
+      gate.classList.toggle('show',!explained);
+      if(explained){
+        gate.classList.add('consumed');
+        explainButton.disabled=true;
+      }else explainButton.disabled=false;
       if(q.type==='mcq'){
-        const ok=String(getChoice(q))===String(q.correct);
-        if(ok){
+        if(correct){
           gate.classList.add('success');
           gateIcon.textContent='✅';
           gateTitle.textContent='Resposta correta';
-          gateDesc.textContent='Você acertou. Clique para ver a explicação visual.';
-          feedback.textContent='Você acertou. Se quiser, abra a explicação.';
+          gateDesc.textContent='Questão concluída. Se quiser, abra a explicação uma vez.';
+          feedback.textContent='Muito bem! Esta questão foi concluída.';
           feedback.classList.add('success');
         }else{
           gate.classList.add('error');
           gateIcon.textContent='❌';
-          gateTitle.textContent='Você errou';
-          gateDesc.textContent='Clique para saber o que você errou.';
-          feedback.textContent='Resposta errada. Clique em explicar esta questão.';
+          gateTitle.textContent=explained?'Explicação já lida':'Você errou';
+          gateDesc.textContent=explained?'Agora use Responder novamente para fazer outra tentativa.':'Leia a explicação antes de responder novamente.';
+          feedback.textContent=explained?'Agora você pode responder novamente.':'Primeiro leia a explicação desta questão.';
           feedback.classList.add('error');
         }
       }else{
         gate.classList.add('success');
         gateIcon.textContent='💡';
-        gateTitle.textContent='Explicar esta questão';
-        gateDesc.textContent='Agora que a resposta foi enviada, veja a explicação de forma visual.';
-        feedback.textContent='Resposta registrada. A explicação já está liberada.';
+        gateTitle.textContent=explained?'Explicação já lida':'Explicar esta questão';
+        gateDesc.textContent=explained?'Esta explicação já foi consultada.':'Sua resposta foi registrada. Você pode abrir a explicação uma vez.';
+        feedback.textContent='Resposta registrada.';
       }
     }else{
+      gate.classList.remove('show','consumed');
+      explainButton.disabled=false;
+      explainer.classList.remove('show','consumed');
       gateIcon.textContent='💡';
       gateTitle.textContent='Explicar esta questão';
-      gateDesc.textContent='Agora que a resposta foi enviada, veja a explicação de forma visual.';
+      gateDesc.textContent='A explicação será liberada depois que a resposta for enviada.';
       feedback.textContent=currentHasAnswer?'Quando terminar, envie a resposta.':'Responda primeiro.';
     }
+  }
+
+  function afterExplanationOpened(){
+    localStorage.setItem(key(q.id,'explained'),'1');
+    gate.classList.remove('show');
+    gate.classList.add('consumed');
+    explainButton.disabled=true;
+    explainer.classList.add('show','consumed');
+    updateState();
+    explainer.classList.add('show','consumed');
+    explainer.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
   if(q.type==='mcq'){
@@ -487,7 +537,7 @@ function buildQuestion(q,num){
       const label=document.createElement('label');label.className='option'+(submitted?' locked':'');
       const input=document.createElement('input');input.type='radio';input.name=q.id;input.value=idx;input.checked=saved===String(idx);input.disabled=submitted;
       const span=document.createElement('span');span.textContent=opt;label.appendChild(input);label.appendChild(span);
-      input.addEventListener('change',()=>{localStorage.setItem(key(q.id,'choice'),String(idx));explainer.classList.remove('show');updateState()});
+      input.addEventListener('change',()=>{localStorage.setItem(key(q.id,'choice'),String(idx));explainer.classList.remove('show','consumed');updateState()});
       options.appendChild(label);
     });
     const useScratch=shouldShowScratchpad(q);
@@ -504,9 +554,25 @@ function buildQuestion(q,num){
       const choice=getChoice(q);options.querySelectorAll('.option').forEach((label,idx)=>{const input=label.querySelector('input');input.disabled=isSubmitted(q);label.classList.toggle('locked',isSubmitted(q));label.classList.remove('correct','wrong');if(showResult&&isSubmitted(q)){if(idx===q.correct)label.classList.add('correct');if(String(idx)===String(choice)&&idx!==q.correct)label.classList.add('wrong')}})
     }
 
-    submit.addEventListener('click',()=>{if(!currentHasAnswer)return;localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));explainer.classList.remove('show');lockOptions(false);updateState();updateProgress();toast('Resposta enviada. Agora você pode abrir a explicação.')});
-    redo.addEventListener('click',()=>{localStorage.removeItem(key(q.id,'submitted'));localStorage.removeItem(key(q.id,'explained'));explainer.classList.remove('show');gate.classList.remove('show');lockOptions(false);updateState();updateProgress()});
-    explainButton.addEventListener('click',()=>{renderExplainer();explainer.classList.add('show');localStorage.setItem(key(q.id,'explained'),'1');lockOptions(true);explainer.scrollIntoView({behavior:'smooth',block:'nearest'})});
+    submit.addEventListener('click',()=>{
+      if(!currentHasAnswer)return;
+      localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));
+      explainer.classList.remove('show','consumed');lockOptions(false);updateState();updateProgress();
+      if(isCorrect())toast('Muito bem! Questão concluída.');
+      else toast('Resposta incorreta. Leia a explicação antes de tentar novamente.');
+    });
+    redo.addEventListener('click',()=>{
+      if(!isWrong()||!wasExplained())return;
+      localStorage.removeItem(key(q.id,'submitted'));localStorage.removeItem(key(q.id,'explained'));localStorage.removeItem(key(q.id,'choice'));
+      options.querySelectorAll('input').forEach(input=>{input.checked=false});
+      explainer.classList.remove('show','consumed');gate.classList.remove('show','consumed');lockOptions(false);updateState();updateProgress();
+      card.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+    explainButton.addEventListener('click',()=>{if(!isSubmitted(q)||wasExplained())return;renderExplainer();lockOptions(true);afterExplanationOpened()});
+    if(isSubmitted(q)&&wasExplained()){
+      gate.classList.add('consumed');
+      explainer.classList.remove('show');
+    }
     updateState();
   } else {
     const board=document.createElement('div');board.className='board';
@@ -514,10 +580,10 @@ function buildQuestion(q,num){
     card.appendChild(board);
     setupCanvas(board,q,()=>{currentHasAnswer=!!getCanvas(q);updateState()},()=>isSubmitted(q));
 
-    submit.addEventListener('click',()=>{if(!currentHasAnswer)return;localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));board.classList.add('submittedBoard');explainer.classList.remove('show');setCanvasLocked(board,true);updateState();updateProgress();toast('Resposta enviada. Agora você pode abrir a explicação.')});
-    redo.addEventListener('click',()=>{localStorage.removeItem(key(q.id,'submitted'));localStorage.removeItem(key(q.id,'explained'));explainer.classList.remove('show');gate.classList.remove('show');board.classList.remove('submittedBoard');setCanvasLocked(board,false);updateState();updateProgress()});
-    explainButton.addEventListener('click',()=>{renderExplainer();explainer.classList.add('show');localStorage.setItem(key(q.id,'explained'),'1');explainer.scrollIntoView({behavior:'smooth',block:'nearest'})});
+    submit.addEventListener('click',()=>{if(!currentHasAnswer)return;localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));board.classList.add('submittedBoard');explainer.classList.remove('show','consumed');setCanvasLocked(board,true);updateState();updateProgress();toast('Resposta registrada. Questão concluída.')});
+    explainButton.addEventListener('click',()=>{if(!isSubmitted(q)||wasExplained())return;renderExplainer();afterExplanationOpened()});
     if(isSubmitted(q)){board.classList.add('submittedBoard');setTimeout(()=>setCanvasLocked(board,true),0)}
+    if(isSubmitted(q)&&wasExplained())gate.classList.add('consumed');
     updateState();
   }
 
