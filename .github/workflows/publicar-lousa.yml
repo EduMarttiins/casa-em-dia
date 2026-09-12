@@ -1,0 +1,55 @@
+name: Publicar Lousa Digital
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publicar-lousa.yml"
+      - "assets/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  montar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Montar versão 16 sem compactação no navegador
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const zlib = require('zlib');
+          const parts = [];
+          for (let i = 0; i < 8; i++) {
+            const source = fs.readFileSync(`assets/part${i}.js`, 'utf8');
+            const match = source.match(/window\.__gzParts\[\d+\]\s*=\s*['\"]([A-Za-z0-9+/=]+)['\"]/);
+            if (!match) throw new Error(`Parte ${i} inválida`);
+            parts.push(match[1]);
+          }
+          const compressed = Buffer.from(parts.join(''), 'base64');
+          const html = zlib.gunzipSync(compressed).toString('utf8');
+          if (!html.toLowerCase().includes('<html')) throw new Error('HTML final inválido');
+          fs.writeFileSync('index.html', html, 'utf8');
+          console.log(`index.html gerado com ${Buffer.byteLength(html)} bytes`);
+          NODE
+
+      - name: Salvar index direto na branch principal
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração necessária"
+          else
+            git commit -m "Publica Lousa Digital versão 16 direto no navegador [skip ci]"
+            git push origin main
+          fi
