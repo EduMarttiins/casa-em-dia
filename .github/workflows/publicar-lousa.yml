@@ -21,19 +21,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Montar versão 16 sem compactação no navegador
+      - name: Montar versão 16 direta
         shell: bash
         run: |
           node <<'NODE'
           const fs = require('fs');
           const zlib = require('zlib');
           const parts = [];
-          for (let i = 0; i < 8; i++) {
+          const lerParte = i => {
             const source = fs.readFileSync(`assets/part${i}.js`, 'utf8');
             const match = source.match(/window\.__gzParts\[\d+\]\s*=\s*['\"]([A-Za-z0-9+/=]+)['\"]/);
             if (!match) throw new Error(`Parte ${i} inválida`);
-            parts.push(match[1]);
-          }
+            return match[1];
+          };
+          for (let i = 0; i <= 4; i++) parts.push(lerParte(i));
+          parts.push(
+            fs.readFileSync('assets/fixed5a.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5b.txt','utf8').trim() +
+            fs.readFileSync('assets/fixed5c.txt','utf8').trim()
+          );
+          parts.push(lerParte(6));
+          parts.push(lerParte(7));
           const compressed = Buffer.from(parts.join(''), 'base64');
           const html = zlib.gunzipSync(compressed).toString('utf8');
           if (!html.toLowerCase().includes('<html')) throw new Error('HTML final inválido');
@@ -51,5 +59,6 @@ jobs:
             echo "Nenhuma alteração necessária"
           else
             git commit -m "Publica Lousa Digital versão 16 direto no navegador [skip ci]"
+            git pull --rebase origin main
             git push origin main
           fi
