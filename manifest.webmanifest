@@ -3,7 +3,7 @@
   "short_name": "Lousa",
   "description": "Lousa de Estudos para revisão escolar interativa.",
   "id": "./",
-  "start_url": "./?pwa=1",
+  "start_url": "./?pwa=1&v=38",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
@@ -11,9 +11,16 @@
   "theme_color": "#2f9d59",
   "orientation": "any",
   "lang": "pt-BR",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./icons/lousa-icon-v35.jpg?v=35",
+      "src": "./icons/lousa-icon.svg?v=38",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/lousa-icon-v35.jpg?v=38",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
