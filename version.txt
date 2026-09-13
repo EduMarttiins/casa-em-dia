@@ -1,2 +1,2 @@
-57
-As áreas de resposta escrita agora usam linhas de caligrafia em todas as matérias, com exceção da Matemática, que mantém a lousa branca para cálculos. O Dicionário pesquisa as palavras das lições sem exibir listas nem mostrar onde a palavra aparece. A busca usa definições locais para termos frequentes e consulta fontes de dicionário para ampliar a cobertura das demais palavras.
+58
+O Dicionário agora usa linguagem simples e adequada ao 5º ano. As palavras mais importantes das lições recebem uma explicação curta, um exemplo do cotidiano e uma dica para ajudar a entender o sentido. Para outras palavras, a definição encontrada é simplificada antes de ser mostrada. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
