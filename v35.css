@@ -1,0 +1,23 @@
+/* Lousa de Estudos, versão 35 */
+/* Matemática usa quadro branco, sem linhas de caderno. Português mantém a caligrafia. */
+.scratchCard .canvasWrap,
+.mathCalcBoard .canvasWrap{
+  background:#fff!important;
+  background-image:none!important;
+}
+
+.scratchCard .answerCanvas,
+.mathCalcBoard .answerCanvas{
+  background:#fff!important;
+  background-image:none!important;
+  image-rendering:auto!important;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* Evita qualquer linha herdada do antigo modo de rascunho de Matemática. */
+.scratchCard .scratchBoard .answerCanvas{
+  background-color:#fff!important;
+  background-image:none!important;
+}
