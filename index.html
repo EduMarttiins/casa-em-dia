@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
-<meta name="app-version" content="26">
+<meta name="app-version" content="27">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -145,6 +145,11 @@ button{cursor:pointer}
 
 /* Versão 26: reinício completo protegido por autorização via e-mail */
 .v26ResetBtn{border:1px solid #e6caca;background:#fff7f7;color:#8a3030;border-radius:14px;padding:11px 14px;font-weight:900;cursor:pointer}.v26ResetBtn:hover,.v26ResetBtn:focus-visible{outline:none;border-color:#d8aaaa;background:#fff1f1}.v26ResetOverlay{position:fixed;inset:0;z-index:9999;background:rgba(20,28,24,.56);display:none;align-items:center;justify-content:center;padding:18px}.v26ResetOverlay.show{display:flex}.v26ResetDialog{width:min(520px,100%);background:#fff;border-radius:22px;box-shadow:0 28px 80px rgba(0,0,0,.24);padding:22px}.v26ResetTop{display:flex;gap:12px;align-items:flex-start}.v26ResetIcon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#fff0f0;font-size:23px;flex:0 0 auto}.v26ResetDialog h4{margin:0 0 6px;font-size:20px;color:#322}.v26ResetDialog p{margin:0;color:#68716c;line-height:1.55}.v26ResetWarning{margin-top:16px;padding:12px 14px;border-radius:14px;background:#fff8e9;border:1px solid #eedaa7;color:#694f12;font-size:13px;font-weight:800;line-height:1.55}.v26ResetActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.v26ResetAction{border:0;border-radius:13px;padding:11px 14px;font-weight:900;cursor:pointer}.v26ResetAction.primary{background:#9f3434;color:#fff}.v26ResetAction.secondary{background:#eef2ef;color:#314037}.v26ResetAction:disabled{opacity:.45;cursor:not-allowed}.v26ResetCodeWrap{display:none;margin-top:18px}.v26ResetCodeWrap.show{display:block}.v26ResetCodeLabel{display:block;font-size:12px;font-weight:900;color:#53625a;margin-bottom:7px}.v26ResetCode{width:100%;font:800 26px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:8px;text-align:center;border:1px solid #d5ded8;border-radius:14px;padding:13px 12px;outline:none}.v26ResetCode:focus{border-color:#8bbca0;box-shadow:0 0 0 3px rgba(53,133,81,.12)}.v26ResetStatus{display:none;margin-top:13px;padding:11px 13px;border-radius:13px;font-size:13px;font-weight:800;line-height:1.5}.v26ResetStatus.show{display:block}.v26ResetStatus.info{background:#eef6ff;border:1px solid #d0e1f4;color:#315b7d}.v26ResetStatus.error{background:#fff0f0;border:1px solid #efcccc;color:#8d2f2f}.v26ResetStatus.success{background:#e9f8ee;border:1px solid #c9e9d3;color:#1f6b3b}@media(max-width:720px){.v26ResetBtn{width:100%}.v26ResetActions{flex-direction:column}.v26ResetAction{width:100%}}
+
+/* Versão 27: navegação geral somente na página inicial */
+.topicDone{display:none!important}
+.footer{display:none!important}
+body.v27InitialPage .footer{display:flex!important}
 </style>
 </head>
 <body>
@@ -1032,6 +1037,36 @@ try{
   const params=new URLSearchParams(location.search);
   if(params.get('reiniciado')==='1')setTimeout(()=>toast('Todas as lições foram zeradas. Você pode começar novamente!'),300);
 }catch(_e){}
+
+
+// Versão 27: escolher assunto, ver matérias e zerar lições não aparecem dentro das lições.
+function v27SetInitialPage(active){
+  document.body.classList.toggle('v27InitialPage',!!active);
+}
+
+const v27ShowSubjects=showSubjects;
+showSubjects=function(){
+  v27ShowSubjects();
+  v27SetInitialPage(true);
+};
+
+const v27OpenSubject=openSubject;
+openSubject=function(subjectKey){
+  v27SetInitialPage(false);
+  v27OpenSubject(subjectKey);
+};
+
+const v27ShowHome=showHome;
+showHome=function(){
+  v27SetInitialPage(false);
+  v27ShowHome();
+};
+
+const v27OpenTopic=openTopic;
+openTopic=function(topic){
+  v27SetInitialPage(false);
+  v27OpenTopic(topic);
+};
 
 showSubjects();
 </script>
