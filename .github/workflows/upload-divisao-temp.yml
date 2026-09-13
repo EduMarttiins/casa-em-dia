@@ -1,0 +1,36 @@
+name: Upload temporário do vídeo de divisão
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/upload-divisao-temp.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar vídeo otimizado
+        shell: bash
+        run: |
+          curl --fail --location --retry 2 \
+            "https://ucdcdabc23d56aa3aa5ed501dc62.dl.dropboxusercontent.com/cd/0/get/DIBbUjxqk_MZhuLKjtmgjvgpAUYOjeFz_iu7rr89GfLqhsLX3h1vDdhA9jRh9fwh75TucmMV6arPoMY1DNWkjsiJ8oYcNVmNNojArvmvkfeMYet_9l3NQw4LaG2qTK8TQ3JTjcpZDMoO5QzWotJDnBnpSZhaLwoyhZuR3tvngty92w/file?c_luid=d0424b4e" \
+            --output /tmp/divisao.mp4
+          test "$(stat -c%s /tmp/divisao.mp4)" -lt 50000000
+
+      - name: Enviar para Supabase Storage
+        shell: bash
+        env:
+          SUPABASE_ANON: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6ImZreHdsZXpmbGZwZHJyb25sdWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1MjA1ODMsImV4cCI6MjEwMzA5NjU4M30.xnWcCwgR9bJ2MBB9seK4eF_KcDv6ZRxFwUZ-dN1sv2k"
+        run: |
+          curl --fail --request POST \
+            "https://fkxwlezflfpdrronluci.supabase.co/storage/v1/object/lousa-videos/divisao.mp4" \
+            --header "Authorization: Bearer ${SUPABASE_ANON}" \
+            --header "apikey: ${SUPABASE_ANON}" \
+            --header "Content-Type: video/mp4" \
+            --data-binary @/tmp/divisao.mp4
