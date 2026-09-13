@@ -1,0 +1,22 @@
+{
+  "name": "Lousa de Estudos",
+  "short_name": "Lousa",
+  "description": "Lousa de Estudos para revisão escolar interativa.",
+  "id": "./",
+  "start_url": "./?pwa=1",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f3f8f5",
+  "theme_color": "#2f9d59",
+  "orientation": "any",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "./icons/lousa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
