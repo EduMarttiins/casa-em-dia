@@ -3,26 +3,44 @@
   "short_name": "Lousa",
   "description": "Lousa de Estudos para revisão escolar interativa.",
   "id": "/lousa-de-estudos/",
-  "start_url": "/lousa-de-estudos/v47.html?pwa=1&v=47",
+  "start_url": "/lousa-de-estudos/app.html?source=pwa&v=48",
   "scope": "/lousa-de-estudos/",
   "display": "standalone",
+  "display_override": ["standalone"],
   "background_color": "#f3f8f5",
   "theme_color": "#2f9d59",
   "orientation": "any",
   "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./icons/lousa-icon-192.png?v=47",
+      "src": "./icons/lousa-icon-192.png?v=48",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/lousa-icon-512.png?v=47",
+      "src": "./icons/lousa-icon-512.png?v=48",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir estudos",
+      "short_name": "Estudos",
+      "description": "Abrir a Lousa de Estudos",
+      "url": "/lousa-de-estudos/app.html?source=shortcut&v=48",
+      "icons": [
+        {
+          "src": "./icons/lousa-icon-192.png?v=48",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
