@@ -1,9 +1,7 @@
-const VERSION='46';
+const VERSION='47';
 const CACHE='lousa-de-estudos-v'+VERSION;
 
-self.addEventListener('install',event=>{
-  self.skipWaiting();
-});
+self.addEventListener('install',()=>{});
 
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
@@ -35,7 +33,7 @@ self.addEventListener('fetch',event=>{
       const cached=await caches.match(request,{ignoreSearch:true});
       if(cached)return cached;
       if(request.mode==='navigate'){
-        return (await caches.match('./v46.html',{ignoreSearch:true}))||(await caches.match('./index.html',{ignoreSearch:true}));
+        return (await caches.match('./v47.html',{ignoreSearch:true}))||(await caches.match('./index.html',{ignoreSearch:true}));
       }
       throw error;
     }
