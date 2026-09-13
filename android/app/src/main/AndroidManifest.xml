@@ -5,9 +5,9 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/lousa_icon"
         android:label="Lousa de Estudos"
-        android:roundIcon="@drawable/ic_launcher_round"
+        android:roundIcon="@drawable/lousa_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.LousaDeEstudos"
         android:usesCleartextTraffic="false">
