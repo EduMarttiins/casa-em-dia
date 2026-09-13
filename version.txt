@@ -1,2 +1,2 @@
-43
-Corrigida a instalação PWA no Android e em tablets Samsung. O manifesto agora usa ícones PNG próprios de 192x192 e 512x512, o instalador aguarda o evento nativo do Chrome antes de abrir a confirmação e faz uma única preparação técnica quando necessário. A caneta, o whiteboard e as regras de Matemática continuam iguais às versões aprovadas.
+44
+Corrigido o loop de atualização no tablet. A rotina PWA antiga embutida no aplicativo foi removida da versão carregada, o service worker agora é registrado por um único endereço e a versão 43 migra automaticamente para a 44 antes da instalação. Em navegador não instalado, atualizações pendentes são ativadas sem mostrar o aviso repetidamente; depois o convite de instalação é exibido. A caneta, o whiteboard e as regras de Matemática continuam preservados.
