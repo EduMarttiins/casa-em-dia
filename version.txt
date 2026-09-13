@@ -1,2 +1,2 @@
-42
-No Android e em tablets Samsung, a primeira abertura tenta acionar o instalador PWA nativo automaticamente. Se a aba interna do aplicativo bloquear o instalador, o botão Instalar agora abre a mesma Lousa diretamente no Chrome para concluir a instalação. A caneta, o whiteboard e as regras de Matemática da versão 41 foram mantidos.
+43
+Corrigida a instalação PWA no Android e em tablets Samsung. O manifesto agora usa ícones PNG próprios de 192x192 e 512x512, o instalador aguarda o evento nativo do Chrome antes de abrir a confirmação e faz uma única preparação técnica quando necessário. A caneta, o whiteboard e as regras de Matemática continuam iguais às versões aprovadas.
