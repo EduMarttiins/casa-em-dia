@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
-<meta name="app-version" content="30">
+<meta name="app-version" content="31">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -171,6 +171,11 @@ body.v27InitialPage .footer{display:flex!important}
 .v30VideoFrame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#0f172a}
 .v30VideoFrame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 @media(max-width:720px){.v30VideoCard{padding:14px;margin:14px 0 18px;border-radius:18px}.v30VideoCard strong{font-size:16px}}
+
+/* Versão 31: mini lousa de rascunho bloqueia junto com a resposta */
+.scratchCard.v31Locked{opacity:.82}
+.scratchCard.v31Locked .scratchTag{background:#eef3f0;color:#66756c;border-color:#dce5df}
+.scratchCard.v31Locked .canvasWrap{cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -451,7 +456,10 @@ function createScratchBoard(q){
   wrap.innerHTML=`<div class="scratchHeader"><div><strong>Mini lousa da conta</strong><span>Use este espaço para montar a operação antes de escolher a resposta.</span></div><div class="scratchTag">✍️ Rascunho</div></div><div class="board scratchBoard"><div class="toolbar"><button class="tool pen active" type="button">Caneta</button><button class="tool eraser" type="button">Borracha</button><button class="tool undo" type="button">Desfazer</button><button class="tool danger clear" type="button">Limpar</button><span class="sep"></span><span class="sizeLabel">Espessura</span><input class="sizeRange" type="range" min="1" max="12" value="4"><span class="sizeValue">4 px</span></div><div class="canvasWrap"><canvas class="answerCanvas"></canvas></div><div class="penHint">Faça a conta à mão aqui. Este espaço é só para rascunho.</div></div><div class="scratchSaved"><strong>Dica:</strong> some, arme a conta ou risque o que precisar antes de enviar a resposta.</div>`;
   const board=wrap.querySelector('.board');
   board.dataset.storageSuffix='scratch';
-  setupCanvas(board,q,()=>{},()=>false,'scratch');
+  setupCanvas(board,q,()=>{},()=>isSubmitted(q),'scratch');
+  const syncLock=()=>{const locked=isSubmitted(q);setCanvasLocked(board,locked);wrap.classList.toggle('v31Locked',locked)};
+  requestAnimationFrame(syncLock);
+  wrap.v31SyncLock=syncLock;
   return wrap;
 }
 
@@ -658,6 +666,7 @@ function buildQuestion(q,num){
     submit.addEventListener('click',()=>{
       if(!currentHasAnswer)return;
       localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));
+      const scratch=card.querySelector('.scratchCard');if(scratch&&scratch.v31SyncLock)scratch.v31SyncLock();
       explainer.classList.remove('show','consumed');paintSubmittedResult();updateState();updateProgress();
       if(isCorrect())toast('Muito bem! Questão concluída.');
       else toast('Resposta incorreta. A ajuda foi liberada.');
@@ -666,6 +675,7 @@ function buildQuestion(q,num){
       if(!isWrong()||!wasExplained())return;
       localStorage.removeItem(key(q.id,'submitted'));localStorage.removeItem(key(q.id,'explained'));localStorage.removeItem(key(q.id,'choice'));
       options.querySelectorAll('input').forEach(input=>{input.checked=false});
+      const scratch=card.querySelector('.scratchCard');if(scratch&&scratch.v31SyncLock)scratch.v31SyncLock();
       explainer.classList.remove('show','consumed');gate.classList.remove('show','consumed');lockOptions(false);updateState();updateProgress();
       card.scrollIntoView({behavior:'smooth',block:'center'});
     });
