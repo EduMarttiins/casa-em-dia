@@ -14,6 +14,19 @@
 
   const isAndroid = /android/i.test(navigator.userAgent || '');
   const isMobileLike = isAndroid || /mobile/i.test(navigator.userAgent || '') || navigator.maxTouchPoints > 1;
+  const isNativeAndroidApp = (() => {
+    try {
+      return new URLSearchParams(location.search).get('androidapp') === '1' ||
+        /LousaDeEstudosAndroid\//i.test(navigator.userAgent || '');
+    } catch (error) {
+      return /LousaDeEstudosAndroid\//i.test(navigator.userAgent || '');
+    }
+  })();
+
+  if (isNativeAndroidApp) {
+    document.documentElement.classList.add('android-native-app');
+    return;
+  }
 
   function ensureStyles() {
     if (document.getElementById('v52InstallStyles')) return;
