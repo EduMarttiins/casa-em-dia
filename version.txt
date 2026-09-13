@@ -1,2 +1,2 @@
-37
-Corrigida a lousa que podia ficar invisível ao abrir questões recolhidas. A área agora recalcula o tamanho ao aparecer e o traço 1 px permanece fino, visível e contínuo.
+38
+Na primeira abertura pelo celular, a Lousa de Estudos mostra um convite próprio para instalar o PWA. O botão de instalação usa a opção nativa do navegador quando disponível e oferece instruções quando o navegador não libera o prompt automaticamente.
