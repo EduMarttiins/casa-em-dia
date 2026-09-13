@@ -1,2 +1,2 @@
-38
-Na primeira abertura pelo celular, a Lousa de Estudos mostra um convite próprio para instalar o PWA. O botão de instalação usa a opção nativa do navegador quando disponível e oferece instruções quando o navegador não libera o prompt automaticamente.
+39
+Restaurada integralmente a configuração aprovada da versão 37 para a caneta e o whiteboard de Matemática sem linhas. O convite de instalação PWA agora fica isolado em arquivos próprios para não interferir na lousa.
