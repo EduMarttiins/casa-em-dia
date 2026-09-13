@@ -1,167 +1,19 @@
-name: Publicar Lousa de Estudos
+name: Publicação legada da Lousa desativada
 
+# Este workflow antigo remontava automaticamente a versão 34 sempre que
+# manifest.webmanifest era alterado, sobrescrevendo sw.js e desfazendo as
+# versões mais novas. Ele fica mantido apenas como registro e não publica mais.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/publicar-lousa.yml"
-      - "assets/**"
-      - "tools/**"
-      - "icons/**"
-      - "manifest.webmanifest"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  montar:
+  aviso:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar repositório
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Montar base direta
-        shell: bash
+      - name: Informar status
         run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const zlib = require('zlib');
-          const parts = [];
-          const lerParte = i => {
-            const source = fs.readFileSync(`assets/part${i}.js`, 'utf8');
-            const match = source.match(/window\.__gzParts\[\d+\]\s*=\s*['\"]([A-Za-z0-9+/=]+)['\"]/);
-            if (!match) throw new Error(`Parte ${i} inválida`);
-            return match[1];
-          };
-          for (let i = 0; i <= 4; i++) parts.push(lerParte(i));
-          parts.push(
-            fs.readFileSync('assets/fixed5a.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b1.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b2.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3a.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3b1.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3b2.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3b3.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3b4.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3c.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5b3d.txt','utf8').trim() +
-            fs.readFileSync('assets/fixed5c.txt','utf8').trim()
-          );
-          parts.push(lerParte(6));
-          parts.push(lerParte(7));
-          const compressed = Buffer.from(parts.join(''), 'base64');
-          let html = zlib.gunzipSync(compressed).toString('utf8');
-          if (!html.toLowerCase().includes('<html')) throw new Error('HTML final inválido');
-
-          html = html.replace(/Revisão da Prova/g, 'Lousa de Estudos');
-
-          html = html.replace(
-            "function shouldShowScratchpad(q){\n  return currentSubjectKey==='math' && q.type==='mcq';\n}",
-            "function shouldShowScratchpad(q){\n  return currentSubjectKey==='math' && q.type==='mcq' && ['m_op1','m_op2','m_op3','m_op4','m_cal1','m_cal2','m_cal3','m_cal4','m_cal5','m_gra4','m_gra5','m_din2','m_din3','m_din5','m_fr3','m_fr4','m_pct1','m_pct2','m_pct3','m_pct4','m_dec3','m_dec4','m_dec5'].includes(q.id);\n}"
-          );
-
-          fs.writeFileSync('index.html', html, 'utf8');
-          console.log(`base gerada com ${Buffer.byteLength(html)} bytes`);
-          NODE
-
-      - name: Aplicar experiência lúdica da versão 18
-        shell: bash
-        run: python3 tools/v18_transform.py
-
-      - name: Aplicar estados visuais da versão 19
-        shell: bash
-        run: python3 tools/v19_transform.py
-
-      - name: Aplicar ajuda sob as alternativas da versão 20
-        shell: bash
-        run: python3 tools/v20_transform.py
-
-      - name: Aplicar envio obrigatório e PDF da versão 21
-        shell: bash
-        run: python3 tools/v21_transform.py
-
-      - name: Aplicar destinatário fixo da versão 22
-        shell: bash
-        run: python3 tools/v22_transform.py
-
-      - name: Aplicar lousas pautadas e envio direto da versão 23
-        shell: bash
-        run: python3 tools/v23_transform.py
-
-      - name: Aplicar perguntas recolhidas da versão 24
-        shell: bash
-        run: python3 tools/v24_transform.py
-
-      - name: Aplicar ajuda após erro e pistas pedagógicas da versão 25
-        shell: bash
-        run: python3 tools/v25_transform.py
-
-      - name: Aplicar reinício autorizado por e-mail da versão 26
-        shell: bash
-        run: python3 tools/v26_transform.py
-
-      - name: Aplicar navegação somente na página inicial da versão 27
-        shell: bash
-        run: python3 tools/v27_transform.py
-
-      - name: Aplicar ajuda direta e simples da versão 28
-        shell: bash
-        run: python3 tools/v28_transform.py
-
-      - name: Aplicar resposta esperada após questões abertas da versão 29
-        shell: bash
-        run: python3 tools/v29_transform.py
-
-      - name: Aplicar temas e vídeos de Matemática da versão 30
-        shell: bash
-        run: python3 tools/v30_transform.py
-
-      - name: Aplicar bloqueio da mini lousa após envio da versão 31
-        shell: bash
-        run: python3 tools/v31_transform.py
-
-      - name: Aplicar explicação simples e vídeo na resposta da versão 32
-        shell: bash
-        run: python3 tools/v32_transform.py
-
-      - name: Aplicar instalação PWA e atualização automática da versão 33
-        shell: bash
-        run: python3 tools/v33_transform.py
-
-      - name: Aplicar mini lousa maior e traço nítido da versão 34
-        shell: bash
-        run: python3 tools/v34_transform.py
-
-      - name: Gerar service worker com a versão atual
-        shell: bash
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
-          import re
-          html=Path('index.html').read_text(encoding='utf-8')
-          match=re.search(r'<meta name="app-version" content="([^"]+)">',html)
-          if not match:
-              raise SystemExit('Versão do aplicativo não encontrada')
-          version=match.group(1)
-          template=Path('tools/sw_template.js').read_text(encoding='utf-8')
-          Path('sw.js').write_text(template.replace('__APP_VERSION__',version),encoding='utf-8')
-          print('service worker gerado para versão',version)
-          PY
-
-      - name: Salvar index e PWA direto na branch principal
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html sw.js
-          if git diff --cached --quiet; then
-            echo "Nenhuma alteração necessária"
-          else
-            git commit -m "Publica Lousa de Estudos versão 34 PWA [skip ci]"
-            git pull --rebase origin main
-            git push origin main
-          fi
+          echo "O publicador legado da versão 34 está desativado."
+          echo "As versões atuais da Lousa de Estudos são publicadas diretamente na branch main."
