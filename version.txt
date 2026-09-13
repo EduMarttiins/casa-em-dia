@@ -1,2 +1,2 @@
-40
-Criada uma entrada limpa para contornar o cache antigo. A versão 40 força a configuração aprovada da caneta da versão 37, mantém o whiteboard de Matemática totalmente branco e substitui o service worker antigo. O instalador PWA permanece separado da lousa.
+41
+Todas as questões de Matemática com resultado numérico passam a exigir uma alternativa após o cálculo na lousa. Se a alternativa estiver errada, a lição é reiniciada para ser refeita. O aviso de nova versão do PWA foi restaurado, mantendo a caneta e o whiteboard da versão 37 sem alterações.
