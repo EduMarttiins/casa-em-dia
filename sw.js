@@ -1,26 +1,27 @@
-const VERSION='58-rescue-1';
-const CONTENT_VERSION='58';
+const VERSION='59-rescue-1';
+const CONTENT_VERSION='59';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './index.html',
   './v52.html',
-  './loader-v55.js?v=58',
-  './v37.css?v=58',
-  './v37.js?v=58',
-  './v41.js?v=58',
-  './v50.js?v=58',
-  './pwa-v39.css?v=58',
-  './pwa-v52.js?v=58',
-  './v54.js?v=58',
-  './v55.js?v=58',
-  './v56.js?v=58',
-  './v57.js?v=58',
-  './v58.js?v=58',
-  './v55-auto-update.js?v=58',
-  './app-version.json?v=58',
-  './manifest.webmanifest?v=58',
-  './icons/lousa-icon-192.png?v=58',
-  './icons/lousa-icon-512.png?v=58'
+  './loader-v55.js?v=59',
+  './v37.css?v=59',
+  './v37.js?v=59',
+  './v41.js?v=59',
+  './v50.js?v=59',
+  './pwa-v39.css?v=59',
+  './pwa-v52.js?v=59',
+  './v54.js?v=59',
+  './v55.js?v=59',
+  './v56.js?v=59',
+  './v57.js?v=59',
+  './v58.js?v=59',
+  './v59.js?v=59',
+  './v55-auto-update.js?v=59',
+  './app-version.json?v=59',
+  './manifest.webmanifest?v=59',
+  './icons/lousa-icon-192.png?v=59',
+  './icons/lousa-icon-512.png?v=59'
 ];
 
 self.addEventListener('install',event=>{
