@@ -1,4 +1,5 @@
-const VERSION='56';
+const VERSION='56-rescue-1';
+const CONTENT_VERSION='56';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './index.html',
@@ -21,15 +22,37 @@ const ASSETS=[
 ];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE);
+    await cache.addAll(ASSETS);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key))))
-      .then(()=>self.clients.claim())
-  );
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+
+    /* Resgate da versão 56: quem ficou preso em cache antigo é levado uma única vez para a entrada atual. */
+    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    await Promise.all(windows.map(async client=>{
+      try{
+        const url=new URL(client.url);
+        if(url.origin!==self.location.origin)return;
+        const scopePath=new URL(self.registration.scope).pathname;
+        const isAppEntry=url.pathname===scopePath||url.pathname.endsWith('/v52.html')||url.pathname.endsWith('/index.html');
+        if(!isAppEntry)return;
+        if(url.searchParams.get('content')===CONTENT_VERSION)return;
+        const target=new URL('./v52.html',self.registration.scope);
+        target.searchParams.set('pwa','1');
+        target.searchParams.set('content',CONTENT_VERSION);
+        target.searchParams.set('rescue','1');
+        await client.navigate(target.toString());
+      }catch(error){}
+    }));
+  })());
 });
 
 self.addEventListener('message',event=>{
