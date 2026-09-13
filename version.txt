@@ -1,2 +1,2 @@
-48
-Lousa de Estudos reorganizada como PWA instalável com entrada própria em app.html. O aplicativo passa a abrir em modo standalone quando instalado, com ícone na tela inicial, splash visual, manifesto PWA completo, service worker estável com suporte offline e aviso controlado de novas versões. O convite de instalação é simples e não usa recargas ou redirecionamentos automáticos. A caneta, o whiteboard e as regras de Matemática continuam preservados.
+49
+Restaurado o mesmo mecanismo de instalação que funcionou na versão 41. A versão 49 volta a usar manifesto relativo, entrada direta v49.html, service worker com pré-carregamento dos arquivos da Lousa e o mesmo fluxo de beforeinstallprompt da versão comprovadamente instalável. A caneta, o whiteboard e as regras de Matemática continuam preservados.
