@@ -23,17 +23,17 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
     let html=await response.text();
 
     html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="41">');
-    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=41');
-    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-v35.jpg?v=41');
+    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=42');
+    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-v35.jpg?v=42');
     html=html.replace(/type="image\/svg\+xml"/g,'type="image/jpeg"');
 
-    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-1]|pwa-v3[9]|pwa-v4[0-1])\.css\?v=\d+">\s*/g,'');
-    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-1]|pwa-v3[9]|pwa-v4[0-1])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
+    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-2]|pwa-v3[9]|pwa-v4[0-2])\.css\?v=\d+">\s*/g,'');
+    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-2]|pwa-v3[9]|pwa-v4[0-2])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
 
     const css='\n<link rel="stylesheet" href="./v37.css?v=41">\n<link rel="stylesheet" href="./pwa-v39.css?v=41">\n';
     html=html.replace('</head>',css+'</head>');
 
-    const scripts='\n<scr'+'ipt src="./v37.js?v=41"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=41"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v41.js?v=41"></scr'+'ipt>\n';
+    const scripts='\n<scr'+'ipt src="./v37.js?v=41"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=41"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v41.js?v=41"></scr'+'ipt>\n<scr'+'ipt>if(\'serviceWorker\' in navigator){let reloading=false;navigator.serviceWorker.addEventListener(\'controllerchange\',()=>{if(reloading)return;reloading=true;location.reload()})}</scr'+'ipt>\n';
     html=html.replace('</body>',scripts+'</body>');
 
     document.open();
