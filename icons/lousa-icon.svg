@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lousa de Estudos">
+  <rect width="512" height="512" rx="64" fill="#ffffff"/>
+
+  <!-- raios de aprendizado -->
+  <g fill="#ffbd16">
+    <rect x="247" y="39" width="24" height="72" rx="12"/>
+    <rect x="174" y="74" width="22" height="67" rx="11" transform="rotate(-35 185 107.5)"/>
+    <rect x="318" y="74" width="22" height="67" rx="11" transform="rotate(35 329 107.5)"/>
+  </g>
+
+  <!-- capa azul do livro -->
+  <path d="M39 176c0-18 14-32 32-32h130c25 0 43 12 55 28 12-16 30-28 55-28h130c18 0 32 14 32 32v241c0 18-14 31-32 31H323c-26 0-48 7-67 24-19-17-41-24-67-24H71c-18 0-32-13-32-31z" fill="#0f61bd"/>
+  <path d="M63 164c0-16 13-29 29-29h104c27 0 46 13 60 31 14-18 33-31 60-31h104c16 0 29 13 29 29v228c0 16-13 28-29 28H319c-29 0-49 8-63 24-14-16-34-24-63-24H92c-16 0-29-12-29-28z" fill="#25a8ef"/>
+
+  <!-- páginas -->
+  <path d="M83 125c0-13 10-23 23-23h86c26 0 47 11 64 32v284c-17-18-40-27-68-27h-82c-13 0-23-10-23-23z" fill="#fffaf0"/>
+  <path d="M429 125c0-13-10-23-23-23h-86c-26 0-47 11-64 32v284c17-18 40-27 68-27h82c13 0 23-10 23-23z" fill="#fffaf0"/>
+  <path d="M256 134v284" stroke="#e8e4dc" stroke-width="6"/>
+
+  <!-- linhas do caderno -->
+  <g fill="none" stroke="#c7cedb" stroke-width="11" stroke-linecap="round">
+    <path d="M113 157h85"/><path d="M113 205h70"/><path d="M113 253h92"/><path d="M113 301h79"/><path d="M113 349h91"/>
+    <path d="M329 253h62"/><path d="M317 301h83"/><path d="M310 349h91"/>
+  </g>
+
+  <!-- lápis -->
+  <g transform="translate(358 79) rotate(31)">
+    <rect x="0" y="0" width="58" height="230" rx="13" fill="#ffb000"/>
+    <rect x="0" y="0" width="58" height="57" rx="13" fill="#f33169"/>
+    <rect x="0" y="48" width="58" height="14" fill="#cbd2df"/>
+    <rect x="0" y="62" width="58" height="9" fill="#8c98aa"/>
+    <path d="M0 230h58L29 284z" fill="#ffd992"/>
+    <path d="M19 266h20l-10 18z" fill="#263449"/>
+    <path d="M40 72h18v158H40z" fill="#f39700" opacity=".9"/>
+  </g>
+
+  <!-- check verde -->
+  <path d="M137 261l62 62 132-142" fill="none" stroke="#19aa37" stroke-width="55" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M137 261l62 62 132-142" fill="none" stroke="#25bf42" stroke-width="39" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
