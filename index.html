@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
-<meta name="app-version" content="23">
+<meta name="app-version" content="24">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -123,6 +123,17 @@ button{cursor:pointer}
 .scratchBoard .answerCanvas{background-color:#fff;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(10% - 1px),#cbd9d1 calc(10% - 1px),#cbd9d1 10%)}
 .calligraphyBoard .answerCanvas{background-color:#fffdf8;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 13px,rgba(101,151,201,.20) 13px,rgba(101,151,201,.20) 14px,transparent 14px,transparent 27px,rgba(73,126,180,.50) 27px,rgba(73,126,180,.50) 28px,transparent 28px,transparent 41px,rgba(101,151,201,.20) 41px,rgba(101,151,201,.20) 42px)}
 .directSendNotice{margin-top:12px;padding:11px 13px;border-radius:14px;background:#f1f7ff;border:1px solid #d7e5f5;color:#3d5d78;font-size:12px;font-weight:800;line-height:1.5}.directSendNotice strong{color:#234763}
+
+/* Versão 24: cada questão abre somente ao tocar no número e enunciado */
+.question.v24QuestionCollapsed>*:not(.qTitle){display:none!important}
+.qTitle.v24QuestionHead{cursor:pointer;align-items:flex-start;gap:8px;border-radius:14px;transition:background .16s ease,transform .16s ease;outline:none}
+.qTitle.v24QuestionHead:hover,.qTitle.v24QuestionHead:focus-visible{background:#f5f9f6}
+.qTitle.v24QuestionHead:active{transform:scale(.995)}
+.qTitle.v24QuestionHead .v24QuestionNumber{flex:0 0 auto;font-size:18px;line-height:1.4;font-weight:950;color:var(--blue)}
+.qTitle.v24QuestionHead .v24QuestionText{font-size:18px;line-height:1.4;font-weight:800;color:var(--ink)}
+.question.v24QuestionCollapsed{background:#fff}
+.question:not(.v24QuestionCollapsed)>.qTitle.v24QuestionHead{margin-bottom:2px}
+@media(max-width:720px){.qTitle.v24QuestionHead .v24QuestionNumber,.qTitle.v24QuestionHead .v24QuestionText{font-size:16px}}
 </style>
 </head>
 <body>
@@ -789,6 +800,55 @@ v21SubmissionCard=function(lesson){
   activeBoardCleanups.push(()=>window.removeEventListener('lousaProgressChanged',onChange));
   refresh();
   return w;
+};
+
+
+// Versão 24: inicialmente mostrar somente "número. enunciado"
+function v24PrepareQuestionDisclosure(){
+  const cards=[...document.querySelectorAll('#lessonContent .question')];
+  cards.forEach((card,index)=>{
+    const head=card.querySelector('.qTitle');
+    if(!head)return;
+    const badge=head.querySelector('.badge');
+    const statement=head.querySelector('strong');
+    if(!statement)return;
+    const rawNumber=(badge?.textContent||String(index+1)).trim();
+    const number=rawNumber.replace(/[.\-–—]+$/,'')||String(index+1);
+    const statementHtml=statement.innerHTML;
+
+    head.innerHTML='';
+    const numberEl=document.createElement('span');
+    numberEl.className='v24QuestionNumber';
+    numberEl.textContent=number+'.';
+    const textEl=document.createElement('strong');
+    textEl.className='v24QuestionText';
+    textEl.innerHTML=statementHtml;
+    head.appendChild(numberEl);
+    head.appendChild(textEl);
+    head.classList.add('v24QuestionHead');
+    head.setAttribute('role','button');
+    head.setAttribute('tabindex','0');
+    head.setAttribute('aria-expanded','false');
+    head.setAttribute('aria-label','Abrir questão '+number);
+    card.classList.add('v24QuestionCollapsed');
+
+    const toggle=()=>{
+      const willOpen=card.classList.contains('v24QuestionCollapsed');
+      card.classList.toggle('v24QuestionCollapsed',!willOpen);
+      head.setAttribute('aria-expanded',willOpen?'true':'false');
+      head.setAttribute('aria-label',(willOpen?'Fechar':'Abrir')+' questão '+number);
+    };
+    head.addEventListener('click',toggle);
+    head.addEventListener('keydown',ev=>{
+      if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();toggle()}
+    });
+  });
+}
+
+const v24RenderLesson=renderLesson;
+renderLesson=function(lesson){
+  v24RenderLesson(lesson);
+  v24PrepareQuestionDisclosure();
 };
 
 showSubjects();
