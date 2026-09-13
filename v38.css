@@ -1,0 +1,162 @@
+/* Lousa de Estudos, versão 38 */
+.scratchCard .canvasWrap,
+.mathCalcBoard .canvasWrap{
+  background:#fff!important;
+  background-image:none!important;
+}
+
+.scratchCard .answerCanvas,
+.mathCalcBoard .answerCanvas{
+  display:block;
+  background:#fff!important;
+  background-image:none!important;
+  image-rendering:auto!important;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  transform:none!important;
+  filter:none!important;
+}
+
+.scratchCard .scratchBoard .answerCanvas{
+  background-color:#fff!important;
+  background-image:none!important;
+}
+
+/* O aviso antigo fica desativado para não competir com a versão 38. */
+#v33PwaPrompt{
+  display:none!important;
+}
+
+.v38InstallOverlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:18px;
+  background:rgba(15,23,42,.42);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+
+.v38InstallOverlay.show{
+  display:flex;
+}
+
+.v38InstallCard{
+  position:relative;
+  width:min(100%,430px);
+  background:#fff;
+  border:1px solid #dfe8e2;
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 24px 70px rgba(15,23,42,.24);
+  animation:v38InstallUp .24s ease-out;
+}
+
+@keyframes v38InstallUp{
+  from{opacity:0;transform:translateY(22px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.v38InstallClose{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:12px;
+  background:#f2f5f3;
+  color:#526158;
+  font-size:24px;
+  line-height:1;
+}
+
+.v38InstallIcon{
+  display:block;
+  width:74px;
+  height:74px;
+  object-fit:cover;
+  border-radius:20px;
+  margin-bottom:15px;
+  box-shadow:0 10px 24px rgba(47,157,89,.18);
+}
+
+.v38InstallBadge{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eaf7ef;
+  color:#1f7e45;
+  font-size:11px;
+  font-weight:900;
+}
+
+.v38InstallText h3{
+  margin:10px 42px 8px 0;
+  font-size:24px;
+  line-height:1.15;
+  color:#1f2937;
+}
+
+.v38InstallText p{
+  margin:0;
+  color:#64748b;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.v38InstallStatus{
+  min-height:38px;
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:#f6faf7;
+  border:1px solid #e2ebe5;
+  color:#44554b;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.v38InstallActions{
+  display:grid;
+  gap:9px;
+  margin-top:15px;
+}
+
+.v38InstallPrimary,
+.v38InstallLater{
+  width:100%;
+  min-height:48px;
+  border-radius:15px;
+  padding:11px 15px;
+  font-weight:900;
+  font-size:14px;
+}
+
+.v38InstallPrimary{
+  border:1px solid #2f9d59;
+  background:#2f9d59;
+  color:#fff;
+  box-shadow:0 10px 20px rgba(47,157,89,.18);
+}
+
+.v38InstallPrimary:disabled{
+  opacity:.58;
+  cursor:wait;
+}
+
+.v38InstallLater{
+  border:1px solid #dce6df;
+  background:#fff;
+  color:#47564d;
+}
+
+@media (min-width:700px){
+  .v38InstallOverlay{
+    align-items:center;
+  }
+}
