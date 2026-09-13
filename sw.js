@@ -1,18 +1,18 @@
-const VERSION='51';
+const VERSION='52';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './index.html',
-  './v51.html',
-  './loader-v51.js?v=51',
-  './v37.css?v=51',
-  './v37.js?v=51',
-  './v41.js?v=51',
-  './v50.js?v=51',
-  './pwa-v39.css?v=51',
-  './pwa-v51.js?v=51',
-  './manifest.webmanifest?v=51',
-  './icons/lousa-icon-192.png?v=51',
-  './icons/lousa-icon-512.png?v=51'
+  './v52.html',
+  './loader-v52.js?v=52',
+  './v37.css?v=52',
+  './v37.js?v=52',
+  './v41.js?v=52',
+  './v50.js?v=52',
+  './pwa-v39.css?v=52',
+  './pwa-v52.js?v=52',
+  './manifest.webmanifest?v=52',
+  './icons/lousa-icon-192.png?v=52',
+  './icons/lousa-icon-512.png?v=52'
 ];
 
 self.addEventListener('install',event=>{
@@ -54,16 +54,15 @@ self.addEventListener('fetch',event=>{
 
   if(request.mode==='navigate'){
     event.respondWith((async()=>{
-      const target=new URL('./v51.html?v=51',self.registration.scope).toString();
       try{
-        const response=await fetch(target,{cache:'no-store'});
+        const response=await fetch(request,{cache:'no-store'});
         if(response&&response.ok){
           const cache=await caches.open(CACHE);
-          cache.put('./v51.html',response.clone()).catch(()=>{});
+          cache.put(request,response.clone()).catch(()=>{});
           return response;
         }
       }catch(error){}
-      return (await caches.match('./v51.html',{ignoreSearch:true}))||networkFirst(request);
+      return (await caches.match('./v52.html',{ignoreSearch:true}))||networkFirst(request);
     })());
     return;
   }
