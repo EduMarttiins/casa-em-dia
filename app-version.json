@@ -1,7 +1,7 @@
 {
-  "contentVersion": 58,
+  "contentVersion": 59,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o dicionário agora explica as palavras com linguagem simples, exemplo e uma dica para facilitar o entendimento.",
+  "message": "Nova atualização disponível: o dicionário agora procura a palavra no texto da lição e explica o significado de acordo com o contexto em que ela foi usada.",
   "publishedAt": "2026-09-13"
 }
