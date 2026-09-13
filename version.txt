@@ -1,2 +1,2 @@
-36
-Traço da lousa redesenhado para ficar mais fino, contínuo e suave. Matemática mantém o quadro branco sem linhas.
+37
+Corrigida a lousa que podia ficar invisível ao abrir questões recolhidas. A área agora recalcula o tamanho ao aparecer e o traço 1 px permanece fino, visível e contínuo.
