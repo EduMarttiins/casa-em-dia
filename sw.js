@@ -1,32 +1,27 @@
-const VERSION='48';
+const VERSION='49';
 const CACHE='lousa-de-estudos-v'+VERSION;
-const CORE=[
-  './app.html',
-  './content-v48.html',
+const ASSETS=[
   './index.html',
-  './manifest.webmanifest',
-  './v37.css',
-  './v37.js',
-  './v41.js',
-  './icons/lousa-icon-192.png',
-  './icons/lousa-icon-512.png'
+  './v49.html',
+  './v37.css?v=49',
+  './v37.js?v=49',
+  './v41.js?v=49',
+  './pwa-v39.css?v=49',
+  './pwa-v49.js?v=49',
+  './manifest.webmanifest?v=49',
+  './icons/lousa-icon-v35.jpg?v=49'
 ];
 
 self.addEventListener('install',event=>{
-  event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE);
-    for(const asset of CORE){
-      try{await cache.add(new Request(asset,{cache:'reload'}))}catch(error){}
-    }
-  })());
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil((async()=>{
-    const keys=await caches.keys();
-    await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys()
+      .then(keys=>Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key))))
+      .then(()=>self.clients.claim())
+  );
 });
 
 self.addEventListener('message',event=>{
@@ -34,27 +29,18 @@ self.addEventListener('message',event=>{
 });
 
 async function networkFirst(request){
-  const cache=await caches.open(CACHE);
   try{
     const response=await fetch(request,{cache:'no-store'});
-    if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
+    if(response&&response.ok){
+      const cache=await caches.open(CACHE);
+      cache.put(request,response.clone()).catch(()=>{});
+    }
     return response;
   }catch(error){
-    const cached=await caches.match(request,{ignoreSearch:true});
+    const cached=await caches.match(request);
     if(cached)return cached;
     throw error;
   }
-}
-
-async function cacheFirst(request){
-  const cached=await caches.match(request,{ignoreSearch:true});
-  if(cached)return cached;
-  const response=await fetch(request);
-  if(response&&response.ok){
-    const cache=await caches.open(CACHE);
-    cache.put(request,response.clone()).catch(()=>{});
-  }
-  return response;
 }
 
 self.addEventListener('fetch',event=>{
@@ -65,15 +51,17 @@ self.addEventListener('fetch',event=>{
 
   if(request.mode==='navigate'){
     event.respondWith((async()=>{
-      try{return await networkFirst(request)}catch(error){
-        return (await caches.match('./app.html',{ignoreSearch:true}))||(await caches.match('./index.html',{ignoreSearch:true}))||Response.error();
-      }
+      const target=new URL('./v49.html?v=49',self.registration.scope).toString();
+      try{
+        const response=await fetch(target,{cache:'no-store'});
+        if(response&&response.ok){
+          const cache=await caches.open(CACHE);
+          cache.put('./v49.html',response.clone()).catch(()=>{});
+          return response;
+        }
+      }catch(error){}
+      return (await caches.match('./v49.html'))||networkFirst(request);
     })());
-    return;
-  }
-
-  if(['style','script','image','font'].includes(request.destination)){
-    event.respondWith(cacheFirst(request));
     return;
   }
 
