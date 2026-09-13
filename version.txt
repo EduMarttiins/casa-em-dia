@@ -1,2 +1,2 @@
-39
-Restaurada integralmente a configuração aprovada da versão 37 para a caneta e o whiteboard de Matemática sem linhas. O convite de instalação PWA agora fica isolado em arquivos próprios para não interferir na lousa.
+40
+Criada uma entrada limpa para contornar o cache antigo. A versão 40 força a configuração aprovada da caneta da versão 37, mantém o whiteboard de Matemática totalmente branco e substitui o service worker antigo. O instalador PWA permanece separado da lousa.
