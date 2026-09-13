@@ -14,8 +14,20 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 </style>
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).catch(()=>{});
+  let reloadedForWorker=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(reloadedForWorker)return;
+    reloadedForWorker=true;
+    const url=new URL(location.href);
+    if(url.searchParams.get('content')!=='56')url.searchParams.set('content','56');
+    location.replace(url.toString());
+  });
+  window.addEventListener('load',async()=>{
+    try{
+      const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+      await reg.update();
+      if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
+    }catch(error){}
   },{once:true});
 }
 </script>
