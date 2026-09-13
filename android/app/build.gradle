@@ -3,6 +3,7 @@ plugins {
 }
 
 def generatedLousaIconRes = file("$buildDir/generated/lousaIconRes")
+def lousaIconBase64File = rootProject.file('lousa-icon-base64.txt')
 
 android {
     namespace 'br.com.lousadeestudos'
@@ -12,8 +13,8 @@ android {
         applicationId 'br.com.lousadeestudos'
         minSdk 26
         targetSdk 35
-        versionCode 2
-        versionName '1.1.0'
+        versionCode 3
+        versionName '1.2.0'
     }
 
     sourceSets {
@@ -36,15 +37,14 @@ android {
 }
 
 tasks.register('prepareLousaIcon') {
-    inputs.file(rootProject.file('../icons/lousa-icon-512.png'))
+    inputs.file(lousaIconBase64File)
     outputs.dir(generatedLousaIconRes)
     doLast {
         delete generatedLousaIconRes
-        copy {
-            from rootProject.file('../icons/lousa-icon-512.png')
-            into new File(generatedLousaIconRes, 'drawable')
-            rename { 'lousa_icon.png' }
-        }
+        def drawableDir = new File(generatedLousaIconRes, 'drawable')
+        drawableDir.mkdirs()
+        def encoded = lousaIconBase64File.getText('UTF-8').replaceAll(/\s+/, '')
+        new File(drawableDir, 'lousa_icon.webp').bytes = java.util.Base64.getDecoder().decode(encoded)
     }
 }
 
