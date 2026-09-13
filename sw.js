@@ -1,22 +1,24 @@
-const VERSION='36';
+const VERSION='37';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './manifest.webmanifest',
-  './v36.css?v=36',
-  './v36.js?v=36',
-  './icons/lousa-icon-v35.jpg?v=36'
+  './v37.css?v=37',
+  './v37.js?v=37',
+  './icons/lousa-icon-v35.jpg?v=37'
 ];
 
 function upgradeHtml(html){
   let next=String(html||'');
-  next=next.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="36">');
-  next=next.replace(/\.\/icons\/lousa-icon\.svg/g,'./icons/lousa-icon-v35.jpg?v=36');
+  next=next.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="37">');
+  next=next.replace(/\.\/icons\/lousa-icon\.svg/g,'./icons/lousa-icon-v35.jpg?v=37');
   next=next.replace('type="image/svg+xml"','type="image/jpeg"');
   next=next.replace(/<link rel="stylesheet" href="\.\/v35\.css\?v=35">\s*/g,'');
   next=next.replace(/<script src="\.\/v35\.js\?v=35" defer><\/script>\s*/g,'');
   next=next.replace(/<link rel="stylesheet" href="\.\/v36\.css\?v=36">\s*/g,'');
   next=next.replace(/<script src="\.\/v36\.js\?v=36" defer><\/script>\s*/g,'');
-  next=next.replace('</head>','<link rel="stylesheet" href="./v36.css?v=36">\n<script src="./v36.js?v=36" defer></script>\n</head>');
+  next=next.replace(/<link rel="stylesheet" href="\.\/v37\.css\?v=37">\s*/g,'');
+  next=next.replace(/<script src="\.\/v37\.js\?v=37" defer><\/script>\s*/g,'');
+  next=next.replace('</head>','<link rel="stylesheet" href="./v37.css?v=37">\n<script src="./v37.js?v=37" defer></script>\n</head>');
   return next;
 }
 
