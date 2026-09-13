@@ -1,25 +1,26 @@
-const VERSION='57-rescue-1';
-const CONTENT_VERSION='57';
+const VERSION='58-rescue-1';
+const CONTENT_VERSION='58';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './index.html',
   './v52.html',
-  './loader-v55.js?v=57',
-  './v37.css?v=57',
-  './v37.js?v=57',
-  './v41.js?v=57',
-  './v50.js?v=57',
-  './pwa-v39.css?v=57',
-  './pwa-v52.js?v=57',
-  './v54.js?v=57',
-  './v55.js?v=57',
-  './v56.js?v=57',
-  './v57.js?v=57',
-  './v55-auto-update.js?v=57',
-  './app-version.json?v=57',
-  './manifest.webmanifest?v=57',
-  './icons/lousa-icon-192.png?v=57',
-  './icons/lousa-icon-512.png?v=57'
+  './loader-v55.js?v=58',
+  './v37.css?v=58',
+  './v37.js?v=58',
+  './v41.js?v=58',
+  './v50.js?v=58',
+  './pwa-v39.css?v=58',
+  './pwa-v52.js?v=58',
+  './v54.js?v=58',
+  './v55.js?v=58',
+  './v56.js?v=58',
+  './v57.js?v=58',
+  './v58.js?v=58',
+  './v55-auto-update.js?v=58',
+  './app-version.json?v=58',
+  './manifest.webmanifest?v=58',
+  './icons/lousa-icon-192.png?v=58',
+  './icons/lousa-icon-512.png?v=58'
 ];
 
 self.addEventListener('install',event=>{
@@ -35,7 +36,6 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
-
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     await Promise.all(windows.map(async client=>{
       try{
@@ -79,7 +79,6 @@ self.addEventListener('fetch',event=>{
   if(request.method!=='GET')return;
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
-
   if(request.mode==='navigate'){
     event.respondWith((async()=>{
       try{
@@ -94,6 +93,5 @@ self.addEventListener('fetch',event=>{
     })());
     return;
   }
-
   event.respondWith(networkFirst(request));
 });
