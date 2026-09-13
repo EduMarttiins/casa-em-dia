@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2f9d59">
+<title>Lousa de Estudos</title>
+<link rel="manifest" href="./manifest.webmanifest?v=49">
+<link rel="icon" type="image/jpeg" sizes="512x512" href="./icons/lousa-icon-v35.jpg?v=49">
+<style>
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f3f8f5;color:#1f2937}.v49load{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}.v49card{background:#fff;border:1px solid #e1ebe4;border-radius:24px;padding:28px;box-shadow:0 18px 48px rgba(20,40,28,.10);max-width:420px}.v49spinner{width:42px;height:42px;margin:0 auto 16px;border:4px solid #dcebe0;border-top-color:#2f9d59;border-radius:50%;animation:v49spin .8s linear infinite}@keyframes v49spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="v49load"><div class="v49card"><div class="v49spinner"></div><strong>Carregando a Lousa de Estudos</strong><p>Preparando a versão 49...</p></div></div>
+<script>
+(async()=>{
+  try{
+    const response=await fetch('./index.html?raw=v49&ts='+Date.now(),{cache:'no-store'});
+    if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
+    let html=await response.text();
+    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="49">');
+    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=49');
+    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-v35.jpg?v=49');
+    html=html.replace(/type="image\/svg\+xml"/g,'type="image/jpeg"');
+    html=html.replace(/<script>\s*\(\(\)\s*=>\s*\{\s*let deferredInstallPrompt=null;[\s\S]*?\}\)\(\);\s*<\/script>/g,'');
+    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-9]|pwa-v3[9]|pwa-v4[0-9])\.css\?v=\d+">\s*/g,'');
+    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-9]|pwa-v3[9]|pwa-v4[0-9])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
+    const css='\n<link rel="stylesheet" href="./v37.css?v=49">\n<link rel="stylesheet" href="./pwa-v39.css?v=49">\n';
+    html=html.replace('</head>',css+'</head>');
+    const scripts='\n<scr'+'ipt src="./v37.js?v=49"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=49"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v49.js?v=49"></scr'+'ipt>\n';
+    html=html.replace('</body>',scripts+'</body>');
+    document.open();document.write(html);document.close();
+  }catch(error){document.querySelector('.v49card').innerHTML='<strong>Não foi possível abrir agora.</strong><p>Feche esta aba e abra novamente.</p>';console.error(error)}
+})();
+</script>
+</body>
+</html>
