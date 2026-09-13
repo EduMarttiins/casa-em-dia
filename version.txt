@@ -1,2 +1,2 @@
-46
-Corrigida a migração do tablet que ainda estava preso no service worker da versão 44. A própria página antiga agora remove automaticamente o service worker anterior e os caches da Lousa antes de abrir o instalador novo. O service worker da versão 46 foi simplificado para ativar imediatamente, sem bloquear a instalação baixando todos os arquivos antes. A caneta, o whiteboard e as regras de Matemática continuam preservados.
+47
+Restaurado o modelo simples de instalação usado nas versões anteriores. Ao abrir a própria Lousa no celular ou tablet, aparece o convite Instalar o aplicativo. Quando o navegador liberar a instalação nativa, o botão muda para Instalar aplicativo. Caso contrário, o mesmo cartão mostra Como instalar, sem redirecionamentos, sem limpeza automática e sem loop. A caneta, o whiteboard e as regras de Matemática continuam preservados.
