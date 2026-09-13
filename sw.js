@@ -1,24 +1,25 @@
-const VERSION='56-rescue-1';
-const CONTENT_VERSION='56';
+const VERSION='57-rescue-1';
+const CONTENT_VERSION='57';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './index.html',
   './v52.html',
-  './loader-v55.js?v=56',
-  './v37.css?v=56',
-  './v37.js?v=56',
-  './v41.js?v=56',
-  './v50.js?v=56',
-  './pwa-v39.css?v=56',
-  './pwa-v52.js?v=56',
-  './v54.js?v=56',
-  './v55.js?v=56',
-  './v56.js?v=56',
-  './v55-auto-update.js?v=56',
-  './app-version.json?v=56',
-  './manifest.webmanifest?v=56',
-  './icons/lousa-icon-192.png?v=56',
-  './icons/lousa-icon-512.png?v=56'
+  './loader-v55.js?v=57',
+  './v37.css?v=57',
+  './v37.js?v=57',
+  './v41.js?v=57',
+  './v50.js?v=57',
+  './pwa-v39.css?v=57',
+  './pwa-v52.js?v=57',
+  './v54.js?v=57',
+  './v55.js?v=57',
+  './v56.js?v=57',
+  './v57.js?v=57',
+  './v55-auto-update.js?v=57',
+  './app-version.json?v=57',
+  './manifest.webmanifest?v=57',
+  './icons/lousa-icon-192.png?v=57',
+  './icons/lousa-icon-512.png?v=57'
 ];
 
 self.addEventListener('install',event=>{
@@ -35,7 +36,6 @@ self.addEventListener('activate',event=>{
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
 
-    /* Resgate da versão 56: quem ficou preso em cache antigo é levado uma única vez para a entrada atual. */
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     await Promise.all(windows.map(async client=>{
       try{
