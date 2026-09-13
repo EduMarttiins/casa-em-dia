@@ -1,10 +1,10 @@
 (async()=>{
   try{
-    const response=await fetch('./index.html?raw=v57&ts='+Date.now(),{cache:'no-store'});
+    const response=await fetch('./index.html?raw=v58&ts='+Date.now(),{cache:'no-store'});
     if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
     let html=await response.text();
 
-    /* Versão 57: questões dissertativas, caligrafia nas respostas e dicionário ampliado. */
+    /* Versão 58: mantém questões dissertativas, caligrafia e usa explicações de dicionário mais simples. */
     const mcqIds=[];
     const idPattern=/"id"\s*:\s*"([^"]+)"\s*,\s*"type"\s*:\s*"mcq"/g;
     let match;
@@ -25,16 +25,15 @@
     }
 
     html=html.replace(/"type"\s*:\s*"mcq"/g,'"type":"open"');
-
-    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="57">');
-    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=57');
-    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-512.png?v=57');
+    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="58">');
+    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=58');
+    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-512.png?v=58');
     html=html.replace(/type="image\/svg\+xml"/g,'type="image/png"');
-    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-9]|v5[0-7]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-7])\.css\?v=\d+">\s*/g,'');
-    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-9]|v5[0-7]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-7])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
-    const css='\n<link rel="stylesheet" href="./v37.css?v=57">\n<link rel="stylesheet" href="./pwa-v39.css?v=57">\n';
+    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-9]|v5[0-8]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-8])\.css\?v=\d+">\s*/g,'');
+    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-9]|v5[0-8]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-8])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
+    const css='\n<link rel="stylesheet" href="./v37.css?v=58">\n<link rel="stylesheet" href="./pwa-v39.css?v=58">\n';
     html=html.replace('</head>',css+'</head>');
-    const scripts='\n<scr'+'ipt src="./v37.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v50.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v52.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v54.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v55.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v56.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v57.js?v=57"></scr'+'ipt>\n<scr'+'ipt src="./v55-auto-update.js?v=57"></scr'+'ipt>\n';
+    const scripts='\n<scr'+'ipt src="./v37.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v50.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v52.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v54.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v55.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v56.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v57.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v58.js?v=58"></scr'+'ipt>\n<scr'+'ipt src="./v55-auto-update.js?v=58"></scr'+'ipt>\n';
     html=html.replace('</body>',scripts+'</body>');
     document.open();document.write(html);document.close();
   }catch(error){
