@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
-<meta name="app-version" content="28">
+<meta name="app-version" content="29">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -157,6 +157,12 @@ body.v27InitialPage .footer{display:flex!important}
 .v28Help p{margin:0}
 .v28Help p+p{margin-top:10px}
 @media(max-width:720px){.v28Help{font-size:15px;line-height:1.6}}
+
+/* Versão 29: mostrar resposta esperada somente depois de enviar questão aberta */
+.v29ExpectedAnswer{display:none;margin-top:16px;padding:16px 18px;border-radius:18px;background:#f3faf6;border:1px solid #cfe5d6;color:#263b30;line-height:1.6}
+.v29ExpectedAnswer.show{display:block}
+.v29ExpectedAnswer strong{display:block;margin-bottom:6px;font-size:14px;color:#1f6b42}
+.v29ExpectedAnswer p{margin:0;font-size:15px}
 </style>
 </head>
 <body>
@@ -666,11 +672,21 @@ function buildQuestion(q,num){
     const board=document.createElement('div');board.className='board'+(currentSubjectKey==='portuguese'?' calligraphyBoard':'');
     board.innerHTML=`<div class="toolbar"><button class="tool pen active" type="button">Caneta</button><button class="tool eraser" type="button">Borracha</button><button class="tool undo" type="button">Desfazer</button><button class="tool danger clear" type="button">Limpar</button><span class="sep"></span><span class="sizeLabel">Espessura</span><input class="sizeRange" type="range" min="1" max="12" value="4"><span class="sizeValue">4 px</span></div><div class="canvasWrap"><canvas class="answerCanvas"></canvas></div><div class="penHint">Use a caneta do tablet ou o dedo. Nesta pergunta não há teclado.</div>`;
     card.appendChild(board);
+    const expectedAnswer=document.createElement('div');expectedAnswer.className='v29ExpectedAnswer';card.appendChild(expectedAnswer);
+    function showExpectedAnswer(){
+      let raw=String(q.expected||q.explanation||'').trim();
+      raw=raw.replace(/^(Ideia principal|Ideia esperada|Resultado esperado|Resposta correta)\s*:\s*/i,'').trim();
+      if(!raw)return;
+      expectedAnswer.innerHTML='';
+      const title=document.createElement('strong');title.textContent='Uma resposta correta seria:';
+      const text=document.createElement('p');text.textContent=raw.charAt(0).toUpperCase()+raw.slice(1);
+      expectedAnswer.appendChild(title);expectedAnswer.appendChild(text);expectedAnswer.classList.add('show');
+    }
     setupCanvas(board,q,()=>{currentHasAnswer=!!getCanvas(q);updateState()},()=>isSubmitted(q));
 
-    submit.addEventListener('click',()=>{if(!currentHasAnswer)return;localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));board.classList.add('submittedBoard');explainer.classList.remove('show','consumed');setCanvasLocked(board,true);updateState();updateProgress();toast('Resposta registrada. Questão concluída.')});
+    submit.addEventListener('click',()=>{if(!currentHasAnswer)return;localStorage.setItem(key(q.id,'submitted'),'1');localStorage.removeItem(key(q.id,'explained'));board.classList.add('submittedBoard');explainer.classList.remove('show','consumed');setCanvasLocked(board,true);showExpectedAnswer();updateState();updateProgress();toast('Resposta registrada. Compare agora com a resposta esperada.')});
     explainButton.addEventListener('click',()=>{});
-    if(isSubmitted(q)){board.classList.add('submittedBoard');setTimeout(()=>setCanvasLocked(board,true),0)}
+    if(isSubmitted(q)){board.classList.add('submittedBoard');setTimeout(()=>setCanvasLocked(board,true),0);showExpectedAnswer()}
     if(isSubmitted(q)&&wasExplained())gate.classList.add('consumed');
     updateState();
   }
