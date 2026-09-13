@@ -13,34 +13,34 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 </style>
 </head>
 <body>
-<div class="v40load"><div class="v40card"><div class="v40spinner"></div><strong>Atualizando a Lousa de Estudos</strong><p>Carregando a versão 40...</p></div></div>
+<div class="v40load"><div class="v40card"><div class="v40spinner"></div><strong>Lousa de Estudos</strong><p>Verificando atualizações...</p></div></div>
 <script>
 (async()=>{
   try{
-    const fresh='./index.html?raw=v40&ts='+Date.now();
+    const fresh='./index.html?raw=v40&bridge=41&ts='+Date.now();
     const response=await fetch(fresh,{cache:'no-store'});
     if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
     let html=await response.text();
 
     html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="40">');
-    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=40');
-    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-v35.jpg?v=40');
+    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=41');
+    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-v35.jpg?v=41');
     html=html.replace(/type="image\/svg\+xml"/g,'type="image/jpeg"');
 
-    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|pwa-v39)\.css\?v=\d+">\s*/g,'');
-    html=html.replace(/<script src="\.\/(?:v3[5-9]|pwa-v39)\.js\?v=\d+" defer><\/script>\s*/g,'');
+    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-1]|pwa-v3[9]|pwa-v4[0-1])\.css\?v=[^"]+">\s*/g,'');
+    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-1]|pwa-v3[9]|pwa-v4[0-1])\.js\?v=[^"]+"(?: defer)?><\/script>\s*/g,'');
 
     const css='\n<link rel="stylesheet" href="./v37.css?v=40">\n<link rel="stylesheet" href="./pwa-v39.css?v=40">\n';
     html=html.replace('</head>',css+'</head>');
 
-    const scripts='\n<scr'+'ipt src="./v37.js?v=40"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v40.js?v=40"></scr'+'ipt>\n';
+    const scripts='\n<scr'+'ipt src="./v37.js?v=40"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v40.js?v=41bridge"></scr'+'ipt>\n';
     html=html.replace('</body>',scripts+'</body>');
 
     document.open();
     document.write(html);
     document.close();
   }catch(error){
-    document.querySelector('.v40card').innerHTML='<strong>Não foi possível atualizar agora.</strong><p>Feche esta página, abra novamente e tente mais uma vez.</p>';
+    document.querySelector('.v40card').innerHTML='<strong>Não foi possível verificar a atualização agora.</strong><p>Feche esta página, abra novamente e tente mais uma vez.</p>';
     console.error(error);
   }
 })();
