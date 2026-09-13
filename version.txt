@@ -1,2 +1,2 @@
-58
-O Dicionário agora usa linguagem simples e adequada ao 5º ano. As palavras mais importantes das lições recebem uma explicação curta, um exemplo do cotidiano e uma dica para ajudar a entender o sentido. Para outras palavras, a definição encontrada é simplificada antes de ser mostrada. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
+59
+O Dicionário agora procura a palavra dentro do texto visível da lição e explica o significado de acordo com o contexto em que ela foi usada. A resposta mostra também o trecho da lição onde a palavra aparece, facilitando a compreensão pelo aluno. Para palavras com mais de um significado, o aplicativo prioriza o sentido que combina com o trecho. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
