@@ -1,2 +1,2 @@
-44
-Corrigido o loop de atualização no tablet. A rotina PWA antiga embutida no aplicativo foi removida da versão carregada, o service worker agora é registrado por um único endereço e a versão 43 migra automaticamente para a 44 antes da instalação. Em navegador não instalado, atualizações pendentes são ativadas sem mostrar o aviso repetidamente; depois o convite de instalação é exibido. A caneta, o whiteboard e as regras de Matemática continuam preservados.
+45
+Instalação PWA reorganizada para eliminar o loop no tablet Samsung. O link de instalação agora abre uma página estática própria, com manifesto e ícones disponíveis desde o carregamento inicial. O service worker deixou de redirecionar todas as navegações para a Lousa e passa a respeitar a página solicitada. A versão 44 migra automaticamente o instalador antigo para a nova estrutura. A caneta, o whiteboard e as regras de Matemática continuam preservados.
