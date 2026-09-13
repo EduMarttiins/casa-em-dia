@@ -1,2 +1,2 @@
-20
-Questões recolhidas. A tela mostra primeiro somente o número e o enunciado. Ao tocar na questão, aparecem revisão, alternativas e controles de resposta.
+36
+Traço da lousa redesenhado para ficar mais fino, contínuo e suave. Matemática mantém o quadro branco sem linhas.
