@@ -132,6 +132,10 @@ jobs:
         shell: bash
         run: python3 tools/v33_transform.py
 
+      - name: Aplicar mini lousa maior e traço nítido da versão 34
+        shell: bash
+        run: python3 tools/v34_transform.py
+
       - name: Gerar service worker com a versão atual
         shell: bash
         run: |
@@ -157,7 +161,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa de Estudos versão 33 PWA [skip ci]"
+            git commit -m "Publica Lousa de Estudos versão 34 PWA [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
