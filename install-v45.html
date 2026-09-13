@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2f9d59">
+<title>Instalar Lousa de Estudos</title>
+<link rel="manifest" href="./manifest.webmanifest?v=45">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/lousa-icon-192.png?v=45">
+<link rel="apple-touch-icon" href="./icons/lousa-icon-192.png?v=45">
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f3f8f5;color:#1f2937}body{display:grid;place-items:center;padding:22px}.card{width:min(100%,440px);background:#fff;border:1px solid #dce8df;border-radius:28px;padding:28px;box-shadow:0 24px 70px rgba(24,45,31,.14);text-align:center}.icon{width:92px;height:92px;border-radius:24px;object-fit:cover;box-shadow:0 10px 28px rgba(0,0,0,.12)}.badge{display:inline-block;margin-top:14px;padding:6px 11px;border-radius:999px;background:#eaf7ef;color:#1f7e45;font-size:12px;font-weight:900}.card h1{margin:14px 0 8px;font-size:28px}.card p{margin:0;color:#64748b;line-height:1.6}.status{margin-top:18px;padding:13px 14px;border-radius:16px;background:#f6faf7;border:1px solid #e0ebe3;color:#4b5f52;font-size:13px;line-height:1.5}.primary{width:100%;min-height:52px;margin-top:18px;border:0;border-radius:15px;background:#2f9d59;color:#fff;font-size:15px;font-weight:900}.primary:disabled{opacity:.55}.secondary{display:block;margin:14px auto 0;border:0;background:transparent;color:#66756c;font-weight:800}.done{display:none}.done.show{display:block;margin-top:16px;color:#197346;font-weight:900}
+</style>
+<script>
+let installEvent=null;
+let uiReady=false;
+function standalone(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
+function setState(){
+  if(!uiReady)return;
+  const b=document.getElementById('installBtn');
+  const s=document.getElementById('status');
+  if(standalone()){
+    b.disabled=false;b.textContent='Abrir Lousa de Estudos';s.textContent='O aplicativo já está instalado neste dispositivo.';return;
+  }
+  if(installEvent){
+    b.disabled=false;b.textContent='Instalar aplicativo';s.textContent='Tudo pronto. Toque em Instalar aplicativo e confirme a janela do Android.';return;
+  }
+  b.disabled=true;b.textContent='Verificando instalação...';s.textContent='Aguardando o navegador liberar o instalador nativo.';
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;setState()});
+window.addEventListener('appinstalled',()=>{installEvent=null;if(uiReady){document.getElementById('status').textContent='Instalação concluída.';document.getElementById('installBtn').textContent='Abrir Lousa de Estudos';document.getElementById('installBtn').disabled=false;document.getElementById('done').classList.add('show')}});
+</script>
+</head>
+<body>
+<main class="card">
+  <img class="icon" src="./icons/lousa-icon-512.png?v=45" alt="Ícone da Lousa de Estudos">
+  <div class="badge">Lousa de Estudos</div>
+  <h1>Instalar o aplicativo</h1>
+  <p>Instale a Lousa de Estudos para abrir pela tela inicial do tablet como um aplicativo.</p>
+  <div id="status" class="status">Preparando o instalador...</div>
+  <button id="installBtn" class="primary" type="button" disabled>Verificando instalação...</button>
+  <button id="openChrome" class="secondary" type="button" hidden>Abrir no Chrome para instalar</button>
+  <div id="done" class="done">✓ Aplicativo instalado</div>
+</main>
+<script>
+uiReady=true;
+const btn=document.getElementById('installBtn');
+const chromeBtn=document.getElementById('openChrome');
+const status=document.getElementById('status');
+const isAndroid=/android/i.test(navigator.userAgent||'');
+
+function chromeIntent(){
+  const url=new URL(location.href);url.searchParams.set('chrome','1');
+  const target=(url.host+url.pathname+url.search).replace(/^\/+/, '');
+  return 'intent://'+target+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url.toString())+';end';
+}
+
+btn.addEventListener('click',async()=>{
+  if(standalone()||document.getElementById('done').classList.contains('show')){location.href='./v45.html?pwa=1&v=45';return}
+  if(!installEvent)return;
+  const ev=installEvent;installEvent=null;btn.disabled=true;btn.textContent='Abrindo instalação...';
+  try{
+    await ev.prompt();
+    const choice=await ev.userChoice;
+    if(!choice||choice.outcome!=='accepted'){
+      btn.disabled=false;btn.textContent='Instalar aplicativo';status.textContent='A instalação não foi confirmada. Toque novamente quando quiser instalar.';
+    }
+  }catch(e){
+    status.textContent='O navegador não conseguiu abrir a instalação. Abra esta página no Chrome.';
+    if(isAndroid)chromeBtn.hidden=false;
+  }
+});
+chromeBtn.addEventListener('click',()=>{location.href=chromeIntent()});
+
+(async()=>{
+  if(standalone()){setState();return}
+  try{
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+      await reg.update().catch(()=>{});
+      await navigator.serviceWorker.ready;
+    }
+  }catch(e){status.textContent='Não foi possível preparar o aplicativo neste navegador.'}
+  setState();
+  setTimeout(()=>{
+    if(!installEvent&&!standalone()){
+      btn.disabled=true;btn.textContent='Instalação não liberada nesta aba';
+      if(isAndroid){chromeBtn.hidden=false;status.textContent='Esta aba não permite instalar aplicativos. Toque em Abrir no Chrome para instalar.'}
+      else status.textContent='Abra esta página em uma aba normal do navegador para instalar.';
+    }
+  },3500);
+})();
+</script>
+</body>
+</html>
