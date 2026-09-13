@@ -12,8 +12,20 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
-    private static final String APP_URL = "https://edumarttiins.github.io/lousa-de-estudos/v52.html?androidapp=1";
+    private static final String APP_URL = "https://edumarttiins.github.io/lousa-de-estudos/v52.html?androidapp=1&apk=2";
     private WebView webView;
+
+    private static final String HIDE_INSTALL_UI_JS =
+            "(function(){" +
+            "window.__lousaPwaV52=true;" +
+            "var selector='.v52InstallBanner,.v51InstallBanner,.v39InstallOverlay,.v33PwaPrompt';" +
+            "var css=selector+'{display:none!important;visibility:hidden!important;pointer-events:none!important}';" +
+            "var s=document.getElementById('androidNativeAppCSS');" +
+            "if(!s){s=document.createElement('style');s.id='androidNativeAppCSS';document.head.appendChild(s);}" +
+            "s.textContent=css;" +
+            "document.querySelectorAll(selector).forEach(function(e){e.remove();});" +
+            "document.documentElement.classList.add('android-native-app');" +
+            "})();";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +51,7 @@ public class MainActivity extends Activity {
         settings.setAllowContentAccess(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        settings.setUserAgentString(settings.getUserAgentString() + " LousaDeEstudosAndroid/1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " LousaDeEstudosAndroid/1.1");
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
@@ -57,13 +69,10 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                String js = "(function(){" +
-                        "var css='.v52InstallBanner,.v51InstallBanner,.v39InstallOverlay,.v33PwaPrompt{display:none!important}';" +
-                        "var s=document.getElementById('androidNativeAppCSS');" +
-                        "if(!s){s=document.createElement('style');s.id='androidNativeAppCSS';s.textContent=css;document.head.appendChild(s);}" +
-                        "document.documentElement.classList.add('android-native-app');" +
-                        "})();";
-                view.evaluateJavascript(js, null);
+                hideInstallUi(view);
+                view.postDelayed(() -> hideInstallUi(view), 800);
+                view.postDelayed(() -> hideInstallUi(view), 2400);
+                view.postDelayed(() -> hideInstallUi(view), 5000);
             }
         });
 
@@ -71,6 +80,12 @@ public class MainActivity extends Activity {
             webView.loadUrl(APP_URL);
         } else {
             webView.restoreState(savedInstanceState);
+        }
+    }
+
+    private void hideInstallUi(WebView view) {
+        if (view != null) {
+            view.evaluateJavascript(HIDE_INSTALL_UI_JS, null);
         }
     }
 
