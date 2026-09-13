@@ -94,6 +94,10 @@ jobs:
         shell: bash
         run: python3 tools/v24_transform.py
 
+      - name: Aplicar ajuda após erro e pistas pedagógicas da versão 25
+        shell: bash
+        run: python3 tools/v25_transform.py
+
       - name: Salvar index direto na branch principal
         shell: bash
         run: |
@@ -103,7 +107,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa de Estudos versão 24 [skip ci]"
+            git commit -m "Publica Lousa de Estudos versão 25 [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
