@@ -16,6 +16,26 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 <div class="v44load"><div class="v44card"><div class="v44spinner"></div><strong>Carregando a Lousa de Estudos</strong><p>Preparando a versão 44...</p></div></div>
 <script>
 (async()=>{
+  const wantsInstaller=/\/install-v45\.html$/.test(location.pathname);
+  if(wantsInstaller&&'serviceWorker' in navigator){
+    const card=document.querySelector('.v44card');
+    card.innerHTML='<div class="v44spinner"></div><strong>Preparando o instalador</strong><p>Atualizando o sistema de instalação uma única vez...</p>';
+    let reloading=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(reloading)return;
+      reloading=true;
+      location.reload();
+    },{once:true});
+    try{
+      const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+      await reg.update().catch(()=>{});
+      if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
+    }catch(error){
+      card.innerHTML='<strong>Não foi possível preparar a instalação.</strong><p>Feche esta aba e abra o link novamente.</p>';
+    }
+    return;
+  }
+
   try{
     const response=await fetch('./index.html?raw=v44&ts='+Date.now(),{cache:'no-store'});
     if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
