@@ -1,2 +1,2 @@
-47
-Restaurado o modelo simples de instalação usado nas versões anteriores. Ao abrir a própria Lousa no celular ou tablet, aparece o convite Instalar o aplicativo. Quando o navegador liberar a instalação nativa, o botão muda para Instalar aplicativo. Caso contrário, o mesmo cartão mostra Como instalar, sem redirecionamentos, sem limpeza automática e sem loop. A caneta, o whiteboard e as regras de Matemática continuam preservados.
+48
+Lousa de Estudos reorganizada como PWA instalável com entrada própria em app.html. O aplicativo passa a abrir em modo standalone quando instalado, com ícone na tela inicial, splash visual, manifesto PWA completo, service worker estável com suporte offline e aviso controlado de novas versões. O convite de instalação é simples e não usa recargas ou redirecionamentos automáticos. A caneta, o whiteboard e as regras de Matemática continuam preservados.
