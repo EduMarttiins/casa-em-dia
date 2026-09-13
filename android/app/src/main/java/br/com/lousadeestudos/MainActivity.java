@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
-    private static final String APP_URL = "https://edumarttiins.github.io/lousa-de-estudos/v52.html?androidapp=1&apk=2";
+    private static final String APP_URL = "https://edumarttiins.github.io/lousa-de-estudos/v52.html?androidapp=1&apk=3";
     private WebView webView;
 
     private static final String HIDE_INSTALL_UI_JS =
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         settings.setAllowContentAccess(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        settings.setUserAgentString(settings.getUserAgentString() + " LousaDeEstudosAndroid/1.1");
+        settings.setUserAgentString(settings.getUserAgentString() + " LousaDeEstudosAndroid/1.2");
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
