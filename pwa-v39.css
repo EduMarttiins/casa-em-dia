@@ -1,0 +1,39 @@
+/* Instalador PWA da versão 39. Não altera a lousa nem o canvas. */
+#v33PwaPrompt{display:none!important}
+
+.v39InstallOverlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:18px;
+  background:rgba(15,23,42,.42);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.v39InstallOverlay.show{display:flex}
+.v39InstallCard{
+  position:relative;
+  width:min(100%,430px);
+  background:#fff;
+  border:1px solid #dfe8e2;
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 24px 70px rgba(15,23,42,.24);
+  animation:v39InstallUp .24s ease-out;
+}
+@keyframes v39InstallUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.v39InstallClose{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:12px;background:#f2f5f3;color:#526158;font-size:24px;line-height:1}
+.v39InstallIcon{display:block;width:74px;height:74px;object-fit:cover;border-radius:20px;margin-bottom:15px;box-shadow:0 10px 24px rgba(47,157,89,.18)}
+.v39InstallBadge{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eaf7ef;color:#1f7e45;font-size:11px;font-weight:900}
+.v39InstallText h3{margin:10px 42px 8px 0;font-size:24px;line-height:1.15;color:#1f2937}
+.v39InstallText p{margin:0;color:#64748b;font-size:14px;line-height:1.55}
+.v39InstallStatus{min-height:38px;margin-top:12px;padding:10px 12px;border-radius:14px;background:#f6faf7;border:1px solid #e2ebe5;color:#44554b;font-size:12px;line-height:1.45}
+.v39InstallActions{display:grid;gap:9px;margin-top:15px}
+.v39InstallPrimary,.v39InstallLater{width:100%;min-height:48px;border-radius:15px;padding:11px 15px;font-weight:900;font-size:14px}
+.v39InstallPrimary{border:1px solid #2f9d59;background:#2f9d59;color:#fff;box-shadow:0 10px 20px rgba(47,157,89,.18)}
+.v39InstallPrimary:disabled{opacity:.58;cursor:wait}
+.v39InstallLater{border:1px solid #dce6df;background:#fff;color:#47564d}
+@media (min-width:700px){.v39InstallOverlay{align-items:center}}
