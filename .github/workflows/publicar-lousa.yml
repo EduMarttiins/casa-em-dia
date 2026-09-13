@@ -118,6 +118,10 @@ jobs:
         shell: bash
         run: python3 tools/v30_transform.py
 
+      - name: Aplicar bloqueio da mini lousa após envio da versão 31
+        shell: bash
+        run: python3 tools/v31_transform.py
+
       - name: Salvar index direto na branch principal
         shell: bash
         run: |
@@ -127,7 +131,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nenhuma alteração necessária"
           else
-            git commit -m "Publica Lousa de Estudos versão 30 [skip ci]"
+            git commit -m "Publica Lousa de Estudos versão 31 [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
