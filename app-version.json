@@ -1,7 +1,7 @@
 {
-  "contentVersion": 55,
+  "contentVersion": 56,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: todas as questões agora são dissertativas, cada pergunta tem ajuda para interpretar sem entregar a resposta e o aplicativo ganhou um dicionário pesquisável.",
+  "message": "Nova atualização disponível: o dicionário agora abre limpo, mostra apenas o campo de pesquisa e exibe somente o significado da palavra pesquisada.",
   "publishedAt": "2026-09-13"
 }
