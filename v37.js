@@ -21,7 +21,7 @@
     let w=0;
     let h=0;
     let lastPoint=null;
-    let previousPoint=null;
+    let pathPoint=null;
     let restoreToken=0;
     let resizeRaf=0;
 
@@ -40,6 +40,7 @@
       ctx.lineCap='round';
       ctx.lineJoin='round';
       ctx.miterLimit=1;
+      ctx.shadowBlur=0;
       ctx.imageSmoothingEnabled=true;
       if('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality='high';
     }
@@ -56,6 +57,7 @@
       resetTransform();
       ctx.clearRect(0,0,canvas.width,canvas.height);
       cssTransform();
+      quality();
     }
 
     function restoreImage(src,saveAfter=false,token=restoreToken){
@@ -65,9 +67,14 @@
         if(token!==restoreToken||drawing) return;
         resetTransform();
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        quality();
+        if(img.width===canvas.width&&img.height===canvas.height){
+          ctx.drawImage(img,0,0);
+        }else{
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        }
         cssTransform();
         quality();
-        ctx.drawImage(img,0,0,w,h);
         if(saveAfter) save();
       };
       img.src=src;
@@ -108,8 +115,9 @@
     function ensureReady(){
       const r=wrap.getBoundingClientRect();
       if(r.width<2||r.height<2) return false;
-      const expectedW=Math.max(1,Math.round(r.width*Math.min(4,Math.max(1,window.devicePixelRatio||1))));
-      const expectedH=Math.max(1,Math.round(r.height*Math.min(4,Math.max(1,window.devicePixelRatio||1))));
+      const expectedDpr=Math.min(4,Math.max(1,window.devicePixelRatio||1));
+      const expectedW=Math.max(1,Math.round(r.width*expectedDpr));
+      const expectedH=Math.max(1,Math.round(r.height*expectedDpr));
       if(w<2||h<2||canvas.width!==expectedW||canvas.height!==expectedH) fit(true);
       return w>=2&&h>=2;
     }
@@ -127,10 +135,10 @@
     function currentWidth(){
       const shown=Math.max(1,Number(range.value)||1);
       if(tool==='eraser') return Math.max(14,shown*2.4);
-      if(shown===1) return 1.05;
-      if(shown===2) return 1.55;
-      if(shown===3) return 2.15;
-      return shown*0.78;
+      if(shown===1) return 1;
+      if(shown===2) return 1.4;
+      if(shown===3) return 1.9;
+      return Math.max(2.2,shown*0.72);
     }
 
     function config(){
@@ -163,24 +171,6 @@
       ctx.fill();
     }
 
-    function drawSmoothSegment(a,b,c){
-      if(!a||!b) return;
-      config();
-      ctx.beginPath();
-      if(c){
-        const startX=(a.x+b.x)/2;
-        const startY=(a.y+b.y)/2;
-        const endX=(b.x+c.x)/2;
-        const endY=(b.y+c.y)/2;
-        ctx.moveTo(startX,startY);
-        ctx.quadraticCurveTo(b.x,b.y,endX,endY);
-      }else{
-        ctx.moveTo(a.x,a.y);
-        ctx.lineTo(b.x,b.y);
-      }
-      ctx.stroke();
-    }
-
     function down(e){
       if(isLocked()) return;
       e.preventDefault();
@@ -190,8 +180,8 @@
       snapshot();
       try{canvas.setPointerCapture(e.pointerId)}catch(err){}
       const p=point(e);
-      previousPoint=null;
       lastPoint=p;
+      pathPoint=p;
       drawDot(p);
     }
 
@@ -199,25 +189,42 @@
       if(!drawing||isLocked()) return;
       e.preventDefault();
       const events=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+      if(!events.length) return;
+      config();
+      ctx.beginPath();
+      ctx.moveTo(pathPoint.x,pathPoint.y);
+      let drew=false;
       for(const ev of events){
         const p=point(ev);
-        if(!lastPoint){lastPoint=p;continue;}
+        if(!lastPoint){lastPoint=p;pathPoint=p;continue;}
         const dx=p.x-lastPoint.x;
         const dy=p.y-lastPoint.y;
-        if((dx*dx+dy*dy)<0.01) continue;
-        if(previousPoint) drawSmoothSegment(previousPoint,lastPoint,p);
-        else drawSmoothSegment(lastPoint,p,null);
-        previousPoint=lastPoint;
+        if((dx*dx+dy*dy)<0.0064) continue;
+        const mid={x:(lastPoint.x+p.x)/2,y:(lastPoint.y+p.y)/2};
+        ctx.quadraticCurveTo(lastPoint.x,lastPoint.y,mid.x,mid.y);
+        pathPoint=mid;
         lastPoint=p;
+        drew=true;
+      }
+      if(drew) ctx.stroke();
+    }
+
+    function finishStroke(){
+      if(lastPoint&&pathPoint){
+        config();
+        ctx.beginPath();
+        ctx.moveTo(pathPoint.x,pathPoint.y);
+        ctx.quadraticCurveTo(lastPoint.x,lastPoint.y,lastPoint.x,lastPoint.y);
+        ctx.stroke();
       }
     }
 
     function end(e){
       if(!drawing) return;
-      if(previousPoint&&lastPoint) drawSmoothSegment(previousPoint,lastPoint,null);
+      finishStroke();
       drawing=false;
-      previousPoint=null;
       lastPoint=null;
+      pathPoint=null;
       ctx.globalCompositeOperation='source-over';
       try{if(e&&canvas.hasPointerCapture&&canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId)}catch(err){}
       save();
