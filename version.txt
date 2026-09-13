@@ -1,2 +1,2 @@
-41
-Todas as questões de Matemática com resultado numérico passam a exigir uma alternativa após o cálculo na lousa. Se a alternativa estiver errada, a lição é reiniciada para ser refeita. O aviso de nova versão do PWA foi restaurado, mantendo a caneta e o whiteboard da versão 37 sem alterações.
+42
+No Android e em tablets Samsung, a primeira abertura tenta acionar o instalador PWA nativo automaticamente. Se a aba interna do aplicativo bloquear o instalador, o botão Instalar agora abre a mesma Lousa diretamente no Chrome para concluir a instalação. A caneta, o whiteboard e as regras de Matemática da versão 41 foram mantidos.
