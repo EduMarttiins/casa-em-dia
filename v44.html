@@ -3,65 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Lousa de Estudos</title>
+<meta name="theme-color" content="#2f9d59">
+<title>Atualizando Lousa de Estudos</title>
 <style>
-html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f3f8f5;color:#1f2937}
-.v44load{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
-.v44card{background:#fff;border:1px solid #e1ebe4;border-radius:24px;padding:28px;box-shadow:0 18px 48px rgba(20,40,28,.10);max-width:420px}
-.v44spinner{width:42px;height:42px;margin:0 auto 16px;border:4px solid #dcebe0;border-top-color:#2f9d59;border-radius:50%;animation:v44spin .8s linear infinite}
-@keyframes v44spin{to{transform:rotate(360deg)}}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f3f8f5;color:#1f2937}.wrap{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}.card{width:min(100%,420px);background:#fff;border:1px solid #dce8df;border-radius:26px;padding:28px;box-shadow:0 20px 60px rgba(24,45,31,.12)}.spin{width:42px;height:42px;margin:0 auto 16px;border:4px solid #dcebe0;border-top-color:#2f9d59;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}p{color:#64748b;line-height:1.55}
 </style>
 </head>
 <body>
-<div class="v44load"><div class="v44card"><div class="v44spinner"></div><strong>Carregando a Lousa de Estudos</strong><p>Preparando a versão 44...</p></div></div>
+<div class="wrap"><div class="card" id="card"><div class="spin"></div><strong>Corrigindo a instalação</strong><p>Removendo a versão antiga e preparando o instalador novo. Isso acontece uma única vez.</p></div></div>
 <script>
 (async()=>{
-  const wantsInstaller=/\/install-v45\.html$/.test(location.pathname);
-  if(wantsInstaller&&'serviceWorker' in navigator){
-    const card=document.querySelector('.v44card');
-    card.innerHTML='<div class="v44spinner"></div><strong>Preparando o instalador</strong><p>Atualizando o sistema de instalação uma única vez...</p>';
-    let reloading=false;
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-      if(reloading)return;
-      reloading=true;
-      location.reload();
-    },{once:true});
-    try{
-      const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
-      await reg.update().catch(()=>{});
-      if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
-    }catch(error){
-      card.innerHTML='<strong>Não foi possível preparar a instalação.</strong><p>Feche esta aba e abra o link novamente.</p>';
-    }
-    return;
-  }
-
+  const card=document.getElementById('card');
   try{
-    const response=await fetch('./index.html?raw=v44&ts='+Date.now(),{cache:'no-store'});
-    if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
-    let html=await response.text();
-
-    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="44">');
-    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=44');
-    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-512.png?v=44');
-    html=html.replace(/type="image\/svg\+xml"/g,'type="image/png"');
-
-    html=html.replace(/<script>\s*\(\(\)\s*=>\s*\{\s*let deferredInstallPrompt=null;[\s\S]*?\}\)\(\);\s*<\/script>/g,'');
-
-    html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-4]|pwa-v3[9]|pwa-v4[0-4])\.css\?v=\d+">\s*/g,'');
-    html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-4]|pwa-v3[9]|pwa-v4[0-4])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
-
-    const css='\n<link rel="stylesheet" href="./v37.css?v=44">\n<link rel="stylesheet" href="./pwa-v39.css?v=44">\n';
-    html=html.replace('</head>',css+'</head>');
-
-    const scripts='\n<scr'+'ipt src="./v37.js?v=44"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=44"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v44.js?v=44"></scr'+'ipt>\n';
-    html=html.replace('</body>',scripts+'</body>');
-
-    document.open();
-    document.write(html);
-    document.close();
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(r=>r.scope.includes('/lousa-de-estudos/')).map(r=>r.unregister().catch(()=>false)));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith('lousa-de-estudos-v')).map(k=>caches.delete(k)));
+    }
+    try{
+      sessionStorage.removeItem('lousa:sw-migrated:v44');
+      sessionStorage.removeItem('lousa:pwa-install-retry:v43');
+    }catch(e){}
+    const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+    const target=standalone?'./v46.html?pwa=1&v=46&clean=1':'./install-v46.html?v=46&clean=1';
+    setTimeout(()=>location.replace(target+'&t='+Date.now()),350);
   }catch(error){
-    document.querySelector('.v44card').innerHTML='<strong>Não foi possível abrir agora.</strong><p>Feche esta aba e abra o link novamente.</p>';
+    card.innerHTML='<strong>Não foi possível limpar a versão antiga.</strong><p>Feche esta aba e abra o link novamente.</p>';
     console.error(error);
   }
 })();
