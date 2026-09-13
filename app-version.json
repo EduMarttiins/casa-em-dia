@@ -1,7 +1,7 @@
 {
-  "contentVersion": 56,
+  "contentVersion": 57,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o dicionário agora abre limpo, mostra apenas o campo de pesquisa e exibe somente o significado da palavra pesquisada.",
+  "message": "Nova atualização disponível: respostas escritas com linhas de caligrafia e dicionário ampliado para as palavras das lições.",
   "publishedAt": "2026-09-13"
 }
