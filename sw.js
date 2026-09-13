@@ -1,4 +1,4 @@
-const VERSION='33';
+const VERSION='34';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/lousa-icon.svg'];
 

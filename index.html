@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Lousa de Estudos</title>
-<meta name="app-version" content="33">
+<meta name="app-version" content="34">
 <style>
 :root{
   --bg:#f3f8f5;--paper:#fff;--ink:#1f2937;--muted:#64748b;--green:#2f9d59;--greenDark:#1f7e45;--greenSoft:#eaf7ef;
@@ -196,6 +196,12 @@ body.v27InitialPage .footer{display:flex!important}
 .v33PwaActions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}.v33PwaBtn{border:1px solid #d7e4da;background:#fff;color:#33463b;border-radius:12px;padding:9px 12px;font-weight:900;font-size:13px}.v33PwaBtn.primary{background:#2f9d59;border-color:#2f9d59;color:#fff}
 .v33PwaClose{border:0;background:transparent;color:#8a9890;padding:2px 3px;font-size:20px;line-height:1;cursor:pointer}
 @media(max-width:520px){.v33PwaPrompt{width:calc(100vw - 24px);padding:14px;border-radius:19px}.v33PwaIcon{width:50px;height:50px;flex-basis:50px}}
+
+/* Versão 34: mini lousa maior, fundo branco e traço nítido */
+.scratchCard .canvasWrap{height:460px!important;background:#fff!important;background-image:none!important}
+.mathCalcBoard .canvasWrap{background:#fff!important;background-image:none!important}
+@media(max-width:900px){.scratchCard .canvasWrap{height:430px!important}}
+@media(max-width:520px){.scratchCard .canvasWrap{height:390px!important}}
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -717,7 +723,7 @@ function buildQuestion(q,num){
     if(isSubmitted(q))paintSubmittedResult();
     updateState();
   } else {
-    const board=document.createElement('div');board.className='board'+(currentSubjectKey==='portuguese'?' calligraphyBoard':'');
+    const board=document.createElement('div');board.className='board'+(currentSubjectKey==='portuguese'?' calligraphyBoard':'')+(currentSubjectKey==='math'?' mathCalcBoard':'');
     board.innerHTML=`<div class="toolbar"><button class="tool pen active" type="button">Caneta</button><button class="tool eraser" type="button">Borracha</button><button class="tool undo" type="button">Desfazer</button><button class="tool danger clear" type="button">Limpar</button><span class="sep"></span><span class="sizeLabel">Espessura</span><input class="sizeRange" type="range" min="1" max="12" value="4"><span class="sizeValue">4 px</span></div><div class="canvasWrap"><canvas class="answerCanvas"></canvas></div><div class="penHint">Use a caneta do tablet ou o dedo. Nesta pergunta não há teclado.</div>`;
     card.appendChild(board);
     const expectedAnswer=document.createElement('div');expectedAnswer.className='v29ExpectedAnswer';card.appendChild(expectedAnswer);
@@ -783,13 +789,13 @@ function setupCanvas(board,q,onChange,isLocked,storageSuffix='canvas'){
   const pen=board.querySelector('.pen'),eraser=board.querySelector('.eraser'),undo=board.querySelector('.undo'),clear=board.querySelector('.clear'),range=board.querySelector('.sizeRange'),sizeValue=board.querySelector('.sizeValue');
   let drawing=false,tool='pen',history=[],dpr=1,w=0,h=0;
   const savedSize=localStorage.getItem(PREFIX+'penSize')||'4';range.value=savedSize;sizeValue.textContent=savedSize+' px';
-  function fit(){const r=wrap.getBoundingClientRect();if(!r.width||!r.height)return;const saved=getCanvas(q,storageSuffix);w=r.width;h=r.height;dpr=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(1,0,0,1,0,0);ctx.lineCap='round';ctx.lineJoin='round';if(saved){const img=new Image();img.onload=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height)};img.src=saved}}
+  function fit(){const r=wrap.getBoundingClientRect();if(!r.width||!r.height)return;const saved=getCanvas(q,storageSuffix);w=r.width;h=r.height;dpr=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(1,0,0,1,0,0);ctx.lineCap='round';ctx.lineJoin='round';if(saved){const img=new Image();img.onload=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);const scale=canvas.width/img.width;const drawHeight=Math.min(canvas.height,img.height*scale);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0,canvas.width,drawHeight);ctx.imageSmoothingEnabled=true};img.src=saved}}
   function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)}}
   function config(){ctx.globalCompositeOperation=tool==='eraser'?'destination-out':'source-over';ctx.strokeStyle='#172033';ctx.fillStyle='#172033';const base=Number(range.value)*dpr;ctx.lineWidth=tool==='eraser'?Math.max(18*dpr,base*2.2):base;ctx.lineCap='round';ctx.lineJoin='round'}
   function save(){try{localStorage.setItem(key(q.id,storageSuffix),canvas.toDataURL('image/png'));onChange()}catch(e){}}
   function snapshot(){try{history.push(canvas.toDataURL('image/png'));if(history.length>20)history.shift()}catch(e){}}
   function down(e){if(isLocked())return;e.preventDefault();drawing=true;snapshot();canvas.setPointerCapture(e.pointerId);config();const p=point(e);ctx.beginPath();ctx.arc(p.x,p.y,Math.max(1,ctx.lineWidth/2),0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(p.x,p.y)}
-  function move(e){if(!drawing||isLocked())return;e.preventDefault();config();const events=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const ev of events){const p=point(ev);ctx.lineTo(p.x,p.y)}ctx.stroke()}
+  function move(e){if(!drawing||isLocked())return;e.preventDefault();config();const events=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const ev of events){const p=point(ev);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y)}}
   function end(){if(!drawing)return;drawing=false;ctx.closePath();ctx.globalCompositeOperation='source-over';save()}
   canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
   pen.addEventListener('click',()=>{tool='pen';pen.classList.add('active');eraser.classList.remove('active')});eraser.addEventListener('click',()=>{tool='eraser';eraser.classList.add('active');pen.classList.remove('active')});
