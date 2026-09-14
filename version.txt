@@ -1,2 +1,2 @@
-67
-O dicionário foi adaptado para crianças de 10 anos e alunos do 5º ano. As respostas agora priorizam linguagem simples, mostram um exemplo fácil do dia a dia e, quando houver texto de leitura aberto, relacionam a palavra ao conteúdo estudado. A classe gramatical e a definição formal ficam como informação secundária. As correções de inicialização da versão 66 e as melhorias anteriores foram preservadas.
+68
+Língua Portuguesa voltou a respeitar o formato misto das atividades: questões preparadas com alternativas aparecem como múltipla escolha, com letras A, B, C e D quando houver quatro opções, enquanto questões abertas continuam com espaço para resposta escrita. O dicionário infantil da versão 67, a inicialização permanente e as demais melhorias foram preservados.
