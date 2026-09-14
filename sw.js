@@ -1,4 +1,4 @@
-const VERSION='70-livro-portugues-1';
+const VERSION='70-install-auto-1';
 const CONTENT_VERSION='70';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
@@ -7,13 +7,13 @@ const ASSETS=[
   './v52.html',
   './loader-v55.js?v=69legacy',
   './v68.html',
-  './loader-v68.js?v=70',
+  './loader-v68.js?v=70install-auto',
   './v37.css?v=70',
   './v37.js?v=70',
   './v41.js?v=70',
   './v50.js?v=70',
   './pwa-v39.css?v=70',
-  './pwa-v52.js?v=70',
+  './pwa-v52.js?v=70install-auto',
   './v54.js?v=70',
   './v55.js?v=70',
   './v56.js?v=70',
