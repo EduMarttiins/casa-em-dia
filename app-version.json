@@ -1,7 +1,7 @@
 {
-  "contentVersion": 62,
+  "contentVersion": 63,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o dicionário agora usa o Dicio como referência principal, escolhe o sentido que combina com o texto da lição e explica em linguagem simples. O botão Atualizar também ficou mais discreto no rodapé.",
+  "message": "Nova atualização disponível: o rodapé agora mostra somente a versão no canto inferior esquerdo. Na tela inicial, Zerar lições e Dicionário aparecem como dois cards pequenos. O dicionário usa o Dicio e mostra um trecho literal curto da definição que combina com o contexto da lição.",
   "publishedAt": "2026-09-13"
 }
