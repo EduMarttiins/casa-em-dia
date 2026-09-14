@@ -14,18 +14,14 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 </style>
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',async()=>{
-    try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=69',{scope:'./',updateViaCache:'none'});
-      await reg.update();
-      if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
-    }catch(error){}
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js?v=69stable1',{scope:'./',updateViaCache:'none'}).catch(()=>{});
   },{once:true});
 }
 </script>
 </head>
 <body>
 <div class="v68load"><div class="v68card"><div class="v68spinner"></div><strong>Carregando a Lousa de Estudos</strong><p>Preparando a versão 69...</p></div></div>
-<script src="./loader-v68.js?v=69"></script>
+<script src="./loader-v68.js?v=69stable1"></script>
 </body>
 </html>
