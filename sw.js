@@ -1,32 +1,33 @@
-const VERSION='65-rescue-1';
-const CONTENT_VERSION='65';
+const VERSION='66-startup-rescue-1';
+const CONTENT_VERSION='66';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
+  './start.html',
   './index.html',
   './v52.html',
-  './loader-v55.js?v=65',
-  './v37.css?v=65',
-  './v37.js?v=65',
-  './v41.js?v=65',
-  './v50.js?v=65',
-  './pwa-v39.css?v=65',
-  './pwa-v52.js?v=65',
-  './v54.js?v=65',
-  './v55.js?v=65',
-  './v56.js?v=65',
-  './v57.js?v=65',
-  './v58.js?v=65',
-  './v59.js?v=65',
-  './v60.js?v=65',
-  './v62.js?v=65',
-  './v63.js?v=65',
-  './v64.js?v=65',
-  './v65.js?v=65',
-  './v55-auto-update.js?v=65',
-  './app-version.json?v=65',
-  './manifest.webmanifest?v=65',
-  './icons/lousa-icon-192.png?v=65',
-  './icons/lousa-icon-512.png?v=65'
+  './loader-v55.js?v=66',
+  './v37.css?v=66',
+  './v37.js?v=66',
+  './v41.js?v=66',
+  './v50.js?v=66',
+  './pwa-v39.css?v=66',
+  './pwa-v52.js?v=66',
+  './v54.js?v=66',
+  './v55.js?v=66',
+  './v56.js?v=66',
+  './v57.js?v=66',
+  './v58.js?v=66',
+  './v59.js?v=66',
+  './v60.js?v=66',
+  './v62.js?v=66',
+  './v63.js?v=66',
+  './v64.js?v=66',
+  './v65.js?v=66',
+  './v66.js?v=66',
+  './v55-auto-update.js?v=66',
+  './manifest.webmanifest?v=66',
+  './icons/lousa-icon-192.png?v=66',
+  './icons/lousa-icon-512.png?v=66'
 ];
 
 self.addEventListener('install',event=>{
@@ -42,19 +43,24 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
+
+    /* Resgate da v66: deixa o controllerchange antigo terminar e depois leva a sessão para a entrada permanente. */
+    await new Promise(resolve=>setTimeout(resolve,350));
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     await Promise.all(windows.map(async client=>{
       try{
         const url=new URL(client.url);
         if(url.origin!==self.location.origin)return;
+        if(url.pathname.endsWith('/start.html'))return;
         const scopePath=new URL(self.registration.scope).pathname;
         const isAppEntry=url.pathname===scopePath||url.pathname.endsWith('/v52.html')||url.pathname.endsWith('/index.html');
         if(!isAppEntry)return;
-        if(url.searchParams.get('content')===CONTENT_VERSION)return;
-        const target=new URL('./v52.html',self.registration.scope);
+        const target=new URL('./start.html',self.registration.scope);
         target.searchParams.set('pwa','1');
-        target.searchParams.set('content',CONTENT_VERSION);
-        target.searchParams.set('rescue','1');
+        target.searchParams.set('rescue',CONTENT_VERSION);
+        target.searchParams.set('ts',String(Date.now()));
+        if(url.searchParams.get('androidapp')==='1')target.searchParams.set('androidapp','1');
+        if(url.searchParams.get('apk'))target.searchParams.set('apk',url.searchParams.get('apk'));
         await client.navigate(target.toString());
       }catch(error){}
     }));
@@ -85,6 +91,12 @@ self.addEventListener('fetch',event=>{
   if(request.method!=='GET')return;
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
+
+  if(url.pathname.endsWith('/app-version.json')||url.pathname.endsWith('/start.html')){
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
   if(request.mode==='navigate'){
     event.respondWith((async()=>{
       try{
@@ -95,9 +107,10 @@ self.addEventListener('fetch',event=>{
           return response;
         }
       }catch(error){}
-      return (await caches.match('./v52.html',{ignoreSearch:true}))||networkFirst(request);
+      return (await caches.match('./start.html',{ignoreSearch:true}))||(await caches.match('./v52.html',{ignoreSearch:true}))||networkFirst(request);
     })());
     return;
   }
+
   event.respondWith(networkFirst(request));
 });
