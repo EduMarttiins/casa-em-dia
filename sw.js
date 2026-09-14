@@ -1,32 +1,32 @@
-const VERSION='68-portugues-misto-1';
+const VERSION='68-portugues-misto-fix2';
 const CONTENT_VERSION='68';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './start.html',
   './index.html',
-  './v52.html',
-  './loader-v55.js?v=68',
-  './v37.css?v=68',
-  './v37.js?v=68',
-  './v41.js?v=68',
-  './v50.js?v=68',
-  './pwa-v39.css?v=68',
-  './pwa-v52.js?v=68',
-  './v54.js?v=68',
-  './v55.js?v=68',
-  './v56.js?v=68',
-  './v57.js?v=68',
-  './v58.js?v=68',
-  './v59.js?v=68',
-  './v60.js?v=68',
-  './v62.js?v=68',
-  './v63.js?v=68',
-  './v64.js?v=68',
-  './v65.js?v=68',
-  './v66.js?v=68',
-  './v67.js?v=68',
-  './v68.js?v=68',
-  './v55-auto-update.js?v=68',
+  './v68.html',
+  './loader-v68.js?v=68fix2',
+  './v37.css?v=68fix2',
+  './v37.js?v=68fix2',
+  './v41.js?v=68fix2',
+  './v50.js?v=68fix2',
+  './pwa-v39.css?v=68fix2',
+  './pwa-v52.js?v=68fix2',
+  './v54.js?v=68fix2',
+  './v55.js?v=68fix2',
+  './v56.js?v=68fix2',
+  './v57.js?v=68fix2',
+  './v58.js?v=68fix2',
+  './v59.js?v=68fix2',
+  './v60.js?v=68fix2',
+  './v62.js?v=68fix2',
+  './v63.js?v=68fix2',
+  './v64.js?v=68fix2',
+  './v65.js?v=68fix2',
+  './v66.js?v=68fix2',
+  './v67.js?v=68fix2',
+  './v68.js?v=68fix2',
+  './v55-auto-update.js?v=68fix2',
   './manifest.webmanifest?v=68',
   './icons/lousa-icon-192.png?v=68',
   './icons/lousa-icon-512.png?v=68'
@@ -45,25 +45,6 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
-    await new Promise(resolve=>setTimeout(resolve,350));
-    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    await Promise.all(windows.map(async client=>{
-      try{
-        const url=new URL(client.url);
-        if(url.origin!==self.location.origin)return;
-        if(url.pathname.endsWith('/start.html'))return;
-        const scopePath=new URL(self.registration.scope).pathname;
-        const isAppEntry=url.pathname===scopePath||url.pathname.endsWith('/v52.html')||url.pathname.endsWith('/index.html');
-        if(!isAppEntry)return;
-        const target=new URL('./start.html',self.registration.scope);
-        target.searchParams.set('pwa','1');
-        target.searchParams.set('rescue',CONTENT_VERSION);
-        target.searchParams.set('ts',String(Date.now()));
-        if(url.searchParams.get('androidapp')==='1')target.searchParams.set('androidapp','1');
-        if(url.searchParams.get('apk'))target.searchParams.set('apk',url.searchParams.get('apk'));
-        await client.navigate(target.toString());
-      }catch(error){}
-    }));
   })());
 });
 
@@ -107,7 +88,7 @@ self.addEventListener('fetch',event=>{
           return response;
         }
       }catch(error){}
-      return (await caches.match('./start.html',{ignoreSearch:true}))||(await caches.match('./v52.html',{ignoreSearch:true}))||networkFirst(request);
+      return (await caches.match('./start.html',{ignoreSearch:true}))||(await caches.match('./v68.html',{ignoreSearch:true}))||networkFirst(request);
     })());
     return;
   }
