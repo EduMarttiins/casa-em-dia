@@ -1,7 +1,7 @@
 {
-  "contentVersion": 65,
-  "apkVersion": 2,
+  "contentVersion": 66,
+  "apkVersion": 4,
   "apkUrl": "",
-  "message": "Nova atualização disponível: todas as lições estão liberadas desde o início e a faixa explicativa abaixo dos textos de leitura foi removida.",
+  "message": "Correção de inicialização: o aplicativo agora abre diretamente pela versão atual e não deve mais voltar para a versão 57 após ser fechado.",
   "publishedAt": "2026-09-14"
 }
