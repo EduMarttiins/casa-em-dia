@@ -13,18 +13,15 @@
       const meta=document.querySelector('meta[name="app-version"]');
       if(meta)meta.setAttribute('content','68');
       document.documentElement.dataset.contentVersion='68';
-      document.querySelectorAll('.lousaVersionOnly').forEach(el=>{el.textContent='v68'});
+      document.querySelectorAll('.lousaVersionOnly').forEach(el=>{
+        if(el.textContent!=='v68')el.textContent='v68';
+      });
     }catch(error){}
   }
 
   function protectVersionLabel(){
     forceVersion68();
-    [120,360,700,1400,2600].forEach(delay=>setTimeout(forceVersion68,delay));
-    try{
-      const observer=new MutationObserver(()=>forceVersion68());
-      observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
-      setTimeout(()=>observer.disconnect(),6000);
-    }catch(error){}
+    [400,800,1500,3000].forEach(delay=>setTimeout(forceVersion68,delay));
   }
 
   function restorePortugueseQuestions(){
