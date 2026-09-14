@@ -1,4 +1,4 @@
-const VERSION='69-legacy-rescue-2';
+const VERSION='69-stable-lessons-1';
 const CONTENT_VERSION='69';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
@@ -7,29 +7,29 @@ const ASSETS=[
   './v52.html',
   './loader-v55.js?v=69legacy',
   './v68.html',
-  './loader-v68.js?v=69',
-  './v37.css?v=69',
-  './v37.js?v=69',
-  './v41.js?v=69',
-  './v50.js?v=69',
-  './pwa-v39.css?v=69',
-  './pwa-v52.js?v=69',
-  './v54.js?v=69',
-  './v55.js?v=69',
-  './v56.js?v=69',
-  './v57.js?v=69',
-  './v58.js?v=69',
-  './v59.js?v=69',
-  './v60.js?v=69',
-  './v62.js?v=69',
-  './v63.js?v=69',
-  './v64.js?v=69',
-  './v65.js?v=69',
-  './v66.js?v=69',
-  './v67.js?v=69',
-  './v68.js?v=69',
-  './v69.js?v=69',
-  './v55-auto-update.js?v=69',
+  './loader-v68.js?v=69stable1',
+  './v37.css?v=69stable1',
+  './v37.js?v=69stable1',
+  './v41.js?v=69stable1',
+  './v50.js?v=69stable1',
+  './pwa-v39.css?v=69stable1',
+  './pwa-v52.js?v=69stable1',
+  './v54.js?v=69stable1',
+  './v55.js?v=69stable1',
+  './v56.js?v=69stable1',
+  './v57.js?v=69stable1',
+  './v58.js?v=69stable1',
+  './v59.js?v=69stable1',
+  './v60.js?v=69stable1',
+  './v62.js?v=69stable1',
+  './v63.js?v=69stable1',
+  './v64.js?v=69stable1',
+  './v65.js?v=69stable1',
+  './v66.js?v=69stable1',
+  './v67.js?v=69stable1',
+  './v68.js?v=69stable1',
+  './v69.js?v=69stable1',
+  './v55-auto-update.js?v=69stable1',
   './manifest.webmanifest?v=69',
   './icons/lousa-icon-192.png?v=69',
   './icons/lousa-icon-512.png?v=69'
@@ -39,7 +39,8 @@ self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
     await cache.addAll(ASSETS);
-    await self.skipWaiting();
+    // Não usa skipWaiting automaticamente. Uma atualização encontrada enquanto
+    // o aluno estuda fica aguardando e só assume após o aplicativo ser fechado.
   })());
 });
 
@@ -48,25 +49,12 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
-
-    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    await Promise.all(windows.map(async client=>{
-      try{
-        const current=new URL(client.url);
-        if(current.origin!==self.location.origin)return;
-        const target=new URL('./start.html',self.registration.scope);
-        target.searchParams.set('pwa','1');
-        target.searchParams.set('worker','69legacy');
-        target.searchParams.set('boot',String(Date.now()));
-        if(current.searchParams.get('androidapp')==='1')target.searchParams.set('androidapp','1');
-        if(current.searchParams.get('apk'))target.searchParams.set('apk',current.searchParams.get('apk'));
-        await client.navigate(target.toString());
-      }catch(error){}
-    }));
+    // Importante: nunca navegar/recarregar janelas abertas durante activate.
   })());
 });
 
 self.addEventListener('message',event=>{
+  // Mantido somente para uma futura atualização manual solicitada pelo usuário.
   if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();
 });
 
