@@ -1,2 +1,2 @@
-59
-O Dicionário agora procura a palavra dentro do texto visível da lição e explica o significado de acordo com o contexto em que ela foi usada. A resposta mostra também o trecho da lição onde a palavra aparece, facilitando a compreensão pelo aluno. Para palavras com mais de um significado, o aplicativo prioriza o sentido que combina com o trecho. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
+60
+O Dicionário agora usa o Michaelis Dicionário Brasileiro da Língua Portuguesa como referência de significado. Ao pesquisar uma palavra da lição, o aplicativo procura o sentido no Michaelis, compara com o trecho visível da atividade e apresenta uma explicação mais simples para o aluno. O resultado também mostra o trecho da lição e um botão para abrir a palavra diretamente no Michaelis. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
