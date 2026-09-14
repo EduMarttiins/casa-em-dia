@@ -1,7 +1,7 @@
 {
-  "contentVersion": 63,
+  "contentVersion": 64,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o rodapé agora mostra somente a versão no canto inferior esquerdo. Na tela inicial, Zerar lições e Dicionário aparecem como dois cards pequenos. O dicionário usa o Dicio e mostra um trecho literal curto da definição que combina com o contexto da lição.",
+  "message": "Nova atualização disponível: a pauta de caligrafia agora tem somente uma linha clara entre as linhas principais. O dicionário mostra a classe gramatical e os dois primeiros significados do Dicio no formato direto do site.",
   "publishedAt": "2026-09-13"
 }
