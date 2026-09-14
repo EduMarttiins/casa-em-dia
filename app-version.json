@@ -1,7 +1,7 @@
 {
-  "contentVersion": 59,
+  "contentVersion": 60,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o dicionário agora procura a palavra no texto da lição e explica o significado de acordo com o contexto em que ela foi usada.",
+  "message": "Nova atualização disponível: o dicionário agora usa o Michaelis como referência de significado e adapta a explicação ao contexto da lição em linguagem simples.",
   "publishedAt": "2026-09-13"
 }
