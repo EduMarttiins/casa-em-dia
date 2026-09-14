@@ -1,2 +1,2 @@
-61
-Foi adicionado um botão Atualizar aplicativo dentro da Lousa de Estudos. Ao tocar nele, o aplicativo verifica se existe uma versão mais nova e faz a atualização sem precisar fechar o app. Logo abaixo do botão aparece a versão atual instalada. O dicionário com referência Michaelis, as linhas de caligrafia e a lousa branca da Matemática foram mantidos.
+62
+O Dicionário agora usa o Dicio, Dicionário Online de Português, como referência principal. Ao pesquisar uma palavra da lição, o aplicativo procura o significado no Dicio, compara os sentidos encontrados com o trecho visível e mostra uma explicação mais simples para o aluno. O botão de atualização também ficou menor, discreto e fixo no rodapé, desaparecendo durante a digitação para não cobrir o dicionário. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
