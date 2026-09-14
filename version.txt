@@ -1,2 +1,2 @@
-63
-O rodapé fixo agora mostra somente a versão atual no canto inferior esquerdo. Na tela inicial, o antigo bloco de revisão salva foi substituído por dois cards pequenos: Zerar lições e Dicionário. O dicionário continua usando o Dicio como referência, escolhe a definição que combina com o contexto da lição e mostra um trecho literal curto dessa definição, com link para consultar a definição completa no Dicio. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
+64
+A pauta de caligrafia foi simplificada para deixar somente uma linha clara entre cada duas linhas principais, removendo a segunda linha clara inferior. O dicionário agora apresenta o título da palavra, a classe gramatical e os dois primeiros significados do Dicio em formato direto. O rodapé continua mostrando somente a versão no canto inferior esquerdo, e os cards Zerar lições e Dicionário foram mantidos.
