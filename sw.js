@@ -1,9 +1,11 @@
-const VERSION='69-portugues-formato-1';
+const VERSION='69-legacy-rescue-2';
 const CONTENT_VERSION='69';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './start.html',
   './index.html',
+  './v52.html',
+  './loader-v55.js?v=69legacy',
   './v68.html',
   './loader-v68.js?v=69',
   './v37.css?v=69',
@@ -52,10 +54,9 @@ self.addEventListener('activate',event=>{
       try{
         const current=new URL(client.url);
         if(current.origin!==self.location.origin)return;
-        const target=new URL('./v68.html',self.registration.scope);
+        const target=new URL('./start.html',self.registration.scope);
         target.searchParams.set('pwa','1');
-        target.searchParams.set('content',CONTENT_VERSION);
-        target.searchParams.set('repair','69');
+        target.searchParams.set('worker','69legacy');
         target.searchParams.set('boot',String(Date.now()));
         if(current.searchParams.get('androidapp')==='1')target.searchParams.set('androidapp','1');
         if(current.searchParams.get('apk'))target.searchParams.set('apk',current.searchParams.get('apk'));
@@ -90,7 +91,7 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
 
-  if(url.pathname.endsWith('/app-version.json')||url.pathname.endsWith('/start.html')||url.pathname.endsWith('/v68.html')){
+  if(url.pathname.endsWith('/app-version.json')||url.pathname.endsWith('/start.html')||url.pathname.endsWith('/v52.html')||url.pathname.endsWith('/loader-v55.js')||url.pathname.endsWith('/v68.html')){
     event.respondWith(networkFirst(request));
     return;
   }
@@ -105,7 +106,7 @@ self.addEventListener('fetch',event=>{
           return response;
         }
       }catch(error){}
-      return (await caches.match('./v68.html',{ignoreSearch:true}))||(await caches.match('./start.html',{ignoreSearch:true}))||networkFirst(request);
+      return (await caches.match('./start.html',{ignoreSearch:true}))||(await caches.match('./v68.html',{ignoreSearch:true}))||networkFirst(request);
     })());
     return;
   }
