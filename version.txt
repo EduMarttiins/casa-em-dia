@@ -1,2 +1,2 @@
-69
-Correção estrutural em Língua Portuguesa: as questões que já são de múltipla escolha no conteúdo original permanecem com alternativas e recebem letras A, B, C e D conforme a quantidade de opções; as questões abertas continuam com a lousa para resposta escrita. A versão 69 também impede que o gancho antigo da versão 55 transforme novamente as questões de Português em abertas durante a renderização. O dicionário infantil da versão 67 foi preservado e as demais matérias mantêm o comportamento anterior.
+70
+Língua Portuguesa foi reorganizada para acompanhar as 11 primeiras aulas do Livro do Estudante do 5º ano, Volume 3. Quando a atividade do livro é de múltipla escolha, o aplicativo apresenta as alternativas correspondentes; quando a atividade é aberta, a lousa para resposta escrita é mantida. O dicionário infantil foi preservado, as demais matérias não foram alteradas e a verificação de atualização continua sem interromper uma lição em andamento.
