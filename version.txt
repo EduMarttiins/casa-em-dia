@@ -1,2 +1,2 @@
-62
-O Dicionário agora usa o Dicio, Dicionário Online de Português, como referência principal. Ao pesquisar uma palavra da lição, o aplicativo procura o significado no Dicio, compara os sentidos encontrados com o trecho visível e mostra uma explicação mais simples para o aluno. O botão de atualização também ficou menor, discreto e fixo no rodapé, desaparecendo durante a digitação para não cobrir o dicionário. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
+63
+O rodapé fixo agora mostra somente a versão atual no canto inferior esquerdo. Na tela inicial, o antigo bloco de revisão salva foi substituído por dois cards pequenos: Zerar lições e Dicionário. O dicionário continua usando o Dicio como referência, escolhe a definição que combina com o contexto da lição e mostra um trecho literal curto dessa definição, com link para consultar a definição completa no Dicio. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
