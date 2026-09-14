@@ -1,12 +1,16 @@
-/* Lousa de Estudos, PWA versão 52
-   Fluxo nativo: instala no navegador completo. Se abrir em aba interna, oferece abrir no Chrome. */
+/* Lousa de Estudos, PWA — instalação sem aviso repetitivo
+   O instalador só aparece automaticamente quando o próprio navegador libera
+   o beforeinstallprompt. Em abas internas, não força mais "Abrir no Chrome".
+*/
 (() => {
   if (window.__lousaPwaV52) return;
   window.__lousaPwaV52 = true;
 
   let deferredPrompt = null;
   let banner = null;
-  let fallbackTimer = null;
+
+  const DISMISS_KEY = 'lousaInstallPromptDismissedUntil';
+  const DISMISS_FOR = 90 * 24 * 60 * 60 * 1000;
 
   const isStandalone = () =>
     window.matchMedia('(display-mode: standalone)').matches ||
@@ -22,6 +26,24 @@
       return /LousaDeEstudosAndroid\//i.test(navigator.userAgent || '');
     }
   })();
+
+  function installWasDismissed() {
+    try {
+      return Number(localStorage.getItem(DISMISS_KEY) || 0) > Date.now();
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function rememberDismissal() {
+    try {
+      localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_FOR));
+    } catch (error) {}
+  }
+
+  function clearDismissal() {
+    try { localStorage.removeItem(DISMISS_KEY); } catch (error) {}
+  }
 
   if (isNativeAndroidApp) {
     document.documentElement.classList.add('android-native-app');
@@ -49,15 +71,17 @@
 
   function chromeIntentUrl() {
     const target = new URL(location.href);
-    target.searchParams.set('v', '52');
+    target.searchParams.delete('install');
     target.searchParams.set('browser', 'chrome');
     const httpsUrl = target.toString();
     const pathAndQuery = target.host + target.pathname + target.search + target.hash;
     return 'intent://' + pathAndQuery + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(httpsUrl) + ';end';
   }
 
-  function render(mode) {
+  function render(mode, force = false) {
     if (isStandalone() || !isMobileLike) return;
+    if (!force && installWasDismissed()) return;
+
     ensureStyles();
     hideBanner();
     banner = document.createElement('div');
@@ -66,13 +90,13 @@
     const nativeMode = mode === 'native' && !!deferredPrompt;
     const title = nativeMode ? 'Instalar Lousa de Estudos' : 'Abrir no Chrome para instalar';
     const text = nativeMode
-      ? 'Instale como um aplicativo de verdade no celular ou tablet.'
-      : 'Esta aba não liberou o instalador do Android. Abra a mesma Lousa no Chrome completo.';
+      ? 'Instale a Lousa como aplicativo no celular ou tablet.'
+      : 'Para instalar, abra esta mesma página no Chrome completo.';
     const button = nativeMode ? 'Instalar aplicativo' : 'Abrir no Chrome';
 
     banner.innerHTML = `
       <div class="v52InstallTop">
-        <img class="v52InstallIcon" src="./icons/lousa-icon-192.png?v=52" alt="">
+        <img class="v52InstallIcon" src="./icons/lousa-icon-192.png" alt="">
         <div class="v52InstallText"><strong>${title}</strong><span>${text}</span></div>
       </div>
       <div class="v52InstallActions">
@@ -83,7 +107,11 @@
     `;
     document.body.appendChild(banner);
 
-    banner.querySelector('.v52InstallLater').addEventListener('click', hideBanner, {once:true});
+    banner.querySelector('.v52InstallLater').addEventListener('click', () => {
+      rememberDismissal();
+      hideBanner();
+    }, {once:true});
+
     banner.querySelector('.v52InstallPrimary').addEventListener('click', async () => {
       const btn = banner && banner.querySelector('.v52InstallPrimary');
       if (!btn) return;
@@ -95,10 +123,12 @@
           await event.prompt();
           const choice = await event.userChoice;
           deferredPrompt = null;
-          if (choice && choice.outcome === 'accepted') hideBanner();
-          else {
-            btn.disabled = false;
-            btn.textContent = 'Instalar aplicativo';
+          if (choice && choice.outcome === 'accepted') {
+            clearDismissal();
+            hideBanner();
+          } else {
+            rememberDismissal();
+            hideBanner();
           }
         } catch (error) {
           btn.disabled = false;
@@ -115,27 +145,35 @@
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault();
     deferredPrompt = event;
-    if (fallbackTimer) clearTimeout(fallbackTimer);
     render('native');
   });
 
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
+    clearDismissal();
     hideBanner();
   });
 
+  /*
+    Em navegadores internos (como abas abertas dentro de outros aplicativos),
+    não exibimos mais automaticamente o aviso "Abrir no Chrome".
+    Ele só pode ser chamado de forma explícita com ?install=1.
+  */
   window.addEventListener('load', () => {
     if (isStandalone() || !isMobileLike) return;
-    fallbackTimer = setTimeout(() => {
-      if (deferredPrompt) render('native');
-      else render('chrome');
-    }, 1800);
+    let explicitInstall = false;
+    try { explicitInstall = new URLSearchParams(location.search).get('install') === '1'; } catch (error) {}
+    if (explicitInstall) {
+      setTimeout(() => {
+        if (deferredPrompt) render('native', true);
+        else render('chrome', true);
+      }, 500);
+    }
   }, {once:true});
 })();
 
 /*
-  Atualização em segundo plano desativada na v69 estável.
+  Atualização em segundo plano desativada.
   A verificação de conteúdo acontece somente em start.html quando o aplicativo
-  é aberto. Não há reg.update(), controllerchange, reload ou timer durante uma
-  lição.
+  é aberto. Não há recarga automática enquanto uma lição está aberta.
 */
