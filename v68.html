@@ -15,13 +15,13 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=70',{scope:'./',updateViaCache:'none'}).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=70install-auto',{scope:'./',updateViaCache:'none'}).catch(()=>{});
   },{once:true});
 }
 </script>
 </head>
 <body>
 <div class="v68load"><div class="v68card"><div class="v68spinner"></div><strong>Carregando a Lousa de Estudos</strong><p>Preparando a versão 70...</p></div></div>
-<script src="./loader-v68.js?v=70"></script>
+<script src="./loader-v68.js?v=70install-auto"></script>
 </body>
 </html>
