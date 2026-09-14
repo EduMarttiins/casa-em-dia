@@ -1,7 +1,7 @@
 {
-  "contentVersion": 69,
+  "contentVersion": 70,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "Correção estrutural em Língua Portuguesa: questões de múltipla escolha mantêm suas alternativas e questões abertas continuam com a lousa para escrever. O dicionário infantil foi preservado e as outras matérias não foram alteradas.",
+  "message": "Língua Portuguesa agora segue o formato das atividades do livro: quando a questão é de múltipla escolha, aparecem as alternativas do material; quando é aberta, continua a lousa para escrever. As 11 aulas existentes foram alinhadas às Aulas 1 a 11 do Livro do Estudante.",
   "publishedAt": "2026-09-14"
 }
