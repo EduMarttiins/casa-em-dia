@@ -1,2 +1,2 @@
-64
-A pauta de caligrafia foi simplificada para deixar somente uma linha clara entre cada duas linhas principais, removendo a segunda linha clara inferior. O dicionário agora apresenta o título da palavra, a classe gramatical e os dois primeiros significados do Dicio em formato direto. O rodapé continua mostrando somente a versão no canto inferior esquerdo, e os cards Zerar lições e Dicionário foram mantidos.
+65
+Todas as lições ficam liberadas desde o início, sem exigir a conclusão ou o envio da lição anterior. A faixa explicativa exibida logo abaixo dos textos de leitura foi removida. As melhorias anteriores da pauta de escrita, do dicionário e do PWA foram preservadas.
