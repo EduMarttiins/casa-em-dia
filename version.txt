@@ -1,2 +1,2 @@
-65
-Todas as lições ficam liberadas desde o início, sem exigir a conclusão ou o envio da lição anterior. A faixa explicativa exibida logo abaixo dos textos de leitura foi removida. As melhorias anteriores da pauta de escrita, do dicionário e do PWA foram preservadas.
+66
+Correção definitiva da inicialização: o aplicativo passa a usar uma entrada permanente que consulta a versão atual antes de abrir. Instalações antigas presas na versão 57 são redirecionadas para a versão mais recente, e o fluxo de atualização limpa o cache antigo antes de reiniciar. As melhorias da versão 65 e anteriores foram preservadas.
