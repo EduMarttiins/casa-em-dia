@@ -1,7 +1,7 @@
 {
-  "contentVersion": 60,
+  "contentVersion": 61,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: o dicionário agora usa o Michaelis como referência de significado e adapta a explicação ao contexto da lição em linguagem simples.",
+  "message": "Nova atualização disponível: agora existe um botão dentro do aplicativo para verificar e aplicar atualizações sem precisar fechar a Lousa. A versão atual fica visível logo abaixo do botão.",
   "publishedAt": "2026-09-13"
 }
