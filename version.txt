@@ -1,2 +1,2 @@
-68
-Língua Portuguesa voltou a respeitar o formato misto das atividades: questões preparadas com alternativas aparecem como múltipla escolha, com letras A, B, C e D quando houver quatro opções, enquanto questões abertas continuam com espaço para resposta escrita. O dicionário infantil da versão 67, a inicialização permanente e as demais melhorias foram preservados.
+69
+Correção estrutural em Língua Portuguesa: as questões que já são de múltipla escolha no conteúdo original permanecem com alternativas e recebem letras A, B, C e D conforme a quantidade de opções; as questões abertas continuam com a lousa para resposta escrita. A versão 69 também impede que o gancho antigo da versão 55 transforme novamente as questões de Português em abertas durante a renderização. O dicionário infantil da versão 67 foi preservado e as demais matérias mantêm o comportamento anterior.
