@@ -1,53 +1,57 @@
-/* Lousa de Estudos, PWA — instalação sem aviso repetitivo
-   O instalador só aparece automaticamente quando o próprio navegador libera
-   o beforeinstallprompt. Em abas internas, não força mais "Abrir no Chrome".
+/* Lousa de Estudos — instalação PWA automática no Chrome
+   Quando o Chrome libera beforeinstallprompt, abre o instalador automaticamente.
+   Se o navegador bloquear a abertura automática, mostra uma tela própria com o
+   ícone da Lousa e um botão que chama o instalador nativo.
 */
 (() => {
   if (window.__lousaPwaV52) return;
   window.__lousaPwaV52 = true;
 
   let deferredPrompt = null;
-  let banner = null;
+  let installPanel = null;
+  let autoPromptTried = false;
+  let fallbackTimer = null;
 
   const DISMISS_KEY = 'lousaInstallPromptDismissedUntil';
-  const DISMISS_FOR = 90 * 24 * 60 * 60 * 1000;
+  const DISMISS_FOR = 7 * 24 * 60 * 60 * 1000;
+  const RELOAD_KEY = 'lousaInstallPreparedReload';
 
   const isStandalone = () =>
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true;
 
-  const isAndroid = /android/i.test(navigator.userAgent || '');
-  const isMobileLike = isAndroid || /mobile/i.test(navigator.userAgent || '') || navigator.maxTouchPoints > 1;
+  const ua = navigator.userAgent || '';
+  const isAndroid = /android/i.test(ua);
+  const isMobileLike = isAndroid || /mobile/i.test(ua) || navigator.maxTouchPoints > 1;
+  const isWebView = /;\s*wv\)/i.test(ua) || /\bwv\b/i.test(ua);
+  const isChrome = /Chrome\//i.test(ua) && !/EdgA|OPR\//i.test(ua) && !isWebView;
+
   const isNativeAndroidApp = (() => {
     try {
       return new URLSearchParams(location.search).get('androidapp') === '1' ||
-        /LousaDeEstudosAndroid\//i.test(navigator.userAgent || '');
+        /LousaDeEstudosAndroid\//i.test(ua);
     } catch (error) {
-      return /LousaDeEstudosAndroid\//i.test(navigator.userAgent || '');
+      return /LousaDeEstudosAndroid\//i.test(ua);
     }
   })();
-
-  function installWasDismissed() {
-    try {
-      return Number(localStorage.getItem(DISMISS_KEY) || 0) > Date.now();
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function rememberDismissal() {
-    try {
-      localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_FOR));
-    } catch (error) {}
-  }
-
-  function clearDismissal() {
-    try { localStorage.removeItem(DISMISS_KEY); } catch (error) {}
-  }
 
   if (isNativeAndroidApp) {
     document.documentElement.classList.add('android-native-app');
     return;
+  }
+
+  function dismissed() {
+    try { return Number(localStorage.getItem(DISMISS_KEY) || 0) > Date.now(); }
+    catch (error) { return false; }
+  }
+
+  function rememberDismissal() {
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_FOR)); }
+    catch (error) {}
+  }
+
+  function clearDismissal() {
+    try { localStorage.removeItem(DISMISS_KEY); } catch (error) {}
   }
 
   function ensureStyles() {
@@ -56,124 +60,172 @@
     style.id = 'v52InstallStyles';
     style.textContent = `
       .v33PwaPrompt,.v39InstallOverlay{display:none!important}
-      .v52InstallBanner{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:130000;width:min(92vw,450px);padding:16px;background:#fff;border:1px solid #dce8df;border-radius:22px;box-shadow:0 22px 64px rgba(15,23,42,.27)}
-      .v52InstallTop{display:flex;align-items:center;gap:12px}.v52InstallIcon{width:58px;height:58px;border-radius:16px;object-fit:cover;flex:0 0 auto}.v52InstallText{min-width:0;flex:1}.v52InstallText strong{display:block;font-size:16px;color:#1f2937}.v52InstallText span{display:block;margin-top:4px;color:#64748b;font-size:12px;line-height:1.45}
-      .v52InstallActions{display:flex;gap:9px;margin-top:13px}.v52InstallPrimary,.v52InstallLater{min-height:45px;border-radius:13px;font-weight:900;font-size:13px}.v52InstallPrimary{flex:1;border:0;background:#2f9d59;color:#fff}.v52InstallLater{border:1px solid #d8e3dc;background:#fff;color:#526258;padding:0 14px}.v52InstallPrimary:disabled{opacity:.55}.v52InstallNote{margin-top:9px;color:#7b8790;font-size:11px;line-height:1.4}
-      @media(max-width:520px){.v52InstallBanner{width:calc(100vw - 24px);padding:14px}.v52InstallActions{flex-direction:column}.v52InstallLater{width:100%}}
+      .v52InstallOverlay{position:fixed;inset:0;z-index:150000;display:grid;place-items:end center;padding:18px;background:rgba(15,23,42,.52);backdrop-filter:blur(5px)}
+      .v52InstallCard{width:min(100%,470px);background:#fff;border:1px solid #dce8df;border-radius:26px;padding:20px;box-shadow:0 28px 80px rgba(15,23,42,.34);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+      .v52InstallTop{display:flex;align-items:center;gap:14px}.v52InstallIcon{width:72px;height:72px;border-radius:20px;object-fit:cover;box-shadow:0 8px 22px rgba(47,157,89,.18)}
+      .v52InstallText{min-width:0;flex:1}.v52InstallText strong{display:block;color:#17231c;font-size:20px;line-height:1.2}.v52InstallText span{display:block;margin-top:6px;color:#64748b;font-size:13px;line-height:1.5}
+      .v52InstallActions{display:grid;gap:10px;margin-top:18px}.v52InstallPrimary,.v52InstallLater{min-height:52px;border-radius:15px;font-size:15px;font-weight:900}.v52InstallPrimary{border:0;background:#2f9d59;color:#fff}.v52InstallLater{border:1px solid #d7e2da;background:#fff;color:#526258}.v52InstallPrimary:disabled{opacity:.6}
+      .v52InstallNote{margin-top:12px;color:#7b8790;font-size:11px;line-height:1.45;text-align:center}
+      @media(min-width:700px){.v52InstallOverlay{place-items:center}}
     `;
     document.head.appendChild(style);
   }
 
-  function hideBanner() {
-    if (banner) banner.remove();
-    banner = null;
+  function hidePanel() {
+    if (installPanel) installPanel.remove();
+    installPanel = null;
   }
 
   function chromeIntentUrl() {
     const target = new URL(location.href);
-    target.searchParams.delete('install');
+    target.searchParams.set('install', '1');
     target.searchParams.set('browser', 'chrome');
     const httpsUrl = target.toString();
     const pathAndQuery = target.host + target.pathname + target.search + target.hash;
     return 'intent://' + pathAndQuery + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(httpsUrl) + ';end';
   }
 
-  function render(mode, force = false) {
-    if (isStandalone() || !isMobileLike) return;
-    if (!force && installWasDismissed()) return;
+  async function launchNativePrompt() {
+    if (!deferredPrompt) return false;
+    const event = deferredPrompt;
+    deferredPrompt = null;
+    try {
+      const result = await event.prompt();
+      const choice = result && result.outcome ? result : await event.userChoice;
+      if (choice && choice.outcome === 'accepted') {
+        clearDismissal();
+        hidePanel();
+      } else {
+        rememberDismissal();
+        hidePanel();
+      }
+      return true;
+    } catch (error) {
+      deferredPrompt = event;
+      return false;
+    }
+  }
 
+  function renderInstallPanel() {
+    if (isStandalone() || !isMobileLike || dismissed()) return;
     ensureStyles();
-    hideBanner();
-    banner = document.createElement('div');
-    banner.className = 'v52InstallBanner';
+    hidePanel();
+    installPanel = document.createElement('div');
+    installPanel.className = 'v52InstallOverlay';
+    installPanel.innerHTML = `
+      <div class="v52InstallCard" role="dialog" aria-modal="true" aria-label="Instalar Lousa de Estudos">
+        <div class="v52InstallTop">
+          <img class="v52InstallIcon" src="./icons/lousa-icon-192.png?v=70" alt="Ícone da Lousa de Estudos">
+          <div class="v52InstallText">
+            <strong>Instalar Lousa de Estudos</strong>
+            <span>Instale no celular para abrir pelo ícone, em tela cheia, como um aplicativo.</span>
+          </div>
+        </div>
+        <div class="v52InstallActions">
+          <button class="v52InstallPrimary" type="button">Instalar agora</button>
+          <button class="v52InstallLater" type="button">Agora não</button>
+        </div>
+        <div class="v52InstallNote">O Android sempre pede sua confirmação final antes de instalar.</div>
+      </div>`;
+    document.body.appendChild(installPanel);
 
-    const nativeMode = mode === 'native' && !!deferredPrompt;
-    const title = nativeMode ? 'Instalar Lousa de Estudos' : 'Abrir no Chrome para instalar';
-    const text = nativeMode
-      ? 'Instale a Lousa como aplicativo no celular ou tablet.'
-      : 'Para instalar, abra esta mesma página no Chrome completo.';
-    const button = nativeMode ? 'Instalar aplicativo' : 'Abrir no Chrome';
-
-    banner.innerHTML = `
-      <div class="v52InstallTop">
-        <img class="v52InstallIcon" src="./icons/lousa-icon-192.png" alt="">
-        <div class="v52InstallText"><strong>${title}</strong><span>${text}</span></div>
-      </div>
-      <div class="v52InstallActions">
-        <button class="v52InstallPrimary" type="button">${button}</button>
-        <button class="v52InstallLater" type="button">Agora não</button>
-      </div>
-      <div class="v52InstallNote">Depois da instalação, a Lousa abre pelo próprio ícone, em tela de aplicativo.</div>
-    `;
-    document.body.appendChild(banner);
-
-    banner.querySelector('.v52InstallLater').addEventListener('click', () => {
+    const primary = installPanel.querySelector('.v52InstallPrimary');
+    installPanel.querySelector('.v52InstallLater').addEventListener('click', () => {
       rememberDismissal();
-      hideBanner();
+      hidePanel();
     }, {once:true});
 
-    banner.querySelector('.v52InstallPrimary').addEventListener('click', async () => {
-      const btn = banner && banner.querySelector('.v52InstallPrimary');
-      if (!btn) return;
-      if (nativeMode && deferredPrompt) {
-        const event = deferredPrompt;
-        btn.disabled = true;
-        btn.textContent = 'Abrindo instalador...';
-        try {
-          await event.prompt();
-          const choice = await event.userChoice;
-          deferredPrompt = null;
-          if (choice && choice.outcome === 'accepted') {
-            clearDismissal();
-            hideBanner();
-          } else {
-            rememberDismissal();
-            hideBanner();
-          }
-        } catch (error) {
-          btn.disabled = false;
-          btn.textContent = 'Instalar aplicativo';
+    primary.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        primary.disabled = true;
+        primary.textContent = 'Abrindo instalador...';
+        const opened = await launchNativePrompt();
+        if (!opened && installPanel) {
+          primary.disabled = false;
+          primary.textContent = 'Instalar agora';
         }
-      } else if (isAndroid) {
-        location.href = chromeIntentUrl();
-      } else {
-        btn.textContent = 'Use o menu do navegador';
+        return;
       }
+      if (isAndroid && !isChrome) {
+        location.href = chromeIntentUrl();
+        return;
+      }
+      primary.disabled = true;
+      primary.textContent = 'Preparando instalador...';
+      try {
+        if ('serviceWorker' in navigator) {
+          await navigator.serviceWorker.register('./sw.js?v=70install-auto',{scope:'./',updateViaCache:'none'});
+          await navigator.serviceWorker.ready;
+        }
+      } catch (error) {}
+      setTimeout(() => {
+        if (deferredPrompt) {
+          primary.disabled = false;
+          primary.textContent = 'Instalar agora';
+        } else {
+          primary.disabled = false;
+          primary.textContent = 'Instalar pelo menu do Chrome';
+          primary.onclick = () => alert('No Chrome, toque em ⋮ e depois em “Instalar app” ou “Adicionar à tela inicial”.');
+        }
+      }, 1200);
     });
+  }
+
+  async function tryAutomaticNativePrompt() {
+    if (autoPromptTried || !deferredPrompt || dismissed() || isStandalone()) return;
+    autoPromptTried = true;
+    await new Promise(resolve => setTimeout(resolve, 450));
+    const opened = await launchNativePrompt();
+    if (!opened && !isStandalone()) renderInstallPanel();
   }
 
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault();
     deferredPrompt = event;
-    render('native');
+    if (fallbackTimer) clearTimeout(fallbackTimer);
+    tryAutomaticNativePrompt();
   });
 
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     clearDismissal();
-    hideBanner();
+    hidePanel();
+    try { sessionStorage.removeItem(RELOAD_KEY); } catch (error) {}
   });
 
-  /*
-    Em navegadores internos (como abas abertas dentro de outros aplicativos),
-    não exibimos mais automaticamente o aviso "Abrir no Chrome".
-    Ele só pode ser chamado de forma explícita com ?install=1.
-  */
-  window.addEventListener('load', () => {
-    if (isStandalone() || !isMobileLike) return;
-    let explicitInstall = false;
-    try { explicitInstall = new URLSearchParams(location.search).get('install') === '1'; } catch (error) {}
-    if (explicitInstall) {
-      setTimeout(() => {
-        if (deferredPrompt) render('native', true);
-        else render('chrome', true);
-      }, 500);
+  window.addEventListener('load', async () => {
+    if (isStandalone() || !isMobileLike || dismissed()) return;
+
+    /* Garante que o PWA tenha um Service Worker ativo antes da promoção de instalação. */
+    try {
+      if ('serviceWorker' in navigator) {
+        await navigator.serviceWorker.register('./sw.js?v=70install-auto',{scope:'./',updateViaCache:'none'});
+        await navigator.serviceWorker.ready;
+      }
+    } catch (error) {}
+
+    if (deferredPrompt) {
+      tryAutomaticNativePrompt();
+      return;
     }
+
+    /* Na primeira visita do Chrome, uma única recarga ajuda o navegador a
+       reconhecer o Service Worker recém-ativado e disparar beforeinstallprompt. */
+    if (isChrome) {
+      let alreadyReloaded = false;
+      try { alreadyReloaded = sessionStorage.getItem(RELOAD_KEY) === '1'; } catch (error) {}
+      if (!alreadyReloaded && !navigator.serviceWorker.controller) {
+        try { sessionStorage.setItem(RELOAD_KEY, '1'); } catch (error) {}
+        setTimeout(() => location.reload(), 350);
+        return;
+      }
+    }
+
+    fallbackTimer = setTimeout(() => {
+      if (deferredPrompt) tryAutomaticNativePrompt();
+      else renderInstallPanel();
+    }, 1600);
   }, {once:true});
 })();
 
-/*
-  Atualização em segundo plano desativada.
-  A verificação de conteúdo acontece somente em start.html quando o aplicativo
-  é aberto. Não há recarga automática enquanto uma lição está aberta.
-*/
+/* Atualizações de conteúdo continuam sendo verificadas apenas na abertura do app. */
