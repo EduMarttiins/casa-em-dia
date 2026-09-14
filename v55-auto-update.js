@@ -1,4 +1,4 @@
-/* Lousa de Estudos, atualização automática com versão discreta */
+/* Lousa de Estudos, atualização automática com inicialização permanente */
 (() => {
   if (window.__lousaAutoUpdate) return;
   window.__lousaAutoUpdate = true;
@@ -31,11 +31,9 @@
   function addVersionLabel() {
     addStyles();
     document.querySelector('.lousaManualUpdate')?.remove();
-    if (document.querySelector('.lousaVersionOnly')) return;
-    const label = document.createElement('div');
-    label.className = 'lousaVersionOnly';
+    let label=document.querySelector('.lousaVersionOnly');
+    if(!label){label=document.createElement('div');label.className='lousaVersionOnly';document.body.appendChild(label)}
     label.textContent = 'v' + CURRENT_CONTENT_VERSION;
-    document.body.appendChild(label);
   }
 
   async function clearAppCaches() {
@@ -46,24 +44,20 @@
     } catch (error) {}
   }
 
-  async function refreshWorker() {
+  async function resetWorkers() {
     if (!('serviceWorker' in navigator)) return;
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(async reg => {
-        try {
-          await reg.update();
-          if (reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
-        } catch (error) {}
-      }));
+      await Promise.all(regs.map(reg => reg.unregister().catch(()=>false)));
     } catch (error) {}
   }
 
-  function goToVersion(version) {
-    const target = new URL('./v52.html', location.href);
+  function goToLatest() {
+    const target = new URL('./start.html', location.href);
     target.searchParams.set('pwa','1');
-    target.searchParams.set('content', String(version));
     target.searchParams.set('update', String(Date.now()));
+    if(isNativeAndroidApp)target.searchParams.set('androidapp','1');
+    if(currentApkVersion)target.searchParams.set('apk',String(currentApkVersion));
     location.replace(target.toString());
   }
 
@@ -105,8 +99,8 @@
         return;
       }
       await clearAppCaches();
-      await refreshWorker();
-      goToVersion(data.contentVersion || CURRENT_CONTENT_VERSION);
+      await resetWorkers();
+      goToLatest();
     }, {once:true});
   }
 
