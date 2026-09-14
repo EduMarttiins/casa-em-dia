@@ -133,45 +133,9 @@
   }, {once:true});
 })();
 
-/* Atualização do PWA somente quando instalado. */
-(() => {
-  if (window.__lousaUpdateV52) return;
-  window.__lousaUpdateV52 = true;
-  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  let shown = null;
-
-  async function watch() {
-    if (!isStandalone() || !('serviceWorker' in navigator)) return;
-    try {
-      const reg = await navigator.serviceWorker.getRegistration();
-      if (!reg) return;
-      const show = worker => {
-        if (!worker || shown === worker) return;
-        shown = worker;
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;z-index:130001;display:grid;place-items:center;padding:20px;background:rgba(15,23,42,.48);backdrop-filter:blur(4px)';
-        overlay.innerHTML = '<div style="width:min(100%,420px);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 28px 80px rgba(15,23,42,.3)"><div style="font-size:42px">⬆️</div><h3 style="margin:8px 0;font-size:22px">Nova versão disponível</h3><p style="margin:0;color:#64748b;line-height:1.55">A Lousa de Estudos recebeu uma atualização.</p><button type="button" style="width:100%;min-height:49px;margin-top:18px;border:0;border-radius:14px;background:#2f9d59;color:#fff;font-weight:900">Atualizar agora</button></div>';
-        document.body.appendChild(overlay);
-        overlay.querySelector('button').addEventListener('click', () => {
-          const b = overlay.querySelector('button');
-          b.disabled = true;
-          b.textContent = 'Atualizando...';
-          worker.postMessage({type:'SKIP_WAITING'});
-        }, {once:true});
-      };
-      if (reg.waiting && navigator.serviceWorker.controller) show(reg.waiting);
-      reg.addEventListener('updatefound', () => {
-        const worker = reg.installing;
-        if (!worker) return;
-        worker.addEventListener('statechange', () => {
-          if (worker.state === 'installed' && navigator.serviceWorker.controller) show(worker);
-        });
-      });
-      navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
-      setTimeout(() => reg.update().catch(()=>{}), 1000);
-    } catch (error) {}
-  }
-
-  if (document.readyState === 'complete') setTimeout(watch, 500);
-  else window.addEventListener('load', () => setTimeout(watch, 500), {once:true});
-})();
+/*
+  Atualização em segundo plano desativada na v69 estável.
+  A verificação de conteúdo acontece somente em start.html quando o aplicativo
+  é aberto. Não há reg.update(), controllerchange, reload ou timer durante uma
+  lição.
+*/
