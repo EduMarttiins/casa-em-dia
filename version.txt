@@ -1,2 +1,2 @@
-60
-O Dicionário agora usa o Michaelis Dicionário Brasileiro da Língua Portuguesa como referência de significado. Ao pesquisar uma palavra da lição, o aplicativo procura o sentido no Michaelis, compara com o trecho visível da atividade e apresenta uma explicação mais simples para o aluno. O resultado também mostra o trecho da lição e um botão para abrir a palavra diretamente no Michaelis. As linhas de caligrafia e a lousa branca da Matemática foram mantidas.
+61
+Foi adicionado um botão Atualizar aplicativo dentro da Lousa de Estudos. Ao tocar nele, o aplicativo verifica se existe uma versão mais nova e faz a atualização sem precisar fechar o app. Logo abaixo do botão aparece a versão atual instalada. O dicionário com referência Michaelis, as linhas de caligrafia e a lousa branca da Matemática foram mantidos.
