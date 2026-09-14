@@ -1,7 +1,7 @@
 {
-  "contentVersion": 67,
+  "contentVersion": 68,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "Novo dicionário infantil: as palavras agora são explicadas em linguagem simples, com exemplo fácil e relação com o texto estudado quando disponível.",
+  "message": "Língua Portuguesa agora volta a mostrar alternativas nas questões de múltipla escolha, enquanto as questões abertas continuam com resposta escrita, seguindo o formato de atividades usado no livro.",
   "publishedAt": "2026-09-14"
 }
