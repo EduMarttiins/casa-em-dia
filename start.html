@@ -14,7 +14,7 @@ html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI
 <script>
 (async()=>{
   const params=new URLSearchParams(location.search);
-  const fallbackVersion=69;
+  const fallbackVersion=70;
   const hardUpdate=params.has('update')||params.get('force')==='1'||params.has('rescue');
 
   async function purgeOldRuntime(){
