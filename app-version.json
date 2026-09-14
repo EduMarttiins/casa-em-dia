@@ -1,7 +1,7 @@
 {
-  "contentVersion": 61,
+  "contentVersion": 62,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: agora existe um botão dentro do aplicativo para verificar e aplicar atualizações sem precisar fechar a Lousa. A versão atual fica visível logo abaixo do botão.",
+  "message": "Nova atualização disponível: o dicionário agora usa o Dicio como referência principal, escolhe o sentido que combina com o texto da lição e explica em linguagem simples. O botão Atualizar também ficou mais discreto no rodapé.",
   "publishedAt": "2026-09-13"
 }
