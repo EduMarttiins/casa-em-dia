@@ -1,10 +1,10 @@
 (async()=>{
   try{
-    const response=await fetch('./index.html?raw=v62&ts='+Date.now(),{cache:'no-store'});
+    const response=await fetch('./index.html?raw=v63&ts='+Date.now(),{cache:'no-store'});
     if(!response.ok)throw new Error('Falha ao carregar a base do aplicativo');
     let html=await response.text();
 
-    /* Versão 62: mantém escrita e contexto, usa Dicio como referência e refina o botão de atualização. */
+    /* Versão 63: Dicio contextual, definição literal curta, rodapé compacto e versão discreta. */
     const mcqIds=[];
     const idPattern=/"id"\s*:\s*"([^"]+)"\s*,\s*"type"\s*:\s*"mcq"/g;
     let match;
@@ -25,15 +25,15 @@
     }
 
     html=html.replace(/"type"\s*:\s*"mcq"/g,'"type":"open"');
-    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="62">');
-    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=62');
-    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-512.png?v=62');
+    html=html.replace(/<meta name="app-version" content="[^"]*">/,'<meta name="app-version" content="63">');
+    html=html.replace(/\.\/manifest\.webmanifest(?:\?[^"']*)?/g,'./manifest.webmanifest?v=63');
+    html=html.replace(/\.\/icons\/lousa-icon\.svg(?:\?[^"']*)?/g,'./icons/lousa-icon-512.png?v=63');
     html=html.replace(/type="image\/svg\+xml"/g,'type="image/png"');
     html=html.replace(/<link rel="stylesheet" href="\.\/(?:v3[5-9]|v4[0-9]|v5[0-9]|v6[0-9]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-9]|pwa-v6[0-9])\.css\?v=\d+">\s*/g,'');
     html=html.replace(/<script src="\.\/(?:v3[5-9]|v4[0-9]|v5[0-9]|v6[0-9]|pwa-v3[9]|pwa-v4[0-9]|pwa-v5[0-9]|pwa-v6[0-9])\.js\?v=\d+"(?: defer)?><\/script>\s*/g,'');
-    const css='\n<link rel="stylesheet" href="./v37.css?v=62">\n<link rel="stylesheet" href="./pwa-v39.css?v=62">\n';
+    const css='\n<link rel="stylesheet" href="./v37.css?v=63">\n<link rel="stylesheet" href="./pwa-v39.css?v=63">\n';
     html=html.replace('</head>',css+'</head>');
-    const scripts='\n<scr'+'ipt src="./v37.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v50.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v52.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v54.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v55.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v56.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v57.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v58.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v59.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v60.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v62.js?v=62"></scr'+'ipt>\n<scr'+'ipt src="./v55-auto-update.js?v=62"></scr'+'ipt>\n';
+    const scripts='\n<scr'+'ipt src="./v37.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v41.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v50.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./pwa-v52.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v54.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v55.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v56.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v57.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v58.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v59.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v60.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v62.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v63.js?v=63"></scr'+'ipt>\n<scr'+'ipt src="./v55-auto-update.js?v=63"></scr'+'ipt>\n';
     html=html.replace('</body>',scripts+'</body>');
     document.open();document.write(html);document.close();
   }catch(error){
