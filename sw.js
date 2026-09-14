@@ -1,33 +1,34 @@
-const VERSION='66-startup-rescue-1';
-const CONTENT_VERSION='66';
+const VERSION='67-dicionario-infantil-1';
+const CONTENT_VERSION='67';
 const CACHE='lousa-de-estudos-v'+VERSION;
 const ASSETS=[
   './start.html',
   './index.html',
   './v52.html',
-  './loader-v55.js?v=66',
-  './v37.css?v=66',
-  './v37.js?v=66',
-  './v41.js?v=66',
-  './v50.js?v=66',
-  './pwa-v39.css?v=66',
-  './pwa-v52.js?v=66',
-  './v54.js?v=66',
-  './v55.js?v=66',
-  './v56.js?v=66',
-  './v57.js?v=66',
-  './v58.js?v=66',
-  './v59.js?v=66',
-  './v60.js?v=66',
-  './v62.js?v=66',
-  './v63.js?v=66',
-  './v64.js?v=66',
-  './v65.js?v=66',
-  './v66.js?v=66',
-  './v55-auto-update.js?v=66',
-  './manifest.webmanifest?v=66',
-  './icons/lousa-icon-192.png?v=66',
-  './icons/lousa-icon-512.png?v=66'
+  './loader-v55.js?v=67',
+  './v37.css?v=67',
+  './v37.js?v=67',
+  './v41.js?v=67',
+  './v50.js?v=67',
+  './pwa-v39.css?v=67',
+  './pwa-v52.js?v=67',
+  './v54.js?v=67',
+  './v55.js?v=67',
+  './v56.js?v=67',
+  './v57.js?v=67',
+  './v58.js?v=67',
+  './v59.js?v=67',
+  './v60.js?v=67',
+  './v62.js?v=67',
+  './v63.js?v=67',
+  './v64.js?v=67',
+  './v65.js?v=67',
+  './v66.js?v=67',
+  './v67.js?v=67',
+  './v55-auto-update.js?v=67',
+  './manifest.webmanifest?v=67',
+  './icons/lousa-icon-192.png?v=67',
+  './icons/lousa-icon-512.png?v=67'
 ];
 
 self.addEventListener('install',event=>{
@@ -43,8 +44,6 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key.startsWith('lousa-de-estudos-v')&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
-
-    /* Resgate da v66: deixa o controllerchange antigo terminar e depois leva a sessão para a entrada permanente. */
     await new Promise(resolve=>setTimeout(resolve,350));
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     await Promise.all(windows.map(async client=>{
