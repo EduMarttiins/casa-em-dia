@@ -52,10 +52,12 @@
     } catch (error) {}
   }
 
-  function goToLatest() {
+  function goToLatest(remoteVersion) {
     const target = new URL('./start.html', location.href);
     target.searchParams.set('pwa','1');
     target.searchParams.set('update', String(Date.now()));
+    target.searchParams.set('force','1');
+    if(remoteVersion)target.searchParams.set('target',String(remoteVersion));
     if(isNativeAndroidApp)target.searchParams.set('androidapp','1');
     if(currentApkVersion)target.searchParams.set('apk',String(currentApkVersion));
     location.replace(target.toString());
@@ -100,7 +102,7 @@
       }
       await clearAppCaches();
       await resetWorkers();
-      goToLatest();
+      goToLatest(version);
     }, {once:true});
   }
 
