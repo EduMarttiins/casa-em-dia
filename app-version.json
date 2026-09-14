@@ -1,7 +1,7 @@
 {
-  "contentVersion": 64,
+  "contentVersion": 65,
   "apkVersion": 2,
   "apkUrl": "",
-  "message": "Nova atualização disponível: a pauta de caligrafia agora tem somente uma linha clara entre as linhas principais. O dicionário mostra a classe gramatical e os dois primeiros significados do Dicio no formato direto do site.",
-  "publishedAt": "2026-09-13"
+  "message": "Nova atualização disponível: todas as lições estão liberadas desde o início e a faixa explicativa abaixo dos textos de leitura foi removida.",
+  "publishedAt": "2026-09-14"
 }
