@@ -2,10 +2,30 @@
 (()=>{
   if(window.__lousaV68)return;
   window.__lousaV68=true;
+  window.__lousaCurrentContentVersion=68;
 
   const clone=value=>{
     try{return JSON.parse(JSON.stringify(value))}catch(error){return value}
   };
+
+  function forceVersion68(){
+    try{
+      const meta=document.querySelector('meta[name="app-version"]');
+      if(meta)meta.setAttribute('content','68');
+      document.documentElement.dataset.contentVersion='68';
+      document.querySelectorAll('.lousaVersionOnly').forEach(el=>{el.textContent='v68'});
+    }catch(error){}
+  }
+
+  function protectVersionLabel(){
+    forceVersion68();
+    [120,360,700,1400,2600].forEach(delay=>setTimeout(forceVersion68,delay));
+    try{
+      const observer=new MutationObserver(()=>forceVersion68());
+      observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+      setTimeout(()=>observer.disconnect(),6000);
+    }catch(error){}
+  }
 
   function restorePortugueseQuestions(){
     const snapshot=window.__lousaV68PortugueseSnapshot;
@@ -84,6 +104,7 @@
     restorePortugueseQuestions();
     decorateMultipleChoice();
     migrateOldWrittenAnswers();
+    protectVersionLabel();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
