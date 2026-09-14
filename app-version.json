@@ -1,7 +1,7 @@
 {
-  "contentVersion": 66,
+  "contentVersion": 67,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "Correção de inicialização: o aplicativo agora abre diretamente pela versão atual e não deve mais voltar para a versão 57 após ser fechado.",
+  "message": "Novo dicionário infantil: as palavras agora são explicadas em linguagem simples, com exemplo fácil e relação com o texto estudado quando disponível.",
   "publishedAt": "2026-09-14"
 }
