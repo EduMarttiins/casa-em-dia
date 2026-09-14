@@ -1,4 +1,4 @@
-/* Lousa de Estudos, atualização automática e manual */
+/* Lousa de Estudos, atualização automática com versão discreta */
 (() => {
   if (window.__lousaAutoUpdate) return;
   window.__lousaAutoUpdate = true;
@@ -22,18 +22,20 @@
       .lousaUpdateIcon{font-size:44px;line-height:1}.lousaUpdateCard h3{margin:10px 0 6px;font-size:22px;color:#1f2937}.lousaUpdateCard p{margin:0;color:#64748b;line-height:1.55}
       .lousaUpdateActions{display:flex;gap:10px;margin-top:19px}.lousaUpdatePrimary,.lousaUpdateLater{min-height:48px;border-radius:14px;font-weight:900;font-size:14px}
       .lousaUpdatePrimary{flex:1;border:0;background:#2f9d59;color:#fff}.lousaUpdateLater{border:1px solid #d8e3dc;background:#fff;color:#526258;padding:0 16px}
-      .lousaManualUpdate{position:fixed;left:50%;bottom:max(5px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:110000;display:flex;flex-direction:column;align-items:center;gap:1px;width:auto;max-width:calc(100vw - 24px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;opacity:.82;transition:opacity .18s ease,transform .18s ease}
-      .lousaManualButton{min-height:31px;border:1px solid rgba(47,157,89,.28);border-radius:999px;background:rgba(47,157,89,.92);color:#fff;font-weight:800;font-size:11px;padding:0 12px;box-shadow:0 4px 12px rgba(22,101,52,.13);cursor:pointer;white-space:nowrap}
-      .lousaManualButton:disabled{opacity:.72;cursor:wait}.lousaManualVersion{font-size:9.5px;line-height:1.2;text-align:center;color:#64748b;background:rgba(255,255,255,.78);border:0;border-radius:999px;padding:2px 7px;box-shadow:none;white-space:nowrap}
-      .lousaManualUpdate.typing{opacity:0;pointer-events:none;transform:translate(-50%,10px)}
-      @media(max-width:520px){.lousaUpdateActions{flex-direction:column}.lousaUpdateLater{width:100%}.lousaManualButton{font-size:10.5px;min-height:30px;padding:0 11px}.lousaManualVersion{font-size:9px}}
+      .lousaVersionOnly{position:fixed;left:5px;bottom:max(4px,env(safe-area-inset-bottom));z-index:105000;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:9px;line-height:1;color:#7a857e;background:rgba(255,255,255,.70);border-radius:7px;padding:3px 5px;box-shadow:0 2px 7px rgba(15,23,42,.06);pointer-events:none;opacity:.76}
+      @media(max-width:520px){.lousaUpdateActions{flex-direction:column}.lousaUpdateLater{width:100%}.lousaVersionOnly{font-size:8.5px}}
     `;
     document.head.appendChild(style);
   }
 
-  function versionText(text) {
-    const label = document.querySelector('.lousaManualVersion');
-    if (label) label.textContent = text;
+  function addVersionLabel() {
+    addStyles();
+    document.querySelector('.lousaManualUpdate')?.remove();
+    if (document.querySelector('.lousaVersionOnly')) return;
+    const label = document.createElement('div');
+    label.className = 'lousaVersionOnly';
+    label.textContent = 'v' + CURRENT_CONTENT_VERSION;
+    document.body.appendChild(label);
   }
 
   async function clearAppCaches() {
@@ -61,7 +63,7 @@
     const target = new URL('./v52.html', location.href);
     target.searchParams.set('pwa','1');
     target.searchParams.set('content', String(version));
-    target.searchParams.set('manualUpdate', String(Date.now()));
+    target.searchParams.set('update', String(Date.now()));
     location.replace(target.toString());
   }
 
@@ -69,70 +71,6 @@
     const response = await fetch('./app-version.json?ts=' + Date.now(), {cache:'no-store'});
     if (!response.ok) throw new Error('Não foi possível verificar a atualização');
     return response.json();
-  }
-
-  async function manualUpdate() {
-    const button = document.querySelector('.lousaManualButton');
-    if (!button || button.disabled) return;
-    const oldText = button.textContent;
-    button.disabled = true;
-    button.textContent = 'Verificando';
-    versionText('Versão ' + CURRENT_CONTENT_VERSION + ' • verificando');
-    try {
-      const data = await getRemoteVersion();
-      const remoteContent = Number(data.contentVersion || 0);
-      const remoteApk = Number(data.apkVersion || 0);
-      if (isNativeAndroidApp && data.apkUrl && remoteApk > currentApkVersion) {
-        versionText('Nova versão disponível');
-        button.textContent = 'Atualizando';
-        location.href = data.apkUrl;
-        return;
-      }
-      if (remoteContent > CURRENT_CONTENT_VERSION) {
-        versionText('Nova versão ' + remoteContent);
-        button.textContent = 'Atualizando';
-        await clearAppCaches();
-        await refreshWorker();
-        goToVersion(remoteContent);
-        return;
-      }
-      await refreshWorker();
-      versionText('Versão atual: ' + CURRENT_CONTENT_VERSION + ' • atualizada');
-      button.textContent = 'Atualizado';
-      setTimeout(() => {
-        button.disabled = false;
-        button.textContent = oldText;
-        versionText('Versão atual: ' + CURRENT_CONTENT_VERSION);
-      }, 1800);
-    } catch (error) {
-      versionText('Versão ' + CURRENT_CONTENT_VERSION + ' • tente novamente');
-      button.textContent = 'Tentar novamente';
-      button.disabled = false;
-    }
-  }
-
-  function isTypingTarget(el) {
-    if (!el) return false;
-    const tag = String(el.tagName || '').toLowerCase();
-    return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
-  }
-
-  function addManualButton() {
-    addStyles();
-    if (document.querySelector('.lousaManualUpdate')) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'lousaManualUpdate';
-    wrap.innerHTML = `<button class="lousaManualButton" type="button">↻ Atualizar</button><div class="lousaManualVersion">Versão atual: ${CURRENT_CONTENT_VERSION}</div>`;
-    document.body.appendChild(wrap);
-    wrap.querySelector('.lousaManualButton').addEventListener('click', manualUpdate);
-    document.addEventListener('focusin', event => {
-      if (isTypingTarget(event.target)) wrap.classList.add('typing');
-    });
-    document.addEventListener('focusout', () => {
-      setTimeout(() => {
-        if (!isTypingTarget(document.activeElement)) wrap.classList.remove('typing');
-      }, 80);
-    });
   }
 
   function showUpdate(data, kind) {
@@ -192,7 +130,7 @@
   }
 
   function init() {
-    addManualButton();
+    addVersionLabel();
     setTimeout(checkForUpdates, 700);
   }
 
