@@ -1,7 +1,7 @@
 {
-  "contentVersion": 70,
+  "contentVersion": 71,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "Língua Portuguesa agora segue o formato das atividades do livro: quando a questão é de múltipla escolha, aparecem as alternativas do material; quando é aberta, continua a lousa para escrever. As 11 aulas existentes foram alinhadas às Aulas 1 a 11 do Livro do Estudante.",
+  "message": "A lição de Divisão foi reformulada com mais exercícios, incluindo várias divisões com divisor de dois algarismos. Todas as questões da lição agora têm lousa para montar e resolver a conta.",
   "publishedAt": "2026-09-14"
 }
