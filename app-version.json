@@ -1,7 +1,7 @@
 {
-  "contentVersion": 73,
+  "contentVersion": 74,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "Correção: Ciências, Língua Portuguesa, Geografia e História permanecem em múltipla escolha ao abrir cada lição. Matemática continua sem alterações.",
+  "message": "Cada lição de Ciências, Língua Portuguesa, Geografia e História agora apresenta um texto de revisão antes das questões. Ciências recebeu textos completos nos 8 temas. Matemática continua sem alterações.",
   "publishedAt": "2026-09-15"
 }
