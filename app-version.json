@@ -1,7 +1,7 @@
 {
-  "contentVersion": 72,
+  "contentVersion": 73,
   "apkVersion": 4,
   "apkUrl": "",
-  "message": "As lições de Ciências, Língua Portuguesa, Geografia e História agora usam múltipla escolha em todas as atividades. Matemática foi mantida sem alterações.",
+  "message": "Correção: Ciências, Língua Portuguesa, Geografia e História permanecem em múltipla escolha ao abrir cada lição. Matemática continua sem alterações.",
   "publishedAt": "2026-09-15"
 }
